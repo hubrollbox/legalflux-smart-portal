@@ -7,31 +7,33 @@ const Pricing = () => {
   const plans = [
     {
       name: 'Grátis',
-      price: 'R$ 0',
+      price: '€0',
       period: '/mês',
-      description: 'Para começar e testar a plataforma',
+      description: 'Para testar a plataforma (15 dias trial)',
       features: [
         'Até 2 processos',
         '500MB de armazenamento',
         'Suporte por email',
-        'Recursos básicos de IA'
+        'Recursos básicos de IA',
+        'Acesso mobile'
       ],
-      buttonText: 'Começar Grátis',
+      buttonText: 'Começar Trial Gratuito',
       buttonVariant: 'outline' as const,
       popular: false
     },
     {
       name: 'Básico',
-      price: 'R$ 29',
+      price: '€29',
       period: '/mês',
-      description: 'Ideal para profissionais autônomos',
+      description: 'Ideal para advogados independentes',
       features: [
         'Até 10 processos',
         '5GB de armazenamento',
-        'Chat direto com suporte',
+        'Chat directo com suporte',
         'IA avançada para insights',
-        'Relatórios básicos',
-        'Templates de documentos'
+        'Calendário de prazos',
+        'Upload de documentos',
+        'Relatórios básicos'
       ],
       buttonText: 'Escolher Básico',
       buttonVariant: 'default' as const,
@@ -39,7 +41,7 @@ const Pricing = () => {
     },
     {
       name: 'Profissional',
-      price: 'R$ 79',
+      price: '€79',
       period: '/mês',
       description: 'Para advogados e consultórios pequenos',
       features: [
@@ -47,9 +49,10 @@ const Pricing = () => {
         '25GB de armazenamento',
         'Suporte prioritário',
         'IA completa + automações',
+        'Gestão de clientes',
+        'Chat seguro com clientes',
         'Relatórios avançados',
-        'Integração financeira',
-        'Multi-usuário (até 3)',
+        'Multi-utilizador (até 3)',
         'Templates premium'
       ],
       buttonText: 'Escolher Profissional',
@@ -58,18 +61,20 @@ const Pricing = () => {
     },
     {
       name: 'Escritório',
-      price: 'R$ 199',
+      price: '€199',
       period: '/mês',
       description: 'Para escritórios e empresas',
       features: [
         'Tudo do Profissional',
         '100GB de armazenamento',
         'Suporte dedicado',
-        'Usuários ilimitados',
+        'Utilizadores ilimitados',
         'Dashboard administrativo',
-        'Permissões avançadas',
+        'Permissões avançadas (RBAC)',
+        'Gestão de assistentes',
         'API personalizada',
-        'Onboarding personalizado'
+        'Onboarding personalizado',
+        'Integração Stripe completa'
       ],
       buttonText: 'Falar com Vendas',
       buttonVariant: 'default' as const,
@@ -157,7 +162,7 @@ const Pricing = () => {
           <p className="text-gray-600">
             Precisa de um plano personalizado? 
             <a href="#contato" className="text-primary-800 hover:underline ml-1 font-medium">
-              Entre em contato
+              Entre em contacto
             </a>
           </p>
           <p className="text-sm text-gray-500">

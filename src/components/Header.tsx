@@ -2,6 +2,7 @@
 import { Scale, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -11,7 +12,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center space-x-3">
             <div className="bg-primary-800 p-2 rounded-xl">
               <Scale className="h-6 w-6 text-white" />
             </div>
@@ -19,7 +20,7 @@ const Header = () => {
               <h1 className="text-xl font-bold text-primary-800">Legalflux</h1>
               <p className="text-xs text-gray-500 hidden sm:block">Portal Jurídico Inteligente</p>
             </div>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
@@ -33,17 +34,17 @@ const Header = () => {
               Sobre
             </a>
             <a href="#contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
-              Contato
+              Contacto
             </a>
           </nav>
 
           {/* Action Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" className="text-primary-800 hover:bg-primary-50">
-              Entrar
+            <Button variant="ghost" className="text-primary-800 hover:bg-primary-50" asChild>
+              <Link to="/login">Entrar</Link>
             </Button>
-            <Button className="bg-primary-800 hover:bg-primary-700 text-white px-6">
-              Começar Gratuitamente
+            <Button className="bg-primary-800 hover:bg-primary-700 text-white px-6" asChild>
+              <Link to="/register">Começar Gratuitamente</Link>
             </Button>
           </div>
 
@@ -74,14 +75,14 @@ const Header = () => {
                 Sobre
               </a>
               <a href="#contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
-                Contato
+                Contacto
               </a>
               <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100">
-                <Button variant="ghost" className="text-primary-800 hover:bg-primary-50 justify-start">
-                  Entrar
+                <Button variant="ghost" className="text-primary-800 hover:bg-primary-50 justify-start" asChild>
+                  <Link to="/login">Entrar</Link>
                 </Button>
-                <Button className="bg-primary-800 hover:bg-primary-700 text-white">
-                  Começar Gratuitamente
+                <Button className="bg-primary-800 hover:bg-primary-700 text-white" asChild>
+                  <Link to="/register">Começar Gratuitamente</Link>
                 </Button>
               </div>
             </div>
