@@ -423,6 +423,112 @@ export type Database = {
         }
         Relationships: []
       }
+      eventos: {
+        Row: {
+          caso_id: string | null
+          created_at: string | null
+          data_fim: string | null
+          data_inicio: string
+          descricao: string | null
+          id: string
+          tipo: string | null
+          titulo: string
+          user_id: string | null
+        }
+        Insert: {
+          caso_id?: string | null
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio: string
+          descricao?: string | null
+          id?: string
+          tipo?: string | null
+          titulo: string
+          user_id?: string | null
+        }
+        Update: {
+          caso_id?: string | null
+          created_at?: string | null
+          data_fim?: string | null
+          data_inicio?: string
+          descricao?: string | null
+          id?: string
+          tipo?: string | null
+          titulo?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "eventos_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "eventos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mensagens: {
+        Row: {
+          arquivo_url: string | null
+          caso_id: string | null
+          conteudo: string
+          created_at: string | null
+          destinatario_id: string | null
+          id: string
+          lida: boolean | null
+          remetente_id: string | null
+        }
+        Insert: {
+          arquivo_url?: string | null
+          caso_id?: string | null
+          conteudo: string
+          created_at?: string | null
+          destinatario_id?: string | null
+          id?: string
+          lida?: boolean | null
+          remetente_id?: string | null
+        }
+        Update: {
+          arquivo_url?: string | null
+          caso_id?: string | null
+          conteudo?: string
+          created_at?: string | null
+          destinatario_id?: string | null
+          id?: string
+          lida?: boolean | null
+          remetente_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mensagens_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensagens_destinatario_id_fkey"
+            columns: ["destinatario_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "mensagens_remetente_id_fkey"
+            columns: ["remetente_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notes: {
         Row: {
           id: number
@@ -437,6 +543,44 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      notificacoes: {
+        Row: {
+          created_at: string | null
+          id: string
+          lida: boolean | null
+          mensagem: string
+          tipo: string | null
+          titulo: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          lida?: boolean | null
+          mensagem: string
+          tipo?: string | null
+          titulo: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          lida?: boolean | null
+          mensagem?: string
+          tipo?: string | null
+          titulo?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificacoes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       permissoes: {
         Row: {
@@ -491,32 +635,153 @@ export type Database = {
         }
         Relationships: []
       }
+      tarefas: {
+        Row: {
+          atribuido_a: string | null
+          caso_id: string | null
+          created_at: string | null
+          criado_por: string | null
+          descricao: string | null
+          id: string
+          prazo: string | null
+          status: Database["public"]["Enums"]["status_tarefa"] | null
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          atribuido_a?: string | null
+          caso_id?: string | null
+          created_at?: string | null
+          criado_por?: string | null
+          descricao?: string | null
+          id?: string
+          prazo?: string | null
+          status?: Database["public"]["Enums"]["status_tarefa"] | null
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          atribuido_a?: string | null
+          caso_id?: string | null
+          created_at?: string | null
+          criado_por?: string | null
+          descricao?: string | null
+          id?: string
+          prazo?: string | null
+          status?: Database["public"]["Enums"]["status_tarefa"] | null
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tarefas_atribuido_a_fkey"
+            columns: ["atribuido_a"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tarefas_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tarefas_criado_por_fkey"
+            columns: ["criado_por"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transacoes: {
+        Row: {
+          caso_id: string | null
+          cliente_id: string | null
+          created_at: string | null
+          data_transacao: string | null
+          descricao: string | null
+          id: string
+          tipo: string
+          valor: number
+        }
+        Insert: {
+          caso_id?: string | null
+          cliente_id?: string | null
+          created_at?: string | null
+          data_transacao?: string | null
+          descricao?: string | null
+          id?: string
+          tipo: string
+          valor: number
+        }
+        Update: {
+          caso_id?: string | null
+          cliente_id?: string | null
+          created_at?: string | null
+          data_transacao?: string | null
+          descricao?: string | null
+          id?: string
+          tipo?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transacoes_caso_id_fkey"
+            columns: ["caso_id"]
+            isOneToOne: false
+            referencedRelation: "casos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transacoes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           apagado_em: string | null
+          aprovado: boolean | null
           criado_em: string | null
           email: string
+          foto_perfil: string | null
           id: string
           nome: string
           password: string
+          plano: Database["public"]["Enums"]["plano_tipo"] | null
+          telefone: string | null
           tipo: string
         }
         Insert: {
           apagado_em?: string | null
+          aprovado?: boolean | null
           criado_em?: string | null
           email: string
+          foto_perfil?: string | null
           id?: string
           nome: string
           password: string
+          plano?: Database["public"]["Enums"]["plano_tipo"] | null
+          telefone?: string | null
           tipo: string
         }
         Update: {
           apagado_em?: string | null
+          aprovado?: boolean | null
           criado_em?: string | null
           email?: string
+          foto_perfil?: string | null
           id?: string
           nome?: string
           password?: string
+          plano?: Database["public"]["Enums"]["plano_tipo"] | null
+          telefone?: string | null
           tipo?: string
         }
         Relationships: []
@@ -536,7 +801,16 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      plano_tipo: "gratis" | "basico" | "profissional" | "escritorio"
+      status_caso: "activo" | "pendente" | "arquivado" | "concluido"
+      status_tarefa: "pendente" | "em_progresso" | "concluida" | "atrasada"
+      tipo_documento: "peticao" | "contrato" | "processo" | "recibo" | "outro"
+      user_type:
+        | "cliente"
+        | "assistente"
+        | "advogado"
+        | "advogado_senior"
+        | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -651,6 +925,18 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      plano_tipo: ["gratis", "basico", "profissional", "escritorio"],
+      status_caso: ["activo", "pendente", "arquivado", "concluido"],
+      status_tarefa: ["pendente", "em_progresso", "concluida", "atrasada"],
+      tipo_documento: ["peticao", "contrato", "processo", "recibo", "outro"],
+      user_type: [
+        "cliente",
+        "assistente",
+        "advogado",
+        "advogado_senior",
+        "admin",
+      ],
+    },
   },
 } as const
