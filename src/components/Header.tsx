@@ -1,0 +1,95 @@
+
+import { Scale, Menu, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  return (
+    <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo */}
+          <div className="flex items-center space-x-3">
+            <div className="bg-primary-800 p-2 rounded-xl">
+              <Scale className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-primary-800">Legalflux</h1>
+              <p className="text-xs text-gray-500 hidden sm:block">Portal Jurídico Inteligente</p>
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <a href="#recursos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+              Recursos
+            </a>
+            <a href="#planos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+              Planos
+            </a>
+            <a href="#sobre" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+              Sobre
+            </a>
+            <a href="#contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+              Contato
+            </a>
+          </nav>
+
+          {/* Action Buttons */}
+          <div className="hidden md:flex items-center space-x-4">
+            <Button variant="ghost" className="text-primary-800 hover:bg-primary-50">
+              Entrar
+            </Button>
+            <Button className="bg-primary-800 hover:bg-primary-700 text-white px-6">
+              Começar Gratuitamente
+            </Button>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="text-primary-800"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-gray-100 animate-fade-in">
+            <div className="flex flex-col space-y-4">
+              <a href="#recursos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+                Recursos
+              </a>
+              <a href="#planos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+                Planos
+              </a>
+              <a href="#sobre" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+                Sobre
+              </a>
+              <a href="#contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+                Contato
+              </a>
+              <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100">
+                <Button variant="ghost" className="text-primary-800 hover:bg-primary-50 justify-start">
+                  Entrar
+                </Button>
+                <Button className="bg-primary-800 hover:bg-primary-700 text-white">
+                  Começar Gratuitamente
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  );
+};
+
+export default Header;
