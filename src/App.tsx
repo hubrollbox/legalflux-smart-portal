@@ -14,6 +14,17 @@ import Clientes from "./pages/Clientes";
 import Chat from "./pages/Chat";
 import Financeiro from "./pages/Financeiro";
 import Definicoes from "./pages/Definicoes";
+import Sobre from "./pages/Sobre";
+import Recursos from "./pages/Recursos";
+import Seguranca from "./pages/Seguranca";
+import Integracoes from "./pages/Integracoes";
+import Documentacao from "./pages/Documentacao";
+import Contato from "./pages/Contato";
+import PoliticaPrivacidade from "./pages/PoliticaPrivacidade";
+import TermosUso from "./pages/TermosUso";
+import StatusSistema from "./pages/StatusSistema";
+import CentralAjuda from "./pages/CentralAjuda";
+import Comunidade from "./pages/Comunidade";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +46,17 @@ const App = () => (
           <Route path="/chat" element={<Chat />} />
           <Route path="/financeiro" element={<Financeiro />} />
           <Route path="/definicoes" element={<Definicoes />} />
+          <Route path="/sobre" element={<Sobre />} />
+          <Route path="/recursos" element={<Recursos />} />
+          <Route path="/seguranca" element={<Seguranca />} />
+          <Route path="/integracoes" element={<Integracoes />} />
+          <Route path="/documentacao" element={<Documentacao />} />
+          <Route path="/contato" element={<Contato />} />
+          <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
+          <Route path="/termos-uso" element={<TermosUso />} />
+          <Route path="/status-sistema" element={<StatusSistema />} />
+          <Route path="/central-ajuda" element={<CentralAjuda />} />
+          <Route path="/comunidade" element={<Comunidade />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

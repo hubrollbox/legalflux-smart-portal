@@ -1,5 +1,6 @@
 
 import { Scale } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -31,11 +32,11 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Produto</h4>
             <ul className="space-y-2 text-primary-200">
-              <li><a href="#recursos" className="hover:text-white transition-colors">Recursos</a></li>
+              <li><Link to="/recursos" className="hover:text-white transition-colors">Recursos</Link></li>
               <li><a href="#planos" className="hover:text-white transition-colors">Planos</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Segurança</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Integrações</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">API</a></li>
+              <li><Link to="/seguranca" className="hover:text-white transition-colors">Segurança</Link></li>
+              <li><Link to="/integracoes" className="hover:text-white transition-colors">Integrações</Link></li>
+              <li><Link to="/documentacao" className="hover:text-white transition-colors">API</Link></li>
             </ul>
           </div>
 
@@ -43,11 +44,11 @@ const Footer = () => {
           <div>
             <h4 className="font-semibold mb-4">Suporte</h4>
             <ul className="space-y-2 text-primary-200">
-              <li><a href="#" className="hover:text-white transition-colors">Central de Ajuda</a></li>
-              <li><a href="#contato" className="hover:text-white transition-colors">Contato</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Status do Sistema</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Documentação</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Comunidade</a></li>
+              <li><Link to="/central-ajuda" className="hover:text-white transition-colors">Central de Ajuda</Link></li>
+              <li><Link to="/contato" className="hover:text-white transition-colors">Contato</Link></li>
+              <li><Link to="/status-sistema" className="hover:text-white transition-colors">Status do Sistema</Link></li>
+              <li><Link to="/documentacao" className="hover:text-white transition-colors">Documentação</Link></li>
+              <li><Link to="/comunidade" className="hover:text-white transition-colors">Comunidade</Link></li>
             </ul>
           </div>
         </div>
@@ -56,12 +57,12 @@ const Footer = () => {
         <div className="border-t border-primary-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex space-x-6 text-primary-200 text-sm mb-4 md:mb-0">
-              <a href="#" className="hover:text-white transition-colors">Política de Privacidade</a>
-              <a href="#" className="hover:text-white transition-colors">Termos de Uso</a>
+              <Link to="/politica-privacidade" className="hover:text-white transition-colors">Política de Privacidade</Link>
+              <Link to="/termos-uso" className="hover:text-white transition-colors">Termos de Uso</Link>
               <a href="#" className="hover:text-white transition-colors">LGPD</a>
             </div>
             <div className="text-primary-300 text-sm">
-              Desenvolvido com ❤️ para a comunidade jurídica brasileira
+              Desenvolvido com ❤️ para a comunidade jurídica dos PALOP
             </div>
           </div>
         </div>
