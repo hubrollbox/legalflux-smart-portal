@@ -14,6 +14,7 @@ import Clientes from "./pages/Clientes";
 import Chat from "./pages/Chat";
 import Financeiro from "./pages/Financeiro";
 import Definicoes from "./pages/Definicoes";
+import IAAssistant from "./pages/IAAssistant";
 import Sobre from "./pages/Sobre";
 import Recursos from "./pages/Recursos";
 import Seguranca from "./pages/Seguranca";
@@ -45,6 +46,7 @@ const App = () => (
           <Route path="/clientes" element={<Clientes />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/financeiro" element={<Financeiro />} />
+          <Route path="/ia-assistant" element={<IAAssistant />} />
           <Route path="/definicoes" element={<Definicoes />} />
           <Route path="/sobre" element={<Sobre />} />
           <Route path="/recursos" element={<Recursos />} />

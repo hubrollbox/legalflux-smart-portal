@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
-  Scale, 
   Home, 
   FileText, 
   Calendar, 
@@ -14,7 +13,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Bell,
-  Search
+  Search,
+  Brain,
+  Link as LinkIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -30,6 +31,8 @@ const Sidebar = () => {
     { icon: Users, label: 'Clientes', href: '/clientes' },
     { icon: MessageSquare, label: 'Chat', href: '/chat' },
     { icon: CreditCard, label: 'Financeiro', href: '/financeiro' },
+    { icon: Brain, label: 'IA Assistant', href: '/ia-assistant' },
+    { icon: LinkIcon, label: 'Integrações', href: '/integracoes' },
     { icon: Settings, label: 'Definições', href: '/definicoes' },
   ];
 
@@ -44,12 +47,25 @@ const Sidebar = () => {
           {!collapsed && (
             <div className="flex items-center space-x-3">
               <div className="bg-white p-2 rounded-lg">
-                <Scale className="h-6 w-6 text-primary-800" />
+                <img 
+                  src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
+                  alt="Legalflux Logo" 
+                  className="h-6 w-6 object-contain"
+                />
               </div>
               <div>
                 <h1 className="text-lg font-bold">Legalflux</h1>
                 <p className="text-xs text-primary-200">Portal Jurídico</p>
               </div>
+            </div>
+          )}
+          {collapsed && (
+            <div className="bg-white p-2 rounded-lg mx-auto">
+              <img 
+                src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
+                alt="Legalflux Logo" 
+                className="h-6 w-6 object-contain"
+              />
             </div>
           )}
           <Button
@@ -122,9 +138,12 @@ const Sidebar = () => {
               "w-full text-primary-200 hover:bg-primary-700 hover:text-white",
               collapsed ? "px-2" : "justify-start"
             )}
+            asChild
           >
-            <LogOut className="h-5 w-5" />
-            {!collapsed && <span className="ml-3">Sair</span>}
+            <Link to="/login">
+              <LogOut className="h-5 w-5" />
+              {!collapsed && <span className="ml-3">Sair</span>}
+            </Link>
           </Button>
         </div>
       </div>

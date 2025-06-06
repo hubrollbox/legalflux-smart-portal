@@ -3,9 +3,20 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useScrollToTop } from '@/hooks/useScrollToTop';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  useScrollToTop();
+
+  const scrollToSection = (sectionId: string) => {
+    setTimeout(() => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
@@ -28,18 +39,21 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#recursos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+            <Link to="/recursos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
               Recursos
-            </a>
-            <a href="#planos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+            </Link>
+            <button 
+              onClick={() => scrollToSection('planos')} 
+              className="text-gray-600 hover:text-primary-800 transition-colors font-medium"
+            >
               Planos
-            </a>
-            <a href="#sobre" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+            </button>
+            <Link to="/sobre" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
               Sobre
-            </a>
-            <a href="#contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
+            </Link>
+            <Link to="/contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium">
               Contacto
-            </a>
+            </Link>
           </nav>
 
           {/* Action Buttons */}
@@ -69,18 +83,21 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-100 animate-fade-in">
             <div className="flex flex-col space-y-4">
-              <a href="#recursos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+              <Link to="/recursos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
                 Recursos
-              </a>
-              <a href="#planos" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+              </Link>
+              <button 
+                onClick={() => scrollToSection('planos')} 
+                className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1 text-left"
+              >
                 Planos
-              </a>
-              <a href="#sobre" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+              </button>
+              <Link to="/sobre" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
                 Sobre
-              </a>
-              <a href="#contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
+              </Link>
+              <Link to="/contato" className="text-gray-600 hover:text-primary-800 transition-colors font-medium px-2 py-1">
                 Contacto
-              </a>
+              </Link>
               <div className="flex flex-col space-y-2 pt-4 border-t border-gray-100">
                 <Button variant="ghost" className="text-primary-800 hover:bg-primary-50 justify-start" asChild>
                   <Link to="/login">Entrar</Link>
