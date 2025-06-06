@@ -13,12 +13,12 @@ const Footer = () => {
               <div className="bg-white p-2 rounded-xl">
                 <img 
                   src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
-                  alt="Rollbox Logo" 
+                  alt="Legalflux Logo" 
                   className="h-6 w-6 object-contain"
                 />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Rollbox</h3>
+                <h3 className="text-xl font-bold">Legalflux</h3>
                 <p className="text-primary-200 text-sm">Portal Jurídico Inteligente</p>
               </div>
             </div>
@@ -27,7 +27,7 @@ const Footer = () => {
               inteligência artificial e foco na experiência do usuário.
             </p>
             <p className="text-primary-300 text-sm">
-              © 2025 Rollbox. Todos os direitos reservados.
+              © 2025 Legalflux. Todos os direitos reservados.
             </p>
           </div>
 

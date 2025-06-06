@@ -16,12 +16,12 @@ const Header = () => {
             <div className="bg-white p-2 rounded-xl">
               <img 
                 src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
-                alt="Rollbox Logo" 
+                alt="Legalflux Logo" 
                 className="h-8 w-8 object-contain"
               />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-primary-800">Rollbox</h1>
+              <h1 className="text-xl font-bold text-primary-800">Legalflux</h1>
               <p className="text-xs text-gray-500 hidden sm:block">Portal Jurídico Inteligente</p>
             </div>
           </Link>
