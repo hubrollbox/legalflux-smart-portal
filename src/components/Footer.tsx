@@ -1,5 +1,4 @@
 
-import { Scale } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -12,10 +11,14 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-white p-2 rounded-xl">
-                <Scale className="h-6 w-6 text-primary-800" />
+                <img 
+                  src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
+                  alt="Rollbox Logo" 
+                  className="h-6 w-6 object-contain"
+                />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Legalflux</h3>
+                <h3 className="text-xl font-bold">Rollbox</h3>
                 <p className="text-primary-200 text-sm">Portal Jurídico Inteligente</p>
               </div>
             </div>
@@ -24,7 +27,7 @@ const Footer = () => {
               inteligência artificial e foco na experiência do usuário.
             </p>
             <p className="text-primary-300 text-sm">
-              © 2024 Legalflux. Todos os direitos reservados.
+              © 2025 Rollbox. Todos os direitos reservados.
             </p>
           </div>
 

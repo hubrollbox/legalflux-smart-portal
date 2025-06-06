@@ -6,22 +6,6 @@ import { Check } from 'lucide-react';
 const Pricing = () => {
   const plans = [
     {
-      name: 'Grátis',
-      price: '€0',
-      period: '/mês',
-      description: 'Para testar a plataforma (15 dias trial)',
-      features: [
-        'Até 2 processos',
-        '500MB de armazenamento',
-        'Suporte por email',
-        'Recursos básicos de IA',
-        'Acesso mobile'
-      ],
-      buttonText: 'Começar Trial Gratuito',
-      buttonVariant: 'outline' as const,
-      popular: false
-    },
-    {
       name: 'Básico',
       price: '€29',
       period: '/mês',
@@ -33,7 +17,8 @@ const Pricing = () => {
         'IA avançada para insights',
         'Calendário de prazos',
         'Upload de documentos',
-        'Relatórios básicos'
+        'Relatórios básicos',
+        '15 dias de trial grátis'
       ],
       buttonText: 'Escolher Básico',
       buttonVariant: 'default' as const,
@@ -53,7 +38,8 @@ const Pricing = () => {
         'Chat seguro com clientes',
         'Relatórios avançados',
         'Multi-utilizador (até 3)',
-        'Templates premium'
+        'Templates premium',
+        '15 dias de trial grátis'
       ],
       buttonText: 'Escolher Profissional',
       buttonVariant: 'default' as const,
@@ -74,7 +60,8 @@ const Pricing = () => {
         'Gestão de assistentes',
         'API personalizada',
         'Onboarding personalizado',
-        'Integração Stripe completa'
+        'Integração Stripe completa',
+        '15 dias de trial grátis'
       ],
       buttonText: 'Falar com Vendas',
       buttonVariant: 'default' as const,
@@ -101,7 +88,7 @@ const Pricing = () => {
         </div>
 
         {/* Pricing Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan, index) => (
             <Card 
               key={index}
@@ -144,11 +131,7 @@ const Pricing = () => {
 
                 <Button 
                   variant={plan.buttonVariant}
-                  className={`w-full rounded-xl py-3 font-semibold ${
-                    plan.buttonVariant === 'default' 
-                      ? 'bg-primary-800 hover:bg-primary-700' 
-                      : 'border-primary-800 text-primary-800 hover:bg-primary-50'
-                  }`}
+                  className="w-full rounded-xl py-3 font-semibold bg-primary-800 hover:bg-primary-700"
                 >
                   {plan.buttonText}
                 </Button>
