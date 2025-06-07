@@ -3,7 +3,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Server, Database, Shield, Zap, Globe } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { CheckCircle, Server, Database, Shield, Zap, Globe, Mail, Clock } from 'lucide-react';
 
 const StatusSistema = () => {
   const services = [
@@ -55,13 +56,40 @@ const StatusSistema = () => {
             <h1 className="text-4xl sm:text-5xl font-bold text-primary-800 mb-6">
               Status do Sistema
             </h1>
-            <div className="flex items-center justify-center space-x-4">
+            <div className="flex items-center justify-center space-x-4 mb-6">
               <Badge className="bg-green-100 text-green-800">Operacional</Badge>
               <span className="text-gray-600">
-                Todos os sistemas funcionam normalmente
+                Este serviço está operacional
               </span>
             </div>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Em caso de interrupções, contacta <strong>suporte@legalflux.pt</strong>
+            </p>
           </div>
+        </div>
+      </section>
+
+      {/* Quick Contact */}
+      <section className="py-12 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Card className="rounded-2xl border-0 shadow-lg bg-gradient-to-r from-accent-50 to-primary-50">
+            <CardContent className="p-8 text-center">
+              <Mail className="h-12 w-12 text-primary-800 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-primary-800 mb-4">
+                Reportar Problema
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Encontrou algum problema? Contacte-nos imediatamente.
+              </p>
+              <Button 
+                className="bg-primary-800 hover:bg-primary-700"
+                onClick={() => window.location.href = 'mailto:suporte@legalflux.pt?subject=Problema no Sistema'}
+              >
+                <Mail className="h-4 w-4 mr-2" />
+                suporte@legalflux.pt
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
@@ -96,8 +124,32 @@ const StatusSistema = () => {
         </div>
       </section>
 
-      {/* Historical Incidents */}
+      {/* Response Times */}
       <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold text-primary-800 mb-8 text-center">Tempos de Resposta</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[
+              { service: 'Aplicação Web', time: '< 200ms', status: 'excellent' },
+              { service: 'API', time: '< 150ms', status: 'excellent' },
+              { service: 'Base de Dados', time: '< 50ms', status: 'excellent' }
+            ].map((metric, index) => (
+              <Card key={index} className="rounded-2xl border-0 shadow-lg">
+                <CardContent className="p-6 text-center">
+                  <Clock className="h-8 w-8 text-primary-800 mx-auto mb-3" />
+                  <h3 className="font-semibold text-primary-800 mb-2">{metric.service}</h3>
+                  <p className="text-2xl font-bold text-green-600 mb-1">{metric.time}</p>
+                  <Badge className="bg-green-100 text-green-800">Excelente</Badge>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Historical Incidents */}
+      <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-primary-800 mb-8 text-center">Histórico de Incidentes</h2>
           

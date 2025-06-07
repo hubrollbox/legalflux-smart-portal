@@ -1,5 +1,7 @@
 
+import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
+import OnboardingTour from '@/components/OnboardingTour';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
@@ -14,6 +16,26 @@ import {
 } from 'lucide-react';
 
 const Dashboard = () => {
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
+  useEffect(() => {
+    // Check if user has seen onboarding
+    const hasSeenOnboarding = localStorage.getItem('legalflux-onboarding-completed');
+    if (!hasSeenOnboarding) {
+      setTimeout(() => setShowOnboarding(true), 1000); // Delay to ensure page is loaded
+    }
+  }, []);
+
+  const handleOnboardingComplete = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('legalflux-onboarding-completed', 'true');
+  };
+
+  const handleOnboardingSkip = () => {
+    setShowOnboarding(false);
+    localStorage.setItem('legalflux-onboarding-completed', 'true');
+  };
+
   const stats = [
     {
       title: 'Processos Activos',
@@ -97,12 +119,16 @@ const Dashboard = () => {
     <DashboardLayout>
       <div className="p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-8 dashboard-header">
           <div>
             <h1 className="text-3xl font-bold text-primary-800">Dashboard</h1>
             <p className="text-gray-600">Bem-vindo de volta! Aqui está o resumo dos seus processos.</p>
           </div>
-          <Button className="bg-primary-800 hover:bg-primary-700">
+          <Button 
+            data-tour="new-process"
+            className="bg-primary-800 hover:bg-primary-700"
+            title="Criar um novo processo jurídico"
+          >
             <Plus className="h-4 w-4 mr-2" />
             Novo Processo
           </Button>
@@ -169,7 +195,7 @@ const Dashboard = () => {
           </Card>
 
           {/* Upcoming Events */}
-          <Card className="rounded-2xl border-0 shadow-lg">
+          <Card className="rounded-2xl border-0 shadow-lg" data-tour="upcoming-events">
             <CardHeader className="pb-4">
               <CardTitle className="text-primary-800 flex items-center">
                 <Calendar className="h-5 w-5 mr-2" />
@@ -207,19 +233,35 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Button variant="outline" className="h-20 flex-col space-y-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col space-y-2"
+                title="Criar um novo processo jurídico"
+              >
                 <FileText className="h-6 w-6" />
                 <span className="text-sm">Novo Processo</span>
               </Button>
-              <Button variant="outline" className="h-20 flex-col space-y-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col space-y-2"
+                title="Adicionar um novo cliente"
+              >
                 <Users className="h-6 w-6" />
                 <span className="text-sm">Adicionar Cliente</span>
               </Button>
-              <Button variant="outline" className="h-20 flex-col space-y-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col space-y-2"
+                title="Agendar um novo evento ou prazo"
+              >
                 <Calendar className="h-6 w-6" />
-                <span className="text-sm">Agendar Evento</span>
+                <span className="text-sm">Criar Evento</span>
               </Button>
-              <Button variant="outline" className="h-20 flex-col space-y-2">
+              <Button 
+                variant="outline" 
+                className="h-20 flex-col space-y-2"
+                title="Gerar relatório financeiro"
+              >
                 <TrendingUp className="h-6 w-6" />
                 <span className="text-sm">Relatório</span>
               </Button>
@@ -227,6 +269,13 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Onboarding Tour */}
+      <OnboardingTour 
+        isActive={showOnboarding}
+        onComplete={handleOnboardingComplete}
+        onSkip={handleOnboardingSkip}
+      />
     </DashboardLayout>
   );
 };

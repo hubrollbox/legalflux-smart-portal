@@ -3,9 +3,14 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, MessageSquare, BookOpen, Calendar, Award, Lightbulb } from 'lucide-react';
+import { Users, MessageSquare, BookOpen, Calendar, Award, Lightbulb, ExternalLink } from 'lucide-react';
 
 const Comunidade = () => {
+  const handleJoinCommunity = () => {
+    // Link para Discord da comunidade (pode ser alterado para Slack ou outro canal)
+    window.open('https://discord.gg/legalflux', '_blank');
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -22,10 +27,18 @@ const Comunidade = () => {
             <h1 className="text-4xl sm:text-5xl font-bold text-primary-800 mb-6">
               Comunidade LegalFlux
             </h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Junte-se à maior comunidade de profissionais jurídicos dos PALOP. 
-              Partilhe experiências, aprenda com os melhores e faça networking.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+              Entra na comunidade LegalFlux: partilha dúvidas, ideias e boas práticas com colegas da área jurídica.
             </p>
+            
+            <Button 
+              onClick={handleJoinCommunity}
+              size="lg" 
+              className="bg-primary-800 hover:bg-primary-700 text-white px-8 py-4 text-lg font-semibold rounded-2xl"
+            >
+              <ExternalLink className="h-5 w-5 mr-2" />
+              Entrar na Comunidade
+            </Button>
           </div>
         </div>
       </section>
@@ -84,6 +97,7 @@ const Comunidade = () => {
                     {feature.description}
                   </p>
                   <Button 
+                    onClick={handleJoinCommunity}
                     variant="outline" 
                     className="border-primary-800 text-primary-800 hover:bg-primary-800 hover:text-white"
                   >
@@ -132,10 +146,12 @@ const Comunidade = () => {
             acelere o seu crescimento profissional.
           </p>
           <Button 
+            onClick={handleJoinCommunity}
             size="lg" 
             className="bg-accent-600 hover:bg-accent-700 text-white px-8 py-4 text-lg font-semibold rounded-2xl"
           >
-            Registar na Comunidade
+            <ExternalLink className="h-5 w-5 mr-2" />
+            Entrar na Comunidade
           </Button>
         </div>
       </section>
