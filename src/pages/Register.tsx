@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,11 +5,16 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Scale, Eye, EyeOff, ArrowLeft, UserCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Scale, Eye, EyeOff, ArrowLeft, UserCheck, AlertCircle, CheckCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -21,12 +25,120 @@ const Register = () => {
     organization: '',
     message: ''
   });
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Implementar lógica de registo
-    console.log('Register attempt:', formData);
+  const { signUp, user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Redirect if already logged in
+  if (user) {
+    navigate('/dashboard');
+    return null;
+  }
+
+  const validateForm = () => {
+    if (!formData.name.trim()) {
+      return 'Por favor, insira o seu nome completo.';
+    }
+
+    if (!formData.email || !formData.email.includes('@')) {
+      return 'Por favor, insira um email válido.';
+    }
+
+    if (formData.password.length < 6) {
+      return 'A palavra-passe deve ter pelo menos 6 caracteres.';
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      return 'As palavras-passe não coincidem.';
+    }
+
+    if (!formData.userType) {
+      return 'Por favor, selecione o tipo de utilizador.';
+    }
+
+    return null;
   };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const userData = {
+        name: formData.name.trim(),
+        user_type: formData.userType,
+        phone: formData.phone.trim(),
+        organization: formData.organization.trim(),
+        message: formData.message.trim()
+      };
+
+      const { error } = await signUp(formData.email.trim(), formData.password, userData);
+      
+      if (error) {
+        console.error('Registration error:', error);
+        
+        if (error.message?.includes('User already registered')) {
+          setError('Este email já está registado. Tente fazer login.');
+        } else if (error.message?.includes('Password should be at least 6 characters')) {
+          setError('A palavra-passe deve ter pelo menos 6 caracteres.');
+        } else if (error.message?.includes('Signup requires a valid password')) {
+          setError('Por favor, insira uma palavra-passe válida.');
+        } else {
+          setError('Erro ao criar conta. Tente novamente.');
+        }
+      } else {
+        setSuccess(true);
+        toast({
+          title: "Conta criada com sucesso!",
+          description: "Verifique o seu email para confirmar a conta.",
+        });
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      setError('Erro inesperado. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 flex items-center justify-center px-4">
+        <Card className="shadow-2xl border-0 rounded-2xl overflow-hidden max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <div className="bg-green-100 p-6 rounded-full w-20 h-20 mx-auto mb-6">
+              <CheckCircle className="h-8 w-8 text-green-600 mx-auto mt-2" />
+            </div>
+            <h2 className="text-2xl font-bold text-primary-800 mb-4">
+              Conta Criada com Sucesso!
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Enviámos um email de confirmação para <strong>{formData.email}</strong>.
+              Por favor, verifique a sua caixa de entrada e confirme a sua conta.
+            </p>
+            <div className="space-y-4">
+              <Button asChild className="w-full bg-primary-800 hover:bg-primary-700">
+                <Link to="/login">Ir para Login</Link>
+              </Button>
+              <Button variant="outline" asChild className="w-full">
+                <Link to="/">Voltar ao Início</Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-accent-50 flex items-center justify-center px-4 py-8">
@@ -78,6 +190,13 @@ const Register = () => {
                 </div>
               </div>
             </div>
+
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -237,8 +356,9 @@ const Register = () => {
               <Button 
                 type="submit"
                 className="w-full bg-primary-800 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold"
+                disabled={loading}
               >
-                Criar Conta
+                {loading ? 'A criar conta...' : 'Criar Conta'}
               </Button>
             </form>
 

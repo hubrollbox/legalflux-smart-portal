@@ -4,20 +4,78 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Scale, Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Scale, Eye, EyeOff, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { signIn, user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Redirect if already logged in
+  if (user) {
+    navigate('/dashboard');
+    return null;
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implementar lógica de login
-    console.log('Login attempt:', formData);
+    setLoading(true);
+    setError(null);
+
+    // Basic validation
+    if (!formData.email || !formData.password) {
+      setError('Por favor, preencha todos os campos.');
+      setLoading(false);
+      return;
+    }
+
+    if (!formData.email.includes('@')) {
+      setError('Por favor, insira um email válido.');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { error } = await signIn(formData.email, formData.password);
+      
+      if (error) {
+        console.error('Login error:', error);
+        
+        // Handle specific error types
+        if (error.message?.includes('Invalid login credentials')) {
+          setError('Email ou palavra-passe incorrectos.');
+        } else if (error.message?.includes('Email not confirmed')) {
+          setError('Por favor, confirme o seu email antes de fazer login.');
+        } else if (error.message?.includes('Too many requests')) {
+          setError('Muitas tentativas. Tente novamente em alguns minutos.');
+        } else {
+          setError('Erro ao fazer login. Tente novamente.');
+        }
+      } else {
+        toast({
+          title: "Login realizado com sucesso!",
+          description: "Bem-vindo ao Legalflux",
+        });
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('Unexpected error:', error);
+      setError('Erro inesperado. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -58,6 +116,13 @@ const Login = () => {
           </CardHeader>
 
           <CardContent className="p-8">
+            {error && (
+              <Alert variant="destructive" className="mb-6">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-primary-800 font-medium">
@@ -68,9 +133,10 @@ const Login = () => {
                   type="email"
                   placeholder="seu@email.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={(e) => setFormData({...formData, email: e.target.value.trim()})}
                   className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800"
                   required
+                  disabled={loading}
                 />
               </div>
 
@@ -87,6 +153,8 @@ const Login = () => {
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
                     className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800 pr-12"
                     required
+                    disabled={loading}
+                    minLength={6}
                   />
                   <Button
                     type="button"
@@ -94,6 +162,7 @@ const Login = () => {
                     size="sm"
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-800"
                     onClick={() => setShowPassword(!showPassword)}
+                    disabled={loading}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </Button>
@@ -102,7 +171,7 @@ const Login = () => {
 
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center space-x-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300" />
+                  <input type="checkbox" className="rounded border-gray-300" disabled={loading} />
                   <span className="text-gray-600">Lembrar-me</span>
                 </label>
                 <a href="#" className="text-primary-800 hover:underline">
@@ -113,8 +182,9 @@ const Login = () => {
               <Button 
                 type="submit"
                 className="w-full bg-primary-800 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold"
+                disabled={loading}
               >
-                Entrar
+                {loading ? 'A entrar...' : 'Entrar'}
               </Button>
             </form>
 

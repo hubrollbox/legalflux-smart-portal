@@ -1,153 +1,156 @@
 
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import { 
-  Home, 
-  FileText, 
   Calendar, 
   Users, 
+  FileText, 
   MessageSquare, 
-  CreditCard, 
+  Euro, 
   Settings, 
+  BarChart3,
+  Bot,
   LogOut,
-  ChevronLeft,
-  ChevronRight,
-  Bell,
-  Search,
-  Brain,
-  Link as LinkIcon
+  Menu,
+  X
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
 
 const Sidebar = () => {
-  const [collapsed, setCollapsed] = useState(false);
   const location = useLocation();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { signOut, user } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast({
+        title: "Logout realizado com sucesso",
+        description: "Até breve!",
+      });
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast({
+        variant: "destructive",
+        title: "Erro ao fazer logout",
+        description: "Tente novamente.",
+      });
+    }
+  };
 
   const menuItems = [
-    { icon: Home, label: 'Dashboard', href: '/dashboard' },
-    { icon: FileText, label: 'Processos', href: '/processos' },
-    { icon: Calendar, label: 'Calendário', href: '/calendario' },
-    { icon: Users, label: 'Clientes', href: '/clientes' },
-    { icon: MessageSquare, label: 'Chat', href: '/chat' },
-    { icon: CreditCard, label: 'Financeiro', href: '/financeiro' },
-    { icon: Brain, label: 'IA Assistant', href: '/ia-assistant' },
-    { icon: LinkIcon, label: 'Integrações', href: '/integracoes' },
-    { icon: Settings, label: 'Definições', href: '/definicoes' },
+    { path: '/dashboard', icon: BarChart3, label: 'Dashboard' },
+    { path: '/processos', icon: FileText, label: 'Processos' },
+    { path: '/calendario', icon: Calendar, label: 'Calendário' },
+    { path: '/clientes', icon: Users, label: 'Clientes' },
+    { path: '/chat', icon: MessageSquare, label: 'Chat' },
+    { path: '/financeiro', icon: Euro, label: 'Financeiro' },
+    { path: '/ia-assistant', icon: Bot, label: 'IA Assistant' },
+    { path: '/definicoes', icon: Settings, label: 'Definições' },
   ];
 
   return (
-    <div className={cn(
-      "bg-primary-800 text-white h-screen transition-all duration-300 flex flex-col",
-      collapsed ? "w-16" : "w-64"
-    )}>
-      {/* Header */}
-      <div className="p-4 border-b border-primary-700">
-        <div className="flex items-center justify-between">
-          {!collapsed && (
-            <div className="flex items-center space-x-3">
-              <div className="bg-white p-2 rounded-lg">
-                <img 
-                  src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
-                  alt="Legalflux Logo" 
-                  className="h-6 w-6 object-contain"
-                />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold">Legalflux</h1>
-                <p className="text-xs text-primary-200">Portal Jurídico</p>
-              </div>
-            </div>
-          )}
-          {collapsed && (
-            <div className="bg-white p-2 rounded-lg mx-auto">
+    <>
+      {/* Mobile Menu Button */}
+      <Button
+        variant="ghost"
+        size="sm"
+        className="fixed top-4 left-4 z-50 lg:hidden bg-white shadow-md"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+      >
+        {isCollapsed ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+      </Button>
+
+      {/* Sidebar */}
+      <div className={`
+        fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out
+        lg:translate-x-0 lg:static lg:inset-0
+        ${isCollapsed ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+      `}>
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center space-x-3 p-6 border-b border-gray-200">
+            <div className="bg-white p-2 rounded-xl">
               <img 
                 src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
                 alt="Legalflux Logo" 
-                className="h-6 w-6 object-contain"
+                className="h-8 w-8 object-contain"
               />
             </div>
-          )}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setCollapsed(!collapsed)}
-            className="text-white hover:bg-primary-700"
-          >
-            {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </Button>
-        </div>
-      </div>
-
-      {/* Search */}
-      {!collapsed && (
-        <div className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-primary-300" />
-            <input
-              type="text"
-              placeholder="Pesquisar..."
-              className="w-full bg-primary-700 text-white placeholder-primary-300 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-accent-500"
-            />
+            <div>
+              <h1 className="text-xl font-bold text-primary-800">Legalflux</h1>
+              <p className="text-xs text-gray-500">Portal Jurídico</p>
+            </div>
           </div>
-        </div>
-      )}
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          {menuItems.map((item) => {
-            const isActive = location.pathname === item.href;
-            return (
-              <li key={item.href}>
+          {/* User Info */}
+          {user && (
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-primary-800 rounded-full flex items-center justify-center">
+                  <span className="text-white font-medium">
+                    {user.email?.charAt(0).toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {user.user_metadata?.name || user.email}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Navigation */}
+          <nav className="flex-1 px-4 py-6 space-y-2">
+            {menuItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
                 <Link
-                  to={item.href}
-                  className={cn(
-                    "flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors",
-                    isActive 
-                      ? "bg-accent-600 text-white" 
-                      : "text-primary-200 hover:bg-primary-700 hover:text-white",
-                    collapsed && "justify-center"
-                  )}
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                    isActive
+                      ? 'bg-primary-800 text-white shadow-lg'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-primary-800'
+                  }`}
+                  onClick={() => setIsCollapsed(false)}
                 >
                   <item.icon className="h-5 w-5" />
-                  {!collapsed && <span>{item.label}</span>}
+                  <span className="font-medium">{item.label}</span>
                 </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+              );
+            })}
+          </nav>
 
-      {/* User Actions */}
-      <div className="p-4 border-t border-primary-700">
-        <div className="space-y-2">
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full text-primary-200 hover:bg-primary-700 hover:text-white",
-              collapsed ? "px-2" : "justify-start"
-            )}
-          >
-            <Bell className="h-5 w-5" />
-            {!collapsed && <span className="ml-3">Notificações</span>}
-          </Button>
-          <Button
-            variant="ghost"
-            className={cn(
-              "w-full text-primary-200 hover:bg-primary-700 hover:text-white",
-              collapsed ? "px-2" : "justify-start"
-            )}
-            asChild
-          >
-            <Link to="/login">
-              <LogOut className="h-5 w-5" />
-              {!collapsed && <span className="ml-3">Sair</span>}
-            </Link>
-          </Button>
+          {/* Logout Button */}
+          <div className="p-4 border-t border-gray-200">
+            <Button
+              variant="ghost"
+              className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+              onClick={handleSignOut}
+            >
+              <LogOut className="h-5 w-5 mr-3" />
+              Sair
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Overlay for mobile */}
+      {isCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+          onClick={() => setIsCollapsed(false)}
+        />
+      )}
+    </>
   );
 };
 
