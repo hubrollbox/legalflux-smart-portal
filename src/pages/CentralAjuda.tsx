@@ -15,10 +15,52 @@ import {
   ExternalLink,
   ChevronRight,
   Clock,
-  Star
+  Star,
+  Users,
+  Calendar,
+  Plus,
+  PhoneCall
 } from 'lucide-react';
 
 const CentralAjuda = () => {
+  const quickGuides = [
+    {
+      title: 'Como criar um novo processo',
+      description: 'Passo a passo para adicionar processos ao sistema',
+      icon: Plus,
+      link: '/processos',
+      steps: ['Aceder à página Processos', 'Clicar em "Novo Processo"', 'Preencher dados obrigatórios', 'Guardar']
+    },
+    {
+      title: 'Como adicionar um cliente',
+      description: 'Registo de novos clientes na plataforma',
+      icon: Users,
+      link: '/clientes',
+      steps: ['Ir para Clientes', 'Clicar em "Adicionar Cliente"', 'Inserir dados de contacto', 'Confirmar']
+    },
+    {
+      title: 'Como agendar eventos no calendário',
+      description: 'Criação de eventos e prazos importantes',
+      icon: Calendar,
+      link: '/calendario',
+      steps: ['Abrir Calendário', 'Selecionar data', 'Escolher tipo de evento', 'Associar a processo']
+    },
+    {
+      title: 'Onde consultar prazos da semana',
+      description: 'Visualização dos compromissos próximos',
+      icon: Clock,
+      link: '/dashboard',
+      steps: ['Dashboard principal', 'Secção "Próximos Prazos"', 'Filtrar por semana', 'Ver detalhes']
+    },
+    {
+      title: 'Como contactar suporte técnico',
+      description: 'Canais de suporte disponíveis',
+      icon: PhoneCall,
+      link: '/contato',
+      steps: ['Chat ao vivo', 'Email: suporte@legalflux.com', 'Telefone: +351 210 123 456', 'Central de Ajuda']
+    }
+  ];
+
   const categories = [
     {
       icon: FileText,
@@ -147,8 +189,54 @@ const CentralAjuda = () => {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Quick Guides */}
       <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-primary-800 mb-4">
+              Guia Rápido
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Aprenda as funcionalidades essenciais em poucos passos
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {quickGuides.map((guide, index) => (
+              <Card key={index} className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="bg-primary-100 p-3 rounded-xl mr-4">
+                      <guide.icon className="h-6 w-6 text-primary-800" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-bold text-primary-800 mb-1">
+                        {guide.title}
+                      </h3>
+                      <p className="text-sm text-gray-600">
+                        {guide.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {guide.steps.map((step, stepIndex) => (
+                      <div key={stepIndex} className="flex items-center text-sm text-gray-700">
+                        <div className="w-6 h-6 bg-accent-100 text-accent-800 rounded-full flex items-center justify-center text-xs font-bold mr-3">
+                          {stepIndex + 1}
+                        </div>
+                        {step}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-primary-800 mb-4">
@@ -190,7 +278,7 @@ const CentralAjuda = () => {
       </section>
 
       {/* Popular Articles */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-primary-800 mb-4">
@@ -224,79 +312,6 @@ const CentralAjuda = () => {
                 </CardContent>
               </Card>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Resources */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-primary-800 mb-4">
-              Recursos Adicionais
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Materiais complementares para maximizar o seu uso da plataforma
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-8 text-center">
-                <FileText className="h-12 w-12 text-primary-800 mx-auto mb-6" />
-                <h3 className="text-xl font-bold text-primary-800 mb-4">
-                  Manual do Utilizador
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Guia completo em PDF com todas as funcionalidades
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="border-primary-800 text-primary-800 hover:bg-primary-800 hover:text-white"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Download PDF
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-8 text-center">
-                <Video className="h-12 w-12 text-purple-600 mx-auto mb-6" />
-                <h3 className="text-xl font-bold text-primary-800 mb-4">
-                  Biblioteca de Vídeos
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Tutoriais em vídeo passo a passo
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Ver Vídeos
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300">
-              <CardContent className="p-8 text-center">
-                <Book className="h-12 w-12 text-green-600 mx-auto mb-6" />
-                <h3 className="text-xl font-bold text-primary-800 mb-4">
-                  Base de Conhecimento
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Artigos detalhados e FAQs
-                </p>
-                <Button 
-                  variant="outline" 
-                  className="border-green-600 text-green-600 hover:bg-green-600 hover:text-white"
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Explorar
-                </Button>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </section>
