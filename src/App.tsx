@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,7 @@ import Chat from "./pages/Chat";
 import Financeiro from "./pages/Financeiro";
 import Definicoes from "./pages/Definicoes";
 import IAAssistant from "./pages/IAAssistant";
+import MinhasIntegracoes from "./pages/MinhasIntegracoes";
 import Sobre from "./pages/Sobre";
 import Recursos from "./pages/Recursos";
 import Seguranca from "./pages/Seguranca";
@@ -76,6 +78,11 @@ const App = () => (
             <Route path="/ia-assistant" element={
               <ProtectedRoute>
                 <IAAssistant />
+              </ProtectedRoute>
+            } />
+            <Route path="/minhas-integracoes" element={
+              <ProtectedRoute>
+                <MinhasIntegracoes />
               </ProtectedRoute>
             } />
             <Route path="/definicoes" element={

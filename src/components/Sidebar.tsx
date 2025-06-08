@@ -11,7 +11,8 @@ import {
   Settings, 
   LogOut,
   Bot,
-  Play
+  Play,
+  Link as LinkIcon
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -33,6 +34,7 @@ const Sidebar = () => {
     { icon: MessageSquare, label: 'Chat', path: '/chat' },
     { icon: Euro, label: 'Financeiro', path: '/financeiro' },
     { icon: Bot, label: 'IA Assistant', path: '/ia-assistant' },
+    { icon: LinkIcon, label: 'Integrações', path: '/minhas-integracoes' },
     { icon: Settings, label: 'Definições', path: '/definicoes' }
   ];
 

@@ -1,146 +1,305 @@
 
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { Card, CardContent } from '@/components/ui/card';
+import { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Mail, Phone, MapPin, MessageSquare, Send } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Clock,
+  MessageSquare,
+  ArrowLeft,
+  Send,
+  Users,
+  HelpCircle,
+  Bug,
+  Lightbulb
+} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { useToast } from '@/hooks/use-toast';
 
 const Contato = () => {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    telefone: '',
+    assunto: '',
+    tipo: '',
+    mensagem: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    // Simular envio do formulário
+    setTimeout(() => {
+      toast({
+        title: "Mensagem enviada com sucesso!",
+        description: "Responderemos em breve. Obrigado pelo contacto.",
+      });
+      
+      // Limpar formulário
+      setFormData({
+        nome: '',
+        email: '',
+        telefone: '',
+        assunto: '',
+        tipo: '',
+        mensagem: ''
+      });
+      setIsLoading(false);
+    }, 1000);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary-50 via-white to-accent-50 py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl sm:text-5xl font-bold text-primary-800 mb-6">
-              Entre em Contacto
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center mb-4">
+            <Button variant="ghost" asChild className="mr-4">
+              <Link to="/">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Voltar
+              </Link>
+            </Button>
+          </div>
+          
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-primary-800 mb-4">
+              Contacte-nos
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Estamos aqui para ajudar. Entre em contacto connosco através de qualquer 
-              um dos canais disponíveis ou envie-nos uma mensagem.
+              Estamos aqui para ajudar. Entre em contacto connosco através dos canais abaixo.
             </p>
           </div>
         </div>
-      </section>
 
-      {/* Contact Methods */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            {[
-              {
-                icon: Mail,
-                title: 'Email',
-                description: 'Resposta em até 24 horas',
-                contact: 'suporte@legalflux.com'
-              },
-              {
-                icon: Phone,
-                title: 'Telefone',
-                description: 'Seg-Sex, 9h às 18h',
-                contact: '+351 210 123 456'
-              },
-              {
-                icon: MessageSquare,
-                title: 'Chat ao Vivo',
-                description: 'Disponível durante horário comercial',
-                contact: 'Resposta imediata'
-              },
-              {
-                icon: MapPin,
-                title: 'Escritório',
-                description: 'Lisboa, Portugal',
-                contact: 'Avenida da Liberdade, 123'
-              }
-            ].map((method, index) => (
-              <Card key={index} className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 text-center">
-                <CardContent className="p-8">
-                  <div className="bg-primary-100 p-4 rounded-full w-16 h-16 mx-auto mb-6 flex items-center justify-center">
-                    <method.icon className="h-8 w-8 text-primary-800" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Contact Information */}
+          <div className="lg:col-span-1 space-y-6">
+            <Card className="rounded-2xl border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-primary-800">Informações de Contacto</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <Mail className="h-5 w-5 text-primary-800 mt-1" />
+                  <div>
+                    <p className="font-medium">Email</p>
+                    <a 
+                      href="mailto:suporte@legalflux.pt" 
+                      className="text-gray-600 hover:text-primary-800 transition-colors"
+                    >
+                      suporte@legalflux.pt
+                    </a>
                   </div>
-                  <h3 className="text-xl font-bold text-primary-800 mb-2">
-                    {method.title}
-                  </h3>
-                  <p className="text-gray-600 mb-3 text-sm">
-                    {method.description}
-                  </p>
-                  <p className="text-primary-800 font-semibold">
-                    {method.contact}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <Phone className="h-5 w-5 text-primary-800 mt-1" />
+                  <div>
+                    <p className="font-medium">Telefone</p>
+                    <a 
+                      href="tel:+351210000000" 
+                      className="text-gray-600 hover:text-primary-800 transition-colors"
+                    >
+                      +351 21 000 0000
+                    </a>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <MapPin className="h-5 w-5 text-primary-800 mt-1" />
+                  <div>
+                    <p className="font-medium">Morada</p>
+                    <p className="text-gray-600">
+                      Av. da Liberdade, 123<br />
+                      1250-096 Lisboa, Portugal
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start space-x-3">
+                  <Clock className="h-5 w-5 text-primary-800 mt-1" />
+                  <div>
+                    <p className="font-medium">Horário de Atendimento</p>
+                    <p className="text-gray-600">
+                      Segunda a Sexta: 9h00 - 18h00<br />
+                      Sábado: 9h00 - 13h00
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="rounded-2xl border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-primary-800">Outros Recursos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link to="/central-ajuda">
+                    <HelpCircle className="h-4 w-4 mr-2" />
+                    Central de Ajuda
+                  </Link>
+                </Button>
+                
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link to="/comunidade">
+                    <Users className="h-4 w-4 mr-2" />
+                    Comunidade
+                  </Link>
+                </Button>
+                
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link to="/documentacao">
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Documentação
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
 
           {/* Contact Form */}
-          <Card className="rounded-2xl border-0 shadow-lg max-w-2xl mx-auto">
-            <CardContent className="p-8">
-              <h2 className="text-2xl font-bold text-primary-800 mb-6 text-center">
-                Envie-nos uma Mensagem
-              </h2>
-              <form className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nome *
-                    </label>
+          <div className="lg:col-span-2">
+            <Card className="rounded-2xl border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-primary-800">Enviar Mensagem</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="nome">Nome Completo *</Label>
+                      <Input 
+                        id="nome" 
+                        value={formData.nome}
+                        onChange={(e) => handleInputChange('nome', e.target.value)}
+                        required 
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="email">Email *</Label>
+                      <Input 
+                        id="email" 
+                        type="email" 
+                        value={formData.email}
+                        onChange={(e) => handleInputChange('email', e.target.value)}
+                        required 
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="telefone">Telefone</Label>
+                      <Input 
+                        id="telefone" 
+                        type="tel" 
+                        value={formData.telefone}
+                        onChange={(e) => handleInputChange('telefone', e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="tipo">Tipo de Contacto *</Label>
+                      <Select value={formData.tipo} onValueChange={(value) => handleInputChange('tipo', value)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione o tipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="suporte">
+                            <div className="flex items-center">
+                              <HelpCircle className="h-4 w-4 mr-2" />
+                              Suporte Técnico
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="bug">
+                            <div className="flex items-center">
+                              <Bug className="h-4 w-4 mr-2" />
+                              Reportar Bug
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="sugestao">
+                            <div className="flex items-center">
+                              <Lightbulb className="h-4 w-4 mr-2" />
+                              Sugestão
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="vendas">
+                            <div className="flex items-center">
+                              <Users className="h-4 w-4 mr-2" />
+                              Informações Comerciais
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="assunto">Assunto *</Label>
                     <Input 
-                      type="text" 
-                      placeholder="O seu nome"
-                      className="rounded-xl border-gray-200"
+                      id="assunto" 
+                      value={formData.assunto}
+                      onChange={(e) => handleInputChange('assunto', e.target.value)}
+                      required 
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <Input 
-                      type="email" 
-                      placeholder="seu@email.com"
-                      className="rounded-xl border-gray-200"
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="mensagem">Mensagem *</Label>
+                    <Textarea 
+                      id="mensagem" 
+                      rows={6} 
+                      value={formData.mensagem}
+                      onChange={(e) => handleInputChange('mensagem', e.target.value)}
+                      placeholder="Descreva detalhadamente a sua questão ou pedido..."
+                      required 
                     />
                   </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Assunto *
-                  </label>
-                  <Input 
-                    type="text" 
-                    placeholder="Como podemos ajudar?"
-                    className="rounded-xl border-gray-200"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Mensagem *
-                  </label>
-                  <Textarea 
-                    placeholder="Descreva a sua questão ou necessidade..."
-                    rows={5}
-                    className="rounded-xl border-gray-200"
-                  />
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  size="lg"
-                  className="w-full bg-primary-800 hover:bg-primary-700 text-white py-4 text-lg font-semibold rounded-xl"
-                >
-                  <Send className="h-5 w-5 mr-2" />
-                  Enviar Mensagem
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                  
+                  <Button 
+                    type="submit" 
+                    className="w-full bg-primary-800 hover:bg-primary-700"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      "A enviar..."
+                    ) : (
+                      <>
+                        <Send className="h-4 w-4 mr-2" />
+                        Enviar Mensagem
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </section>
+      </div>
 
       <Footer />
     </div>
