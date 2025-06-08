@@ -1,4 +1,5 @@
 
+import { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,21 @@ import {
   Database,
   Settings,
   Plus,
-  RefreshCw
+  RefreshCw,
+  Mail,
+  Cloud,
+  Calendar,
+  MessageSquare,
+  CreditCard,
+  FileText,
+  Smartphone,
+  Shield,
+  Globe,
+  Zap,
+  Video,
+  Users,
+  BookOpen,
+  Briefcase
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -24,7 +39,8 @@ const MinhasIntegracoes = () => {
       status: 'conectado',
       lastSync: '2024-01-10 14:30',
       icon: Database,
-      syncFrequency: 'A cada 4 horas'
+      syncFrequency: 'A cada 4 horas',
+      category: 'Tribunais'
     },
     {
       id: 5,
@@ -32,7 +48,35 @@ const MinhasIntegracoes = () => {
       status: 'conectado',
       lastSync: '2024-01-09 16:45',
       icon: Database,
-      syncFrequency: 'Diário'
+      syncFrequency: 'Diário',
+      category: 'Governo'
+    },
+    {
+      id: 10,
+      name: 'Gmail',
+      status: 'conectado',
+      lastSync: '2024-01-10 15:20',
+      icon: Mail,
+      syncFrequency: 'Tempo real',
+      category: 'Email'
+    },
+    {
+      id: 20,
+      name: 'Google Drive',
+      status: 'conectado',
+      lastSync: '2024-01-10 16:00',
+      icon: Cloud,
+      syncFrequency: 'Automático',
+      category: 'Armazenamento'
+    },
+    {
+      id: 30,
+      name: 'Google Calendar',
+      status: 'conectado',
+      lastSync: '2024-01-10 14:45',
+      icon: Calendar,
+      syncFrequency: 'Tempo real',
+      category: 'Calendário'
     }
   ];
 
@@ -41,13 +85,141 @@ const MinhasIntegracoes = () => {
       id: 2,
       name: 'Portal da Justiça',
       description: 'Acesso aos serviços judiciais online',
-      icon: Database
+      icon: Globe,
+      category: 'Governo'
     },
     {
       id: 4,
       name: 'AT - Autoridade Tributária',
       description: 'Portal das Finanças',
-      icon: Database
+      icon: Shield,
+      category: 'Fiscal'
+    },
+    {
+      id: 11,
+      name: 'Outlook',
+      description: 'Microsoft Outlook para escritórios',
+      icon: Mail,
+      category: 'Email'
+    },
+    {
+      id: 12,
+      name: 'WhatsApp Business',
+      description: 'Comunicação com clientes via WhatsApp',
+      icon: MessageSquare,
+      category: 'Comunicação'
+    },
+    {
+      id: 13,
+      name: 'Zoom',
+      description: 'Videoconferências para audiências',
+      icon: Video,
+      category: 'Comunicação'
+    },
+    {
+      id: 14,
+      name: 'Microsoft Teams',
+      description: 'Colaboração em equipa',
+      icon: Users,
+      category: 'Comunicação'
+    },
+    {
+      id: 21,
+      name: 'Dropbox',
+      description: 'Sincronização de ficheiros',
+      icon: Cloud,
+      category: 'Armazenamento'
+    },
+    {
+      id: 22,
+      name: 'OneDrive',
+      description: 'Armazenamento Microsoft',
+      icon: Cloud,
+      category: 'Armazenamento'
+    },
+    {
+      id: 31,
+      name: 'Outlook Calendar',
+      description: 'Calendário Microsoft',
+      icon: Calendar,
+      category: 'Calendário'
+    },
+    {
+      id: 40,
+      name: 'Microsoft Office 365',
+      description: 'Suite completa de produtividade',
+      icon: FileText,
+      category: 'Produtividade'
+    },
+    {
+      id: 41,
+      name: 'Google Workspace',
+      description: 'Ferramentas colaborativas Google',
+      icon: FileText,
+      category: 'Produtividade'
+    },
+    {
+      id: 42,
+      name: 'Adobe Acrobat',
+      description: 'Gestão avançada de PDFs',
+      icon: FileText,
+      category: 'Produtividade'
+    },
+    {
+      id: 43,
+      name: 'Notion',
+      description: 'Base de conhecimento e notas',
+      icon: BookOpen,
+      category: 'Produtividade'
+    },
+    {
+      id: 50,
+      name: 'iOS Shortcuts',
+      description: 'Automatizações para iPhone/iPad',
+      icon: Smartphone,
+      category: 'Móvel'
+    },
+    {
+      id: 51,
+      name: 'Android Tasker',
+      description: 'Automatizações para Android',
+      icon: Smartphone,
+      category: 'Móvel'
+    },
+    {
+      id: 60,
+      name: 'Stripe',
+      description: 'Processamento de pagamentos',
+      icon: CreditCard,
+      category: 'Financeiro'
+    },
+    {
+      id: 61,
+      name: 'PayPal',
+      description: 'Pagamentos internacionais',
+      icon: CreditCard,
+      category: 'Financeiro'
+    },
+    {
+      id: 70,
+      name: 'Salesforce',
+      description: 'CRM para escritórios',
+      icon: Briefcase,
+      category: 'CRM'
+    },
+    {
+      id: 71,
+      name: 'HubSpot',
+      description: 'Marketing e vendas',
+      icon: Users,
+      category: 'CRM'
+    },
+    {
+      id: 80,
+      name: 'Zapier',
+      description: 'Automação entre aplicações',
+      icon: Zap,
+      category: 'Automação'
     }
   ];
 
@@ -99,7 +271,7 @@ const MinhasIntegracoes = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-gray-600">Última Sincronização</p>
-                      <p className="text-lg font-bold text-primary-800">Hoje, 14:30</p>
+                      <p className="text-lg font-bold text-primary-800">Hoje, 16:00</p>
                     </div>
                     <RefreshCw className="h-8 w-8 text-primary-800" />
                   </div>
@@ -120,7 +292,7 @@ const MinhasIntegracoes = () => {
             </div>
 
             {/* Active Integrations */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {integracoesConfiguradas.map((integracao) => (
                 <Card key={integracao.id} className="rounded-2xl border-0 shadow-lg">
                   <CardHeader className="pb-4">
@@ -130,8 +302,9 @@ const MinhasIntegracoes = () => {
                           <integracao.icon className="h-6 w-6 text-primary-800" />
                         </div>
                         <div>
-                          <CardTitle className="text-primary-800">{integracao.name}</CardTitle>
-                          <Badge className="bg-green-100 text-green-800">
+                          <CardTitle className="text-primary-800 text-lg">{integracao.name}</CardTitle>
+                          <p className="text-sm text-gray-500">{integracao.category}</p>
+                          <Badge className="bg-green-100 text-green-800 mt-1">
                             <CheckCircle className="h-3 w-3 mr-1" />
                             Conectado
                           </Badge>
@@ -197,7 +370,7 @@ const MinhasIntegracoes = () => {
           </TabsContent>
 
           <TabsContent value="disponiveis" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {integracoesDisponiveis.map((integracao) => (
                 <Card key={integracao.id} className="rounded-2xl border-0 shadow-lg">
                   <CardHeader className="pb-4">
@@ -206,8 +379,9 @@ const MinhasIntegracoes = () => {
                         <integracao.icon className="h-6 w-6 text-primary-800" />
                       </div>
                       <div>
-                        <CardTitle className="text-primary-800">{integracao.name}</CardTitle>
-                        <p className="text-sm text-gray-600">{integracao.description}</p>
+                        <CardTitle className="text-primary-800 text-lg">{integracao.name}</CardTitle>
+                        <p className="text-sm text-gray-500">{integracao.category}</p>
+                        <p className="text-sm text-gray-600 mt-1">{integracao.description}</p>
                       </div>
                     </div>
                   </CardHeader>

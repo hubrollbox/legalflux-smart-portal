@@ -15,7 +15,22 @@ import {
   Zap,
   ArrowLeft,
   Users,
-  Building
+  Building,
+  Mail,
+  Cloud,
+  Calendar,
+  Smartphone,
+  HardDrive,
+  Monitor,
+  MessageSquare,
+  CreditCard,
+  BookOpen,
+  Briefcase,
+  Camera,
+  Headphones,
+  Video,
+  Wifi,
+  Settings
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -23,6 +38,7 @@ import Footer from '@/components/Footer';
 
 const Integracoes = () => {
   const integracoesDisponiveis = [
+    // Sistemas Jurídicos Portugueses
     {
       id: 1,
       name: 'CITIUS',
@@ -82,8 +98,295 @@ const Integracoes = () => {
       icon: Shield,
       features: ['Consulta de antecedentes', 'Processos criminais', 'Decisões'],
       documentationUrl: '/documentacao#rjsp'
+    },
+    
+    // Email & Comunicação
+    {
+      id: 10,
+      name: 'Gmail',
+      description: 'Integração com Gmail para advogados',
+      category: 'Email',
+      status: 'disponivel',
+      icon: Mail,
+      features: ['Sincronização de emails', 'Templates jurídicos', 'Arquivamento automático'],
+      documentationUrl: '/documentacao#gmail'
+    },
+    {
+      id: 11,
+      name: 'Outlook',
+      description: 'Microsoft Outlook para escritórios',
+      category: 'Email',
+      status: 'disponivel',
+      icon: Mail,
+      features: ['Calendário integrado', 'Contactos sincronizados', 'Assinaturas automáticas'],
+      documentationUrl: '/documentacao#outlook'
+    },
+    {
+      id: 12,
+      name: 'WhatsApp Business',
+      description: 'Comunicação com clientes via WhatsApp',
+      category: 'Comunicação',
+      status: 'em_desenvolvimento',
+      icon: MessageSquare,
+      features: ['Mensagens automáticas', 'Templates aprovados', 'Histórico de conversas'],
+      documentationUrl: '/documentacao#whatsapp'
+    },
+    {
+      id: 13,
+      name: 'Zoom',
+      description: 'Videoconferências para audiências e reuniões',
+      category: 'Comunicação',
+      status: 'disponivel',
+      icon: Video,
+      features: ['Gravação de sessões', 'Agendamento automático', 'Salas de espera'],
+      documentationUrl: '/documentacao#zoom'
+    },
+    {
+      id: 14,
+      name: 'Microsoft Teams',
+      description: 'Colaboração em equipa para escritórios',
+      category: 'Comunicação',
+      status: 'disponivel',
+      icon: Users,
+      features: ['Chat em equipa', 'Partilha de ficheiros', 'Reuniões virtuais'],
+      documentationUrl: '/documentacao#teams'
+    },
+    
+    // Cloud Storage
+    {
+      id: 20,
+      name: 'Google Drive',
+      description: 'Armazenamento e sincronização de documentos',
+      category: 'Armazenamento',
+      status: 'disponivel',
+      icon: Cloud,
+      features: ['Backup automático', 'Partilha segura', 'Versionamento'],
+      documentationUrl: '/documentacao#google-drive'
+    },
+    {
+      id: 21,
+      name: 'Dropbox',
+      description: 'Sincronização de ficheiros em nuvem',
+      category: 'Armazenamento',
+      status: 'disponivel',
+      icon: Cloud,
+      features: ['Sincronização automática', 'Histórico de versões', 'Links seguros'],
+      documentationUrl: '/documentacao#dropbox'
+    },
+    {
+      id: 22,
+      name: 'OneDrive',
+      description: 'Armazenamento Microsoft integrado',
+      category: 'Armazenamento',
+      status: 'disponivel',
+      icon: Cloud,
+      features: ['Integração Office', 'Colaboração em tempo real', 'Backup automático'],
+      documentationUrl: '/documentacao#onedrive'
+    },
+    {
+      id: 23,
+      name: 'iCloud',
+      description: 'Sincronização para dispositivos Apple',
+      category: 'Armazenamento',
+      status: 'em_desenvolvimento',
+      icon: Cloud,
+      features: ['Sincronização iOS/Mac', 'Backup de documentos', 'Acesso universal'],
+      documentationUrl: '/documentacao#icloud'
+    },
+    
+    // Calendário
+    {
+      id: 30,
+      name: 'Google Calendar',
+      description: 'Gestão de prazos e audiências',
+      category: 'Calendário',
+      status: 'disponivel',
+      icon: Calendar,
+      features: ['Prazos automáticos', 'Lembretes personalizados', 'Partilha de calendários'],
+      documentationUrl: '/documentacao#google-calendar'
+    },
+    {
+      id: 31,
+      name: 'Outlook Calendar',
+      description: 'Calendário Microsoft integrado',
+      category: 'Calendário',
+      status: 'disponivel',
+      icon: Calendar,
+      features: ['Agendamento de reuniões', 'Convites automáticos', 'Sincronização móvel'],
+      documentationUrl: '/documentacao#outlook-calendar'
+    },
+    {
+      id: 32,
+      name: 'Apple Calendar',
+      description: 'Calendário para dispositivos Apple',
+      category: 'Calendário',
+      status: 'em_desenvolvimento',
+      icon: Calendar,
+      features: ['Sincronização iCloud', 'Lembretes inteligentes', 'Integração Siri'],
+      documentationUrl: '/documentacao#apple-calendar'
+    },
+    
+    // Office & Produtividade
+    {
+      id: 40,
+      name: 'Microsoft Office 365',
+      description: 'Suite completa de produtividade',
+      category: 'Produtividade',
+      status: 'disponivel',
+      icon: FileText,
+      features: ['Word, Excel, PowerPoint', 'Templates jurídicos', 'Colaboração em tempo real'],
+      documentationUrl: '/documentacao#office365'
+    },
+    {
+      id: 41,
+      name: 'Google Workspace',
+      description: 'Ferramentas colaborativas Google',
+      category: 'Produtividade',
+      status: 'disponivel',
+      icon: FileText,
+      features: ['Docs, Sheets, Slides', 'Comentários e revisões', 'Partilha segura'],
+      documentationUrl: '/documentacao#google-workspace'
+    },
+    {
+      id: 42,
+      name: 'Adobe Acrobat',
+      description: 'Gestão avançada de PDFs',
+      category: 'Produtividade',
+      status: 'disponivel',
+      icon: FileText,
+      features: ['Assinatura digital', 'Formulários interativos', 'Anotações jurídicas'],
+      documentationUrl: '/documentacao#adobe-acrobat'
+    },
+    {
+      id: 43,
+      name: 'Notion',
+      description: 'Base de conhecimento e notas',
+      category: 'Produtividade',
+      status: 'em_desenvolvimento',
+      icon: BookOpen,
+      features: ['Base de dados jurídica', 'Templates personalizados', 'Colaboração em equipa'],
+      documentationUrl: '/documentacao#notion'
+    },
+    
+    // Dispositivos Móveis
+    {
+      id: 50,
+      name: 'iOS Shortcuts',
+      description: 'Automatizações para iPhone/iPad',
+      category: 'Móvel',
+      status: 'em_desenvolvimento',
+      icon: Smartphone,
+      features: ['Atalhos personalizados', 'Automação Siri', 'Widgets informativos'],
+      documentationUrl: '/documentacao#ios-shortcuts'
+    },
+    {
+      id: 51,
+      name: 'Android Tasker',
+      description: 'Automatizações para Android',
+      category: 'Móvel',
+      status: 'em_desenvolvimento',
+      icon: Smartphone,
+      features: ['Perfis automáticos', 'Notificações inteligentes', 'Ações programadas'],
+      documentationUrl: '/documentacao#android-tasker'
+    },
+    
+    // Pagamentos & Financeiro
+    {
+      id: 60,
+      name: 'Stripe',
+      description: 'Processamento de pagamentos online',
+      category: 'Financeiro',
+      status: 'disponivel',
+      icon: CreditCard,
+      features: ['Pagamentos recorrentes', 'Faturas automáticas', 'Relatórios financeiros'],
+      documentationUrl: '/documentacao#stripe'
+    },
+    {
+      id: 61,
+      name: 'PayPal',
+      description: 'Pagamentos internacionais',
+      category: 'Financeiro',
+      status: 'disponivel',
+      icon: CreditCard,
+      features: ['Pagamentos seguros', 'Conversão de moedas', 'Proteção de vendedor'],
+      documentationUrl: '/documentacao#paypal'
+    },
+    {
+      id: 62,
+      name: 'MB Way',
+      description: 'Pagamentos móveis portugueses',
+      category: 'Financeiro',
+      status: 'em_desenvolvimento',
+      icon: Smartphone,
+      features: ['Pagamentos instantâneos', 'QR Code', 'Transferências rápidas'],
+      documentationUrl: '/documentacao#mbway'
+    },
+    
+    // CRM & Gestão
+    {
+      id: 70,
+      name: 'Salesforce',
+      description: 'CRM para escritórios de advocacia',
+      category: 'CRM',
+      status: 'em_desenvolvimento',
+      icon: Briefcase,
+      features: ['Gestão de clientes', 'Pipeline de vendas', 'Relatórios detalhados'],
+      documentationUrl: '/documentacao#salesforce'
+    },
+    {
+      id: 71,
+      name: 'HubSpot',
+      description: 'Marketing e vendas para advogados',
+      category: 'CRM',
+      status: 'em_desenvolvimento',
+      icon: Users,
+      features: ['Lead tracking', 'Email marketing', 'Automação de vendas'],
+      documentationUrl: '/documentacao#hubspot'
+    },
+    
+    // Outros
+    {
+      id: 80,
+      name: 'Zapier',
+      description: 'Automação entre aplicações',
+      category: 'Automação',
+      status: 'disponivel',
+      icon: Zap,
+      features: ['Workflows personalizados', '5000+ integrações', 'Triggers automáticos'],
+      documentationUrl: '/documentacao#zapier'
+    },
+    {
+      id: 81,
+      name: 'IFTTT',
+      description: 'Se isto então aquilo - automações simples',
+      category: 'Automação',
+      status: 'disponivel',
+      icon: Settings,
+      features: ['Automações simples', 'Dispositivos IoT', 'Ações programadas'],
+      documentationUrl: '/documentacao#ifttt'
     }
   ];
+
+  const categorias = [
+    'Todas',
+    'Tribunais',
+    'Governo',
+    'Email',
+    'Comunicação',
+    'Armazenamento',
+    'Calendário',
+    'Produtividade',
+    'Móvel',
+    'Financeiro',
+    'CRM',
+    'Automação'
+  ];
+
+  const [categoriaAtiva, setCategoriaAtiva] = useState('Todas');
+
+  const integracoesFiltradas = categoriaAtiva === 'Todas' 
+    ? integracoesDisponiveis 
+    : integracoesDisponiveis.filter(int => int.category === categoriaAtiva);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -118,6 +421,10 @@ const Integracoes = () => {
     }
   };
 
+  const contarPorStatus = (status: string) => {
+    return integracoesDisponiveis.filter(int => int.status === status).length;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -140,7 +447,7 @@ const Integracoes = () => {
               Integrações LegalFlux
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Conecte-se aos principais sistemas jurídicos portugueses e automatize o seu trabalho
+              Conecte-se aos principais sistemas e ferramentas para automatizar o seu trabalho jurídico
             </p>
           </div>
         </div>
@@ -152,7 +459,7 @@ const Integracoes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Disponíveis</p>
-                  <p className="text-2xl font-bold text-green-600">4</p>
+                  <p className="text-2xl font-bold text-green-600">{contarPorStatus('disponivel')}</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-600" />
               </div>
@@ -164,7 +471,7 @@ const Integracoes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Em Desenvolvimento</p>
-                  <p className="text-2xl font-bold text-yellow-600">2</p>
+                  <p className="text-2xl font-bold text-yellow-600">{contarPorStatus('em_desenvolvimento')}</p>
                 </div>
                 <Clock className="h-8 w-8 text-yellow-600" />
               </div>
@@ -176,7 +483,7 @@ const Integracoes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total</p>
-                  <p className="text-2xl font-bold text-primary-800">6</p>
+                  <p className="text-2xl font-bold text-primary-800">{integracoesDisponiveis.length}</p>
                 </div>
                 <LinkIcon className="h-8 w-8 text-primary-800" />
               </div>
@@ -188,7 +495,7 @@ const Integracoes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Categorias</p>
-                  <p className="text-2xl font-bold text-blue-600">6</p>
+                  <p className="text-2xl font-bold text-blue-600">{categorias.length - 1}</p>
                 </div>
                 <Building className="h-8 w-8 text-blue-600" />
               </div>
@@ -196,11 +503,29 @@ const Integracoes = () => {
           </Card>
         </div>
 
+        {/* Category Filter */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {categorias.map((categoria) => (
+              <Button
+                key={categoria}
+                variant={categoriaAtiva === categoria ? "default" : "outline"}
+                onClick={() => setCategoriaAtiva(categoria)}
+                className={categoriaAtiva === categoria ? "bg-primary-800 hover:bg-primary-700" : ""}
+              >
+                {categoria}
+              </Button>
+            ))}
+          </div>
+        </div>
+
         {/* Available Integrations Grid */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-primary-800 mb-6">Integrações Disponíveis</h2>
+          <h2 className="text-2xl font-bold text-primary-800 mb-6">
+            {categoriaAtiva === 'Todas' ? 'Todas as Integrações' : `Integrações de ${categoriaAtiva}`}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {integracoesDisponiveis.map((integracao) => {
+            {integracoesFiltradas.map((integracao) => {
               const StatusIcon = getStatusIcon(integracao.status);
               
               return (
@@ -212,7 +537,7 @@ const Integracoes = () => {
                           <integracao.icon className="h-6 w-6 text-primary-800" />
                         </div>
                         <div>
-                          <CardTitle className="text-primary-800">{integracao.name}</CardTitle>
+                          <CardTitle className="text-primary-800 text-lg">{integracao.name}</CardTitle>
                           <p className="text-sm text-gray-500">{integracao.category}</p>
                         </div>
                       </div>
@@ -231,7 +556,7 @@ const Integracoes = () => {
                       <ul className="text-sm text-gray-600 space-y-1">
                         {integracao.features.map((feature, index) => (
                           <li key={index} className="flex items-center">
-                            <CheckCircle className="h-3 w-3 text-green-600 mr-2" />
+                            <CheckCircle className="h-3 w-3 text-green-600 mr-2 flex-shrink-0" />
                             {feature}
                           </li>
                         ))}
