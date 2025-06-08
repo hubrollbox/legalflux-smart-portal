@@ -12,7 +12,7 @@ import {
   Database,
   Settings,
   Plus,
-  Sync
+  RefreshCw
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -101,7 +101,7 @@ const MinhasIntegracoes = () => {
                       <p className="text-sm font-medium text-gray-600">Última Sincronização</p>
                       <p className="text-lg font-bold text-primary-800">Hoje, 14:30</p>
                     </div>
-                    <Sync className="h-8 w-8 text-primary-800" />
+                    <RefreshCw className="h-8 w-8 text-primary-800" />
                   </div>
                 </CardContent>
               </Card>
@@ -159,7 +159,7 @@ const MinhasIntegracoes = () => {
                         Configurar
                       </Button>
                       <Button variant="outline" size="sm" className="flex-1">
-                        <Sync className="h-4 w-4 mr-1" />
+                        <RefreshCw className="h-4 w-4 mr-1" />
                         Sincronizar
                       </Button>
                       <Button variant="outline" size="sm" className="text-red-600">
