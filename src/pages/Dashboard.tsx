@@ -14,9 +14,11 @@ import {
   Euro,
   Plus
 } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Check if user has seen onboarding
@@ -128,6 +130,7 @@ const Dashboard = () => {
             data-tour="new-process"
             className="bg-primary-800 hover:bg-primary-700"
             title="Criar um novo processo jurídico"
+            onClick={() => navigate('/processos')}
           >
             <Plus className="h-4 w-4 mr-2" />
             Novo Processo
@@ -188,7 +191,11 @@ const Dashboard = () => {
                   </div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4 border-primary-800 text-primary-800 hover:bg-primary-50">
+              <Button 
+                variant="outline" 
+                className="w-full mt-4 border-primary-800 text-primary-800 hover:bg-primary-50"
+                onClick={() => navigate('/processos')}
+              >
                 Ver Todos os Processos
               </Button>
             </CardContent>
@@ -219,7 +226,11 @@ const Dashboard = () => {
                   </div>
                 ))}
               </div>
-              <Button variant="outline" className="w-full mt-4 border-primary-800 text-primary-800 hover:bg-primary-50">
+              <Button 
+                variant="outline" 
+                className="w-full mt-4 border-primary-800 text-primary-800 hover:bg-primary-50"
+                onClick={() => navigate('/calendario')}
+              >
                 Ver Calendário Completo
               </Button>
             </CardContent>
@@ -237,6 +248,7 @@ const Dashboard = () => {
                 variant="outline" 
                 className="h-20 flex-col space-y-2"
                 title="Criar um novo processo jurídico"
+                onClick={() => navigate('/processos')}
               >
                 <FileText className="h-6 w-6" />
                 <span className="text-sm">Novo Processo</span>
@@ -245,6 +257,7 @@ const Dashboard = () => {
                 variant="outline" 
                 className="h-20 flex-col space-y-2"
                 title="Adicionar um novo cliente"
+                onClick={() => navigate('/clientes')}
               >
                 <Users className="h-6 w-6" />
                 <span className="text-sm">Adicionar Cliente</span>
@@ -253,6 +266,7 @@ const Dashboard = () => {
                 variant="outline" 
                 className="h-20 flex-col space-y-2"
                 title="Agendar um novo evento ou prazo"
+                onClick={() => navigate('/calendario')}
               >
                 <Calendar className="h-6 w-6" />
                 <span className="text-sm">Criar Evento</span>
@@ -261,6 +275,7 @@ const Dashboard = () => {
                 variant="outline" 
                 className="h-20 flex-col space-y-2"
                 title="Gerar relatório financeiro"
+                onClick={() => navigate('/financeiro')}
               >
                 <TrendingUp className="h-6 w-6" />
                 <span className="text-sm">Relatório</span>

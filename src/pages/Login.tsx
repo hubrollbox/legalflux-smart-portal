@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Scale, Eye, EyeOff, ArrowLeft, AlertCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -97,13 +97,10 @@ const Login = () => {
         <Card className="shadow-2xl border-0 rounded-2xl overflow-hidden">
           <CardHeader className="text-center bg-white p-8">
             {/* Logo */}
-            <div className="flex items-center justify-center space-x-3 mb-6">
-              <div className="bg-primary-800 p-3 rounded-xl">
-                <Scale className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-primary-800">Legalflux</h1>
-                <p className="text-sm text-gray-500">Portal Jurídico Inteligente</p>
+            <div className="flex items-center justify-center mb-6">
+              <div className="text-center">
+                <h1 className="text-3xl font-bold text-primary-800">LegalFlux</h1>
+                <p className="text-sm text-gray-500 mt-1">Portal Jurídico Inteligente</p>
               </div>
             </div>
 

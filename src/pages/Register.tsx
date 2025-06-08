@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -5,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { Scale, Eye, EyeOff, ArrowLeft, UserCheck, AlertCircle, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, UserCheck, AlertCircle, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -23,6 +24,7 @@ const Register = () => {
     userType: '',
     phone: '',
     organization: '',
+    nif: '',
     message: ''
   });
   const [error, setError] = useState<string | null>(null);
@@ -58,6 +60,16 @@ const Register = () => {
       return 'Por favor, selecione o tipo de utilizador.';
     }
 
+    // NIF é obrigatório para empresas e profissionais
+    if (['advogado', 'assistente', 'admin'].includes(formData.userType) && !formData.nif.trim()) {
+      return 'NIF é obrigatório para profissionais e empresas.';
+    }
+
+    // Validação básica do NIF (9 dígitos)
+    if (formData.nif && !/^\d{9}$/.test(formData.nif.trim())) {
+      return 'NIF deve ter exatamente 9 dígitos.';
+    }
+
     return null;
   };
 
@@ -79,6 +91,7 @@ const Register = () => {
         user_type: formData.userType,
         phone: formData.phone.trim(),
         organization: formData.organization.trim(),
+        nif: formData.nif.trim(),
         message: formData.message.trim()
       };
 
@@ -110,6 +123,8 @@ const Register = () => {
       setLoading(false);
     }
   };
+
+  const requiresNIF = ['advogado', 'assistente', 'admin'].includes(formData.userType);
 
   if (success) {
     return (
@@ -159,13 +174,10 @@ const Register = () => {
         <Card className="shadow-2xl border-0 rounded-2xl overflow-hidden">
           <CardHeader className="text-center bg-white p-8">
             {/* Logo */}
-            <div className="flex items-center justify-center space-x-3 mb-6">
-              <div className="bg-primary-800 p-3 rounded-xl">
-                <Scale className="h-8 w-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-primary-800">Legalflux</h1>
-                <p className="text-sm text-gray-500">Portal Jurídico Inteligente</p>
+            <div className="flex items-center justify-center mb-6">
+              <div className="text-center">
+                <h1 className="text-3xl font-bold text-primary-800">LegalFlux</h1>
+                <p className="text-sm text-gray-500 mt-1">Portal Jurídico Inteligente</p>
               </div>
             </div>
 
@@ -202,7 +214,7 @@ const Register = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name" className="text-primary-800 font-medium">
-                    Nome Completo
+                    Nome Completo *
                   </Label>
                   <Input
                     id="name"
@@ -212,12 +224,13 @@ const Register = () => {
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800"
                     required
+                    disabled={loading}
                   />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-primary-800 font-medium">
-                    Email
+                    Email *
                   </Label>
                   <Input
                     id="email"
@@ -227,15 +240,20 @@ const Register = () => {
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800"
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="userType" className="text-primary-800 font-medium">
-                  Tipo de Utilizador
+                  Tipo de Utilizador *
                 </Label>
-                <Select value={formData.userType} onValueChange={(value) => setFormData({...formData, userType: value})}>
+                <Select 
+                  value={formData.userType} 
+                  onValueChange={(value) => setFormData({...formData, userType: value})}
+                  disabled={loading}
+                >
                   <SelectTrigger className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800">
                     <SelectValue placeholder="Selecione o tipo de utilizador" />
                   </SelectTrigger>
@@ -246,6 +264,11 @@ const Register = () => {
                     <SelectItem value="admin">Administrador de Escritório</SelectItem>
                   </SelectContent>
                 </Select>
+                {requiresNIF && (
+                  <p className="text-xs text-accent-600">
+                    NIF é obrigatório para profissionais e empresas
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -260,28 +283,47 @@ const Register = () => {
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800"
+                    disabled={loading}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="organization" className="text-primary-800 font-medium">
-                    Organização
+                  <Label htmlFor="nif" className="text-primary-800 font-medium">
+                    NIF {requiresNIF && '*'}
                   </Label>
                   <Input
-                    id="organization"
+                    id="nif"
                     type="text"
-                    placeholder="Nome do escritório/empresa"
-                    value={formData.organization}
-                    onChange={(e) => setFormData({...formData, organization: e.target.value})}
+                    placeholder="123456789"
+                    value={formData.nif}
+                    onChange={(e) => setFormData({...formData, nif: e.target.value.replace(/\D/g, '').slice(0, 9)})}
                     className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800"
+                    maxLength={9}
+                    disabled={loading}
+                    required={requiresNIF}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="organization" className="text-primary-800 font-medium">
+                  Organização
+                </Label>
+                <Input
+                  id="organization"
+                  type="text"
+                  placeholder="Nome do escritório/empresa"
+                  value={formData.organization}
+                  onChange={(e) => setFormData({...formData, organization: e.target.value})}
+                  className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800"
+                  disabled={loading}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="password" className="text-primary-800 font-medium">
-                    Palavra-passe
+                    Palavra-passe *
                   </Label>
                   <div className="relative">
                     <Input
@@ -292,6 +334,8 @@ const Register = () => {
                       onChange={(e) => setFormData({...formData, password: e.target.value})}
                       className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800 pr-12"
                       required
+                      disabled={loading}
+                      minLength={6}
                     />
                     <Button
                       type="button"
@@ -299,6 +343,7 @@ const Register = () => {
                       size="sm"
                       className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-primary-800"
                       onClick={() => setShowPassword(!showPassword)}
+                      disabled={loading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                     </Button>
@@ -307,7 +352,7 @@ const Register = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="confirmPassword" className="text-primary-800 font-medium">
-                    Confirmar Palavra-passe
+                    Confirmar Palavra-passe *
                   </Label>
                   <Input
                     id="confirmPassword"
@@ -317,6 +362,7 @@ const Register = () => {
                     onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
                     className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800"
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -331,22 +377,23 @@ const Register = () => {
                   value={formData.message}
                   onChange={(e) => setFormData({...formData, message: e.target.value})}
                   className="rounded-xl border-gray-200 focus:border-primary-800 focus:ring-primary-800 min-h-[100px]"
+                  disabled={loading}
                 />
               </div>
 
               <div className="space-y-4">
                 <label className="flex items-start space-x-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 mt-1" required />
+                  <input type="checkbox" className="rounded border-gray-300 mt-1" required disabled={loading} />
                   <span className="text-sm text-gray-600">
                     Concordo com os{' '}
-                    <a href="#" className="text-primary-800 hover:underline">Termos de Uso</a>
+                    <Link to="/termos-uso" className="text-primary-800 hover:underline">Termos de Uso</Link>
                     {' '}e{' '}
-                    <a href="#" className="text-primary-800 hover:underline">Política de Privacidade</a>
+                    <Link to="/politica-privacidade" className="text-primary-800 hover:underline">Política de Privacidade</Link>
                   </span>
                 </label>
 
                 <label className="flex items-start space-x-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-gray-300 mt-1" />
+                  <input type="checkbox" className="rounded border-gray-300 mt-1" disabled={loading} />
                   <span className="text-sm text-gray-600">
                     Aceito receber comunicações sobre atualizações e novidades do Legalflux
                   </span>

@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,6 +28,7 @@ import StatusSistema from "./pages/StatusSistema";
 import CentralAjuda from "./pages/CentralAjuda";
 import Comunidade from "./pages/Comunidade";
 import NotFound from "./pages/NotFound";
+import LGPD from "./pages/LGPD";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +91,7 @@ const App = () => (
             <Route path="/contato" element={<Contato />} />
             <Route path="/politica-privacidade" element={<PoliticaPrivacidade />} />
             <Route path="/termos-uso" element={<TermosUso />} />
+            <Route path="/lgpd" element={<LGPD />} />
             <Route path="/status-sistema" element={<StatusSistema />} />
             <Route path="/central-ajuda" element={<CentralAjuda />} />
             <Route path="/comunidade" element={<Comunidade />} />
