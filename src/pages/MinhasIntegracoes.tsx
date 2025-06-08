@@ -1,19 +1,12 @@
 
 import { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Link as LinkIcon,
   ExternalLink,
-  CheckCircle,
-  AlertCircle,
   Database,
-  Settings,
-  Plus,
-  RefreshCw,
   Mail,
   Cloud,
   Calendar,
@@ -30,6 +23,11 @@ import {
   Briefcase
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import ActiveIntegrationCard from '@/components/integrations/ActiveIntegrationCard';
+import AvailableIntegrationCard from '@/components/integrations/AvailableIntegrationCard';
+import MyIntegrationsStats from '@/components/integrations/MyIntegrationsStats';
+import EmptyActiveIntegrations from '@/components/integrations/EmptyActiveIntegrations';
+import NoIntegrationsFound from '@/components/integrations/NoIntegrationsFound';
 
 const MinhasIntegracoes = () => {
   const integracoesConfiguradas = [
@@ -223,6 +221,12 @@ const MinhasIntegracoes = () => {
     }
   ];
 
+  const handleAddIntegration = () => {
+    const tabs = document.querySelector('[role="tablist"]');
+    const disponiveisTab = tabs?.querySelector('[value="disponiveis"]') as HTMLElement;
+    disponiveisTab?.click();
+  };
+
   return (
     <DashboardLayout>
       <div className="p-6">
@@ -253,172 +257,28 @@ const MinhasIntegracoes = () => {
 
           <TabsContent value="ativas" className="space-y-6">
             {/* Statistics */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="rounded-2xl border-0 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Integrações Ativas</p>
-                      <p className="text-2xl font-bold text-green-600">{integracoesConfiguradas.length}</p>
-                    </div>
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="rounded-2xl border-0 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Última Sincronização</p>
-                      <p className="text-lg font-bold text-primary-800">Hoje, 16:00</p>
-                    </div>
-                    <RefreshCw className="h-8 w-8 text-primary-800" />
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card className="rounded-2xl border-0 shadow-lg">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-600">Estado Geral</p>
-                      <p className="text-lg font-bold text-green-600">Operacional</p>
-                    </div>
-                    <CheckCircle className="h-8 w-8 text-green-600" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <MyIntegrationsStats activeIntegrationsCount={integracoesConfiguradas.length} />
 
             {/* Active Integrations */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {integracoesConfiguradas.map((integracao) => (
-                <Card key={integracao.id} className="rounded-2xl border-0 shadow-lg">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
-                        <div className="p-3 rounded-xl bg-primary-50">
-                          <integracao.icon className="h-6 w-6 text-primary-800" />
-                        </div>
-                        <div>
-                          <CardTitle className="text-primary-800 text-lg">{integracao.name}</CardTitle>
-                          <p className="text-sm text-gray-500">{integracao.category}</p>
-                          <Badge className="bg-green-100 text-green-800 mt-1">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Conectado
-                          </Badge>
-                        </div>
-                      </div>
-                      <Settings className="h-5 w-5 text-gray-400" />
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-xs text-gray-500">Última sincronização:</p>
-                        <p className="text-sm font-medium">{integracao.lastSync}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Frequência:</p>
-                        <p className="text-sm font-medium">{integracao.syncFrequency}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex space-x-2 mt-4">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Settings className="h-4 w-4 mr-1" />
-                        Configurar
-                      </Button>
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <RefreshCw className="h-4 w-4 mr-1" />
-                        Sincronizar
-                      </Button>
-                      <Button variant="outline" size="sm" className="text-red-600">
-                        Desconectar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <ActiveIntegrationCard key={integracao.id} integration={integracao} />
               ))}
             </div>
 
             {integracoesConfiguradas.length === 0 && (
-              <Card className="rounded-2xl border-0 shadow-lg">
-                <CardContent className="p-8 text-center">
-                  <div className="text-gray-400 mb-4">
-                    <AlertCircle className="h-12 w-12 mx-auto" />
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    Nenhuma integração ativa
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    Configure suas primeiras integrações para começar a sincronizar dados.
-                  </p>
-                  <Button onClick={() => {
-                    const tabs = document.querySelector('[role="tablist"]');
-                    const disponiveisTab = tabs?.querySelector('[value="disponiveis"]') as HTMLElement;
-                    disponiveisTab?.click();
-                  }}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Adicionar Integração
-                  </Button>
-                </CardContent>
-              </Card>
+              <EmptyActiveIntegrations onAddIntegration={handleAddIntegration} />
             )}
           </TabsContent>
 
           <TabsContent value="disponiveis" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {integracoesDisponiveis.map((integracao) => (
-                <Card key={integracao.id} className="rounded-2xl border-0 shadow-lg">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-3 rounded-xl bg-primary-50">
-                        <integracao.icon className="h-6 w-6 text-primary-800" />
-                      </div>
-                      <div>
-                        <CardTitle className="text-primary-800 text-lg">{integracao.name}</CardTitle>
-                        <p className="text-sm text-gray-500">{integracao.category}</p>
-                        <p className="text-sm text-gray-600 mt-1">{integracao.description}</p>
-                      </div>
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="flex space-x-2">
-                      <Button size="sm" className="flex-1 bg-primary-800 hover:bg-primary-700">
-                        <Plus className="h-4 w-4 mr-1" />
-                        Conectar
-                      </Button>
-                      <Button variant="outline" size="sm" asChild>
-                        <Link to="/documentacao">
-                          Ver Instruções
-                        </Link>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <AvailableIntegrationCard key={integracao.id} integration={integracao} />
               ))}
             </div>
 
-            <Card className="rounded-2xl border-0 shadow-lg">
-              <CardContent className="p-6 text-center">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Não encontra a integração que procura?
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Contacte-nos para sugerir novas integrações ou solicitar suporte.
-                </p>
-                <Button variant="outline" asChild>
-                  <Link to="/contato">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Contactar Suporte
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
+            <NoIntegrationsFound />
           </TabsContent>
         </Tabs>
       </div>
