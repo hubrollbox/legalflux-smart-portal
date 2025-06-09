@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
+import logo from '@/../public/logo.png';
 
 const Sidebar = () => {
   const location = useLocation();
@@ -41,6 +42,7 @@ const Sidebar = () => {
     <div className="w-64 bg-white border-r border-gray-200 h-full flex flex-col sidebar">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
+        <img src={logo} alt="Legalflux Logo" className="h-10 w-auto mb-4" />
         <h1 className="text-2xl font-bold text-primary-800">LegalFlux</h1>
         <p className="text-sm text-gray-600 mt-1">Portal Jurídico</p>
       </div>

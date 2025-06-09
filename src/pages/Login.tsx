@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import logo from '@/../public/logo.png';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -96,6 +97,7 @@ const Login = () => {
             {/* Logo */}
             <div className="flex items-center justify-center mb-6">
               <div className="text-center">
+                <img src={logo} alt="Legalflux Logo" className="h-12 w-auto mb-6" />
                 <h1 className="text-3xl font-bold text-primary-800">LegalFlux</h1>
                 <p className="text-sm text-gray-500 mt-1">Portal Jurídico Inteligente</p>
               </div>

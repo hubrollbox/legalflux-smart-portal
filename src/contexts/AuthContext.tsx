@@ -69,13 +69,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // RBAC: extrai role do user_metadata (Supabase) ou session
+  const role = user?.user_metadata?.role || session?.user?.user_metadata?.role || null;
+
+  // RBAC: função utilitária para verificar permissões
+  const hasPermission = (permission: string) => {
+    // Exemplo simples: permissões por role
+    if (role === 'admin') return true;
+    if (role === 'advogado') return permission !== 'admin';
+    if (role === 'assistente') return permission === 'view';
+    if (role === 'cliente') return permission === 'view';
+    return false;
+  };
+
   const value = {
     user,
     session,
     loading,
     signIn,
     signUp,
-    signOut
+    signOut,
+    role,
+    hasPermission
   };
 
   return (

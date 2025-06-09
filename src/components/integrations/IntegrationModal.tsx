@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -26,12 +25,33 @@ const IntegrationModal = ({ open, onOpenChange, availableIntegrations }: Integra
     config: ''
   });
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
   const { addIntegration } = useIntegrations();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedIntegration) return;
 
+    // Validação de campos obrigatórios
+    if (selectedIntegration.type === 'manual') {
+      if (!formData.name && !selectedIntegration.name) {
+        setFormError('O nome da integração é obrigatório.');
+        return;
+      }
+      if (!formData.api_key) {
+        setFormError('A API Key é obrigatória.');
+        return;
+      }
+      if (formData.config) {
+        try {
+          JSON.parse(formData.config);
+        } catch {
+          setFormError('A configuração avançada deve ser um JSON válido.');
+          return;
+        }
+      }
+    }
+    setFormError(null);
     setLoading(true);
     try {
       const credentials = selectedIntegration.type === 'oauth' 
@@ -55,6 +75,7 @@ const IntegrationModal = ({ open, onOpenChange, availableIntegrations }: Integra
       setSelectedIntegration(null);
       setFormData({ name: '', api_key: '', secret: '', endpoint: '', config: '' });
     } catch (error) {
+      setFormError('Erro ao adicionar integração. Verifique os dados e tente novamente.');
       console.error('Error adding integration:', error);
     } finally {
       setLoading(false);
@@ -69,8 +90,15 @@ const IntegrationModal = ({ open, onOpenChange, availableIntegrations }: Integra
     window.open(oauthUrl, '_blank');
   };
 
+  // Resetar formulário ao fechar/cancelar
+  const handleClose = () => {
+    setFormData({ name: '', api_key: '', secret: '', endpoint: '', config: '' });
+    setSelectedIntegration(null);
+    onOpenChange(false);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Adicionar Nova Integração</DialogTitle>
@@ -107,7 +135,7 @@ const IntegrationModal = ({ open, onOpenChange, availableIntegrations }: Integra
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setSelectedIntegration(null)}
+                  onClick={handleClose}
                 >
                   ← Voltar
                 </Button>
@@ -139,6 +167,9 @@ const IntegrationModal = ({ open, onOpenChange, availableIntegrations }: Integra
                 </TabsContent>
 
                 <TabsContent value="manual" className="space-y-4">
+                  {formError && (
+                    <div className="p-2 bg-red-100 text-red-700 rounded text-sm">{formError}</div>
+                  )}
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
                       <Label htmlFor="name">Nome da Integração</Label>
@@ -212,7 +243,8 @@ const IntegrationModal = ({ open, onOpenChange, availableIntegrations }: Integra
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => onOpenChange(false)}
+                        onClick={handleClose}
+                        disabled={loading}
                       >
                         Cancelar
                       </Button>

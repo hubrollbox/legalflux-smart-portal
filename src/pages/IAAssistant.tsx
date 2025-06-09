@@ -1,4 +1,3 @@
-
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,7 +60,7 @@ const IAAssistant = () => {
       description: 'Processo 2024/001 - João Silva tem prazo em 2 dias',
       type: 'warning',
       icon: AlertTriangle,
-      action: 'Ver Processo'
+      actionLabel: 'Ver Processo'
     },
     {
       id: 2,
@@ -69,7 +68,7 @@ const IAAssistant = () => {
       description: 'Jurisprudência recente pode impactar 3 dos seus processos',
       type: 'info',
       icon: Lightbulb,
-      action: 'Analisar'
+      actionLabel: 'Analisar'
     },
     {
       id: 3,
@@ -77,7 +76,7 @@ const IAAssistant = () => {
       description: 'Cliente TechCorp mostra potencial para novos serviços',
       type: 'success',
       icon: TrendingUp,
-      action: 'Ver Análise'
+      actionLabel: 'Ver Análise'
     }
   ];
 
@@ -312,16 +311,16 @@ const IAAssistant = () => {
                     </div>
                     <Button 
                       onClick={handleGenerateDraft}
-                      disabled={loading || !draftData.documentType || !draftData.context}
+                      disabled={loading || !draftData.documentType || !draftData.parties}
                       className="w-full bg-primary-800 hover:bg-primary-700"
                     >
                       <Gavel className="h-4 w-4 mr-2" />
-                      {loading ? 'A gerar minuta...' : 'Gerar Minuta Jurídica'}
+                      {loading ? 'A gerar minuta...' : 'Gerar Minuta'}
                     </Button>
                     {draftData.result && (
                       <div className="bg-purple-50 border border-purple-200 rounded-xl p-4">
                         <h4 className="font-medium text-purple-800 mb-2">Minuta Gerada:</h4>
-                        <pre className="text-purple-700 text-sm whitespace-pre-wrap bg-white p-3 rounded border">{draftData.result}</pre>
+                        <pre className="text-purple-700 text-sm whitespace-pre-wrap">{draftData.result}</pre>
                       </div>
                     )}
                   </TabsContent>
@@ -330,93 +329,31 @@ const IAAssistant = () => {
             </Card>
           </div>
 
-          {/* Insights Panel */}
-          <div className="space-y-6">
-            {/* AI Insights */}
+          {/* Insights */}
+          <div>
             <Card className="rounded-2xl border-0 shadow-lg">
               <CardHeader>
-                <CardTitle className="text-primary-800 flex items-center">
-                  <Lightbulb className="h-5 w-5 mr-2" />
-                  Insights IA
+                <CardTitle className="text-primary-800">
+                  Insights da IA
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <ul className="space-y-4">
                   {insights.map((insight) => (
-                    <div key={insight.id} className="p-4 rounded-xl bg-gray-50">
-                      <div className="flex items-start space-x-3">
-                        <insight.icon className={`h-5 w-5 mt-1 ${
-                          insight.type === 'warning' ? 'text-orange-600' :
-                          insight.type === 'info' ? 'text-blue-600' : 'text-green-600'
-                        }`} />
-                        <div className="flex-1">
-                          <h4 className="font-medium text-primary-800">{insight.title}</h4>
-                          <p className="text-sm text-gray-600 mt-1">{insight.description}</p>
-                          <Button variant="outline" size="sm" className="mt-2">
-                            {insight.action}
-                          </Button>
-                        </div>
+                    <li key={insight.id} className="flex items-center space-x-4">
+                      <div className="p-3 rounded-xl bg-primary-50">
+                        <insight.icon className="h-6 w-6 text-primary-800" />
                       </div>
-                    </div>
+                      <div>
+                        <h4 className="text-primary-800 font-medium">{insight.title}</h4>
+                        <p className="text-gray-600 text-sm">{insight.description}</p>
+                      </div>
+                      <Button size="sm" className="bg-primary-800 hover:bg-primary-700">
+                        {insight.actionLabel}
+                      </Button>
+                    </li>
                   ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* IA Statistics */}
-            <Card className="rounded-2xl border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-primary-800 flex items-center">
-                  <TrendingUp className="h-5 w-5 mr-2" />
-                  Estatísticas IA
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Consultas Hoje</span>
-                    <span className="font-bold text-primary-800">23</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Tempo Poupado</span>
-                    <span className="font-bold text-green-600">4.2h</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Precisão</span>
-                    <span className="font-bold text-blue-600">94%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Documentos Gerados</span>
-                    <span className="font-bold text-purple-600">12</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Quick Actions */}
-            <Card className="rounded-2xl border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle className="text-primary-800">Ações Rápidas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <Button variant="outline" className="w-full justify-start">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Verificar Jurisprudência
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Search className="h-4 w-4 mr-2" />
-                    Pesquisar Precedentes
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Clock className="h-4 w-4 mr-2" />
-                    Verificar Prazos
-                  </Button>
-                  <Button variant="outline" className="w-full justify-start">
-                    <Users className="h-4 w-4 mr-2" />
-                    Analisar Clientes
-                  </Button>
-                </div>
+                </ul>
               </CardContent>
             </Card>
           </div>

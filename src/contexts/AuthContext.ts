@@ -23,6 +23,9 @@ export interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: unknown }>;
   signUp: (email: string, password: string, userData?: UserData) => Promise<{ error: unknown }>;
   signOut: () => Promise<void>;
+  // RBAC: role e método de verificação de permissão
+  role?: string | null;
+  hasPermission?: (permission: string) => boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);

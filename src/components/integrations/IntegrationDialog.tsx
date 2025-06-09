@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -16,35 +15,67 @@ interface IntegrationDialogProps {
 }
 
 const IntegrationDialog = ({ integration, open, onOpenChange, onSave }: IntegrationDialogProps) => {
+  function getCredentialField<T = string>(credentials: unknown, field: string, fallback: T): T {
+    if (typeof credentials === 'object' && credentials !== null && field in credentials) {
+      return (credentials as Record<string, unknown>)[field] as T;
+    }
+    return fallback;
+  }
+
   const [formData, setFormData] = useState({
-    name: integration?.name || '',
-    api_key: integration?.credentials?.api_key || '',
-    secret: integration?.credentials?.secret || '',
-    endpoint: integration?.credentials?.endpoint || '',
-    config: JSON.stringify(integration?.config || {}, null, 2)
+    name: typeof integration?.name === 'string' ? integration.name : '',
+    api_key: getCredentialField(integration?.credentials, 'api_key', ''),
+    secret: getCredentialField(integration?.credentials, 'secret', ''),
+    endpoint: getCredentialField(integration?.credentials, 'endpoint', ''),
+    config: typeof integration?.config === 'object' && integration?.config !== null ? JSON.stringify(integration.config, null, 2) : '{}'
   });
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!integration) return;
 
+    // Validação de campos obrigatórios
+    if (!formData.name) {
+      setFormError('O nome da integração é obrigatório.');
+      return;
+    }
+    if (integration.integration_type === 'manual' && !formData.api_key) {
+      setFormError('A API Key é obrigatória.');
+      return;
+    }
+    if (formData.config) {
+      try {
+        JSON.parse(formData.config);
+      } catch {
+        setFormError('A configuração deve ser um JSON válido.');
+        return;
+      }
+    }
+    setFormError(null);
     setLoading(true);
     try {
+      const credentials = {
+        ...(typeof integration.credentials === 'object' && integration.credentials !== null ? integration.credentials : {}),
+        api_key: formData.api_key,
+        secret: formData.secret,
+        endpoint: formData.endpoint
+      };
+      // Remove campos vazios
+      Object.keys(credentials).forEach(key => {
+        if (credentials[key] === '') delete credentials[key];
+      });
       const updates = {
         name: formData.name,
-        credentials: {
-          ...integration.credentials,
-          api_key: formData.api_key,
-          secret: formData.secret,
-          endpoint: formData.endpoint
-        },
+        credentials,
         config: formData.config ? JSON.parse(formData.config) : {}
       };
 
       await onSave(integration.id, updates);
       onOpenChange(false);
     } catch (error) {
+      setFormError('Erro ao guardar integração. Verifique os dados e tente novamente.');
       console.error('Error updating integration:', error);
     } finally {
       setLoading(false);
@@ -64,6 +95,10 @@ const IntegrationDialog = ({ integration, open, onOpenChange, onSave }: Integrat
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {formError && (
+            <div className="p-2 bg-red-100 text-red-700 rounded text-sm">{formError}</div>
+          )}
+
           <div>
             <Label htmlFor="edit-name">Nome da Integração</Label>
             <Input

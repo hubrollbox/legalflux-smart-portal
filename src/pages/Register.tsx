@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { Eye, EyeOff, Scale } from 'lucide-react';
+import logo from '@/../public/logo.png';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -71,7 +71,7 @@ const Register = () => {
           nif: formData.nif,
           numero_profissional: formData.numero_profissional,
           morada: formData.morada,
-          metodo_pagamento: formData.metodo_pagamento as any,
+          metodo_pagamento: formData.metodo_pagamento as string,
           dados_faturacao: formData.tipo === 'empresa' ? formData.dados_empresa : {}
         }]);
 
@@ -79,15 +79,16 @@ const Register = () => {
 
       toast({
         title: "Registo enviado!",
-        description: "O seu registo foi enviado para aprovação. Será contactado em breve."
+        description: "O seu registo foi enviado para aprovação. Será contactado em breve.",
       });
-
-      navigate('/');
-    } catch (error: any) {
+      // Redireciona para a página de aprovação de utilizadores
+      setTimeout(() => navigate('/admin/approve-users', { replace: true }), 1200);
+    } catch (error) {
+      const err = error as { message?: string };
       console.error('Registration error:', error);
       toast({
         title: "Erro no registo",
-        description: error.message || "Ocorreu um erro durante o registo.",
+        description: err.message || "Ocorreu um erro durante o registo.",
         variant: "destructive"
       });
     } finally {
@@ -96,7 +97,8 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4 register-page">
+      <img src={logo} alt="Legalflux Logo" className="h-12 w-auto mb-6" />
       <Card className="w-full max-w-2xl rounded-2xl border-0 shadow-2xl">
         <CardHeader className="text-center pb-8">
           <div className="flex justify-center mb-4">
@@ -251,53 +253,26 @@ const Register = () => {
                 />
               </div>
               <div>
-                <Label htmlFor="morada">Morada</Label>
-                <Input
-                  id="morada"
-                  type="text"
-                  value={formData.morada}
-                  onChange={(e) => setFormData({ ...formData, morada: e.target.value })}
-                />
+                <Label htmlFor="metodo_pagamento">Método de Pagamento *</Label>
+                <RadioGroup
+                  id="metodo_pagamento"
+                  value={formData.metodo_pagamento}
+                  onValueChange={(value) => setFormData({ ...formData, metodo_pagamento: value })}
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="paypal" id="paypal" />
+                    <Label htmlFor="paypal">PayPal</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="revolut" id="revolut" />
+                    <Label htmlFor="revolut">Revolut</Label>
+                  </div>
+                </RadioGroup>
               </div>
             </div>
 
-            {/* Método de Pagamento */}
-            <div>
-              <Label>Método de Pagamento Preferido</Label>
-              <RadioGroup 
-                value={formData.metodo_pagamento} 
-                onValueChange={(value) => setFormData({ ...formData, metodo_pagamento: value })}
-                className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-2"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="stripe" id="stripe" />
-                  <Label htmlFor="stripe">Stripe (Cartão)</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="transferencia" id="transferencia" />
-                  <Label htmlFor="transferencia">Transferência</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="mbway" id="mbway" />
-                  <Label htmlFor="mbway">MB Way</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="paypal" id="paypal" />
-                  <Label htmlFor="paypal">PayPal</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="revolut" id="revolut" />
-                  <Label htmlFor="revolut">Revolut</Label>
-                </div>
-              </RadioGroup>
-            </div>
-
-            <Button 
-              type="submit" 
-              className="w-full bg-primary-800 hover:bg-primary-700"
-              disabled={loading}
-            >
-              {loading ? 'A processar...' : 'Enviar Registo para Aprovação'}
+            <Button type="submit" className="w-full bg-primary-800 hover:bg-primary-700">
+              {loading ? 'Aguarde...' : 'Criar Conta'}
             </Button>
 
             <div className="text-center">

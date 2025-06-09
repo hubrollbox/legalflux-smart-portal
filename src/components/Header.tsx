@@ -1,9 +1,9 @@
-
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
+import logo from '@/../public/logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,7 +26,7 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-3">
             <div className="bg-white p-2 rounded-xl">
               <img 
-                src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
+                src={logo} 
                 alt="Legalflux Logo" 
                 className="h-8 w-8 object-contain"
               />
