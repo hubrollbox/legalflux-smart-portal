@@ -23,7 +23,7 @@ import {
 import TransacaoForm from '@/components/financeiro/TransacaoForm';
 import { useState } from 'react';
 
-interface Transacao {
+export interface Transacao {
   id: number;
   descricao: string;
   valor: number;

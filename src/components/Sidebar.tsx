@@ -39,10 +39,10 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-full flex flex-col sidebar">
+    <aside className="bg-primary-800 p-2 md:p-4 min-h-[60px] md:min-h-screen w-full md:w-64 flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
-        <img src={logo} alt="Legalflux Logo" className="h-10 w-auto mb-4" />
+        <img src={logo} alt="Legalflux Logo" className="h-10 w-auto mb-0 md:mb-4" />
         <h1 className="text-2xl font-bold text-primary-800">LegalFlux</h1>
         <p className="text-sm text-gray-600 mt-1">Portal Jurídico</p>
       </div>
@@ -92,7 +92,7 @@ const Sidebar = () => {
           Sair
         </Button>
       </div>
-    </div>
+    </aside>
   );
 };
 

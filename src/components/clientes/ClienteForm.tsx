@@ -17,18 +17,21 @@ import {
   BookOpen
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import type { Cliente } from '@/pages/Clientes';
+
+type ClienteFormData = Omit<Cliente, 'id' | 'processos' | 'status' | 'ultimo_contacto' | 'valor_total'> & { enviar_email?: boolean };
 
 interface ClienteFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: any) => Promise<void>;
-  cliente?: any;
+  onSubmit: (data: ClienteFormData) => Promise<void>;
+  cliente?: Cliente;
 }
 
 const ClienteForm = ({ open, onOpenChange, onSubmit, cliente }: ClienteFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<ClienteFormData>({
     nome: cliente?.nome || '',
     email: cliente?.email || '',
     telefone: cliente?.telefone || '',

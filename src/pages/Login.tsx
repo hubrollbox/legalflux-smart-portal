@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import logo from '@/../public/logo.png';
+import { logEvent } from '@/lib/systemLog';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -29,7 +30,7 @@ const Login = () => {
     return null;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -47,8 +48,11 @@ const Login = () => {
       return;
     }
 
+    const { email, password } = formData;
+
     try {
-      const { error } = await signIn(formData.email, formData.password);
+      logEvent('Usuário tentou login', 'info', { email });
+      const { error } = await signIn(email, password);
       
       if (error) {
         const errorMsg = typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : '';
@@ -119,7 +123,7 @@ const Login = () => {
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-primary-800 font-medium">
                   Email

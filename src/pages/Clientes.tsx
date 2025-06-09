@@ -25,7 +25,7 @@ import {
 import ClienteForm from '@/components/clientes/ClienteForm';
 import { useState } from 'react';
 
-interface Cliente {
+export interface Cliente {
   id: number;
   nome: string;
   email: string;

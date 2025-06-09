@@ -6,19 +6,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import type { Transacao } from '@/pages/Financeiro';
+
+type TransacaoFormData = Omit<Transacao, 'id'>;
 
 interface TransacaoFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: (data: any) => Promise<void>;
+  onSubmit: (data: TransacaoFormData) => Promise<void>;
 }
 
 const TransacaoForm = ({ open, onOpenChange, onSubmit }: TransacaoFormProps) => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<TransacaoFormData>({
     descricao: '',
-    valor: '',
+    valor: 0,
     tipo: 'receita',
     status: 'pago',
     cliente: '',
@@ -73,9 +76,8 @@ const TransacaoForm = ({ open, onOpenChange, onSubmit }: TransacaoFormProps) => 
                   <Input
                     id="valor"
                     type="number"
-                    min="0"
                     value={formData.valor}
-                    onChange={(e) => setFormData({ ...formData, valor: e.target.value })}
+                    onChange={e => setFormData({ ...formData, valor: Number(e.target.value) })}
                     required
                   />
                 </div>

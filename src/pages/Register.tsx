@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import type { Database } from '@/integrations/supabase/types';
 import { Eye, EyeOff, Scale } from 'lucide-react';
 import logo from '@/../public/logo.png';
 
@@ -60,20 +61,22 @@ const Register = () => {
 
     try {
       // Create user in users_extended table
+      const userInsert: Database['public']['Tables']['users_extended']['Insert'] = {
+        email: formData.email,
+        role: formData.tipo as 'cliente' | 'assistente' | 'advogado' | 'admin',
+        status: 'pending',
+        nome: formData.nome,
+        telefone: formData.telefone,
+        nif: formData.nif,
+        numero_profissional: formData.numero_profissional,
+        morada: formData.morada,
+        metodo_pagamento: formData.metodo_pagamento as string,
+        dados_faturacao: formData.tipo === 'empresa' ? formData.dados_empresa : {},
+        id: crypto.randomUUID()
+      };
       const { error: insertError } = await supabase
         .from('users_extended')
-        .insert([{
-          email: formData.email,
-          role: formData.tipo as 'cliente' | 'assistente' | 'advogado' | 'admin',
-          status: 'pending',
-          nome: formData.nome,
-          telefone: formData.telefone,
-          nif: formData.nif,
-          numero_profissional: formData.numero_profissional,
-          morada: formData.morada,
-          metodo_pagamento: formData.metodo_pagamento as string,
-          dados_faturacao: formData.tipo === 'empresa' ? formData.dados_empresa : {}
-        }]);
+        .insert([userInsert]);
 
       if (insertError) throw insertError;
 
