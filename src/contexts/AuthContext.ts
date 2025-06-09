@@ -1,7 +1,6 @@
 import { createContext } from 'react';
 import type { User, Session } from '@supabase/supabase-js';
 
-// Define a type for userData (registration extra data)
 export interface UserData {
   nome?: string;
   telefone?: string;
