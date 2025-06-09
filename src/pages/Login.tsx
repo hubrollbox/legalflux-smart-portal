@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Eye, EyeOff, ArrowLeft, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
@@ -51,18 +50,19 @@ const Login = () => {
       const { error } = await signIn(formData.email, formData.password);
       
       if (error) {
-        console.error('Login error:', error);
-        
-        // Handle specific error types
-        if (error.message?.includes('Invalid login credentials')) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const errorMsg = typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : '';
+        if (errorMsg.includes('Invalid login credentials')) {
           setError('Email ou palavra-passe incorrectos.');
-        } else if (error.message?.includes('Email not confirmed')) {
+        } else if (errorMsg.includes('Email not confirmed')) {
           setError('Por favor, confirme o seu email antes de fazer login.');
-        } else if (error.message?.includes('Too many requests')) {
-          setError('Muitas tentativas. Tente novamente em alguns minutos.');
+        } else if (errorMsg.includes('Too many requests')) {
+          setError('Muitas tentativas. Tente novamente mais tarde.');
         } else {
-          setError('Erro ao fazer login. Tente novamente.');
+          setError('Erro ao fazer login.');
         }
+        setLoading(false);
+        return;
       } else {
         toast({
           title: "Login realizado com sucesso!",
