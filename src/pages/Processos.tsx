@@ -108,12 +108,8 @@ const Processos = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="flex-1"
           />
-          <Select
-            value={filterStatus}
-            onValueChange={setFilterStatus}
-            className="flex-1 md:flex-none"
-          >
-            <SelectTrigger>
+          <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <SelectTrigger className="flex-1 md:flex-none">
               <SelectValue placeholder="Filtrar por status" />
             </SelectTrigger>
             <SelectContent>

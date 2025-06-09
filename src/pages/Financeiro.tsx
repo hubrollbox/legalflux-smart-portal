@@ -1,4 +1,3 @@
-
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,6 +20,62 @@ import {
   Plus,
   Filter
 } from 'lucide-react';
+import TransacaoForm from '@/components/financeiro/TransacaoForm';
+import { useState } from 'react';
+
+interface Transacao {
+  id: number;
+  descricao: string;
+  valor: number;
+  tipo: string;
+  data: string;
+  status: string;
+  cliente: string;
+  metodo: string;
+}
+
+const initialTransacoes: Transacao[] = [
+  {
+    id: 1,
+    descricao: 'Honorários - Processo Trabalhista João Silva',
+    valor: 2500,
+    tipo: 'receita',
+    data: '2024-01-10',
+    status: 'pago',
+    cliente: 'João Silva',
+    metodo: 'Transferência'
+  },
+  {
+    id: 2,
+    descricao: 'Honorários - Divórcio Maria Santos',
+    valor: 1800,
+    tipo: 'receita',
+    data: '2024-01-08',
+    status: 'pendente',
+    cliente: 'Maria Santos',
+    metodo: 'Por definir'
+  },
+  {
+    id: 3,
+    descricao: 'Despesas de deslocação - Tribunal',
+    valor: 45,
+    tipo: 'despesa',
+    data: '2024-01-07',
+    status: 'pago',
+    cliente: '-',
+    metodo: 'Cartão'
+  },
+  {
+    id: 4,
+    descricao: 'Honorários - Contrato TechCorp',
+    valor: 5000,
+    tipo: 'receita',
+    data: '2024-01-05',
+    status: 'pago',
+    cliente: 'TechCorp',
+    metodo: 'Transferência'
+  }
+];
 
 const Financeiro = () => {
   const resumoFinanceiro = {
@@ -30,48 +85,18 @@ const Financeiro = () => {
     margem_lucro: 77.6
   };
 
-  const transacoes = [
-    {
-      id: 1,
-      descricao: 'Honorários - Processo Trabalhista João Silva',
-      valor: 2500,
-      tipo: 'receita',
-      data: '2024-01-10',
-      status: 'pago',
-      cliente: 'João Silva',
-      metodo: 'Transferência'
-    },
-    {
-      id: 2,
-      descricao: 'Honorários - Divórcio Maria Santos',
-      valor: 1800,
-      tipo: 'receita',
-      data: '2024-01-08',
-      status: 'pendente',
-      cliente: 'Maria Santos',
-      metodo: 'Por definir'
-    },
-    {
-      id: 3,
-      descricao: 'Despesas de deslocação - Tribunal',
-      valor: 45,
-      tipo: 'despesa',
-      data: '2024-01-07',
-      status: 'pago',
-      cliente: '-',
-      metodo: 'Cartão'
-    },
-    {
-      id: 4,
-      descricao: 'Honorários - Contrato TechCorp',
-      valor: 5000,
-      tipo: 'receita',
-      data: '2024-01-05',
-      status: 'pago',
-      cliente: 'TechCorp',
-      metodo: 'Transferência'
-    }
-  ];
+  const [showForm, setShowForm] = useState(false);
+  const [transacoesList, setTransacoesList] = useState<Transacao[]>(initialTransacoes);
+
+  const handleAddTransacao = async (data: Omit<Transacao, 'id'>) => {
+    setTransacoesList((prev) => [
+      {
+        id: prev.length + 1,
+        ...data
+      },
+      ...prev
+    ]);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -111,7 +136,7 @@ const Financeiro = () => {
               <Download className="h-4 w-4 mr-2" />
               Exportar
             </Button>
-            <Button className="bg-primary-800 hover:bg-primary-700">
+            <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setShowForm(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Nova Transação
             </Button>
@@ -206,7 +231,7 @@ const Financeiro = () => {
                 <Button variant="outline">Despesas</Button>
               </div>
               <div className="text-sm text-gray-600">
-                Total: €{transacoes.reduce((sum, t) => sum + (t.tipo === 'receita' ? t.valor : -t.valor), 0).toLocaleString()}
+                Total: €{transacoesList.reduce((sum, t) => sum + (t.tipo === 'receita' ? t.valor : -t.valor), 0).toLocaleString()}
               </div>
             </div>
           </CardContent>
@@ -234,7 +259,7 @@ const Financeiro = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {transacoes.map((transacao) => (
+                {transacoesList.map((transacao) => (
                   <TableRow key={transacao.id}>
                     <TableCell>
                       <div>
@@ -265,6 +290,13 @@ const Financeiro = () => {
             </Table>
           </CardContent>
         </Card>
+
+        {/* New Transaction Form */}
+        <TransacaoForm
+          open={showForm}
+          onOpenChange={setShowForm}
+          onSubmit={handleAddTransacao}
+        />
       </div>
     </DashboardLayout>
   );

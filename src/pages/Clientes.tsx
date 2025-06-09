@@ -1,4 +1,3 @@
-
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,44 +22,61 @@ import {
   FileText,
   MoreHorizontal
 } from 'lucide-react';
+import ClienteForm from '@/components/clientes/ClienteForm';
+import { useState } from 'react';
+
+interface Cliente {
+  id: number;
+  nome: string;
+  email: string;
+  telefone: string;
+  tipo: string;
+  processos: number;
+  status: string;
+  ultimo_contacto: string;
+  valor_total: string;
+  nif?: string;
+  morada?: string;
+  notas?: string;
+}
+
+const initialClientes: Cliente[] = [
+  {
+    id: 1,
+    nome: 'João Silva',
+    email: 'joao.silva@email.com',
+    telefone: '+351 912 345 678',
+    tipo: 'particular',
+    processos: 3,
+    status: 'activo',
+    ultimo_contacto: '2024-01-10',
+    valor_total: '€8,500'
+  },
+  {
+    id: 2,
+    nome: 'Maria Santos',
+    email: 'maria.santos@email.com',
+    telefone: '+351 923 456 789',
+    tipo: 'particular',
+    processos: 1,
+    status: 'activo',
+    ultimo_contacto: '2024-01-08',
+    valor_total: '€3,500'
+  },
+  {
+    id: 3,
+    nome: 'TechCorp Lda',
+    email: 'contacto@techcorp.pt',
+    telefone: '+351 234 567 890',
+    tipo: 'empresa',
+    processos: 5,
+    status: 'inactivo',
+    ultimo_contacto: '2023-12-20',
+    valor_total: '€25,000'
+  }
+];
 
 const Clientes = () => {
-  const clientes = [
-    {
-      id: 1,
-      nome: 'João Silva',
-      email: 'joao.silva@email.com',
-      telefone: '+351 912 345 678',
-      tipo: 'particular',
-      processos: 3,
-      status: 'activo',
-      ultimo_contacto: '2024-01-10',
-      valor_total: '€8,500'
-    },
-    {
-      id: 2,
-      nome: 'Maria Santos',
-      email: 'maria.santos@email.com',
-      telefone: '+351 923 456 789',
-      tipo: 'particular',
-      processos: 1,
-      status: 'activo',
-      ultimo_contacto: '2024-01-08',
-      valor_total: '€3,500'
-    },
-    {
-      id: 3,
-      nome: 'TechCorp Lda',
-      email: 'contacto@techcorp.pt',
-      telefone: '+351 234 567 890',
-      tipo: 'empresa',
-      processos: 5,
-      status: 'inactivo',
-      ultimo_contacto: '2023-12-20',
-      valor_total: '€25,000'
-    }
-  ];
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'activo':
@@ -85,6 +101,29 @@ const Clientes = () => {
     }
   };
 
+  const [showForm, setShowForm] = useState(false);
+  const [clientesList, setClientesList] = useState<Cliente[]>(initialClientes);
+
+  const handleAddCliente = async (data: Omit<Cliente, 'id' | 'processos' | 'status' | 'ultimo_contacto' | 'valor_total'>) => {
+    setClientesList((prev) => [
+      {
+        id: prev.length + 1,
+        nome: data.nome,
+        email: data.email,
+        telefone: data.telefone,
+        tipo: data.tipo,
+        processos: 0,
+        status: 'pendente',
+        ultimo_contacto: new Date().toISOString().slice(0, 10),
+        valor_total: '€0',
+        nif: data.nif,
+        morada: data.morada,
+        notas: data.notas
+      },
+      ...prev
+    ]);
+  };
+
   return (
     <DashboardLayout>
       <div className="p-6">
@@ -94,7 +133,7 @@ const Clientes = () => {
             <h1 className="text-3xl font-bold text-primary-800">Clientes</h1>
             <p className="text-gray-600">Gerir informações e relacionamento com clientes</p>
           </div>
-          <Button className="bg-primary-800 hover:bg-primary-700">
+          <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setShowForm(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Novo Cliente
           </Button>
@@ -196,7 +235,7 @@ const Clientes = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {clientes.map((cliente) => (
+                {clientesList.map((cliente) => (
                   <TableRow key={cliente.id}>
                     <TableCell>
                       <div className="flex items-center space-x-3">
@@ -252,6 +291,12 @@ const Clientes = () => {
             </Table>
           </CardContent>
         </Card>
+
+        <ClienteForm
+          open={showForm}
+          onOpenChange={setShowForm}
+          onSubmit={handleAddCliente}
+        />
       </div>
     </DashboardLayout>
   );
