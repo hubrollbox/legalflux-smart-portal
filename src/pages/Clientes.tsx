@@ -146,7 +146,7 @@ const Clientes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Total Clientes</p>
-                  <p className="text-2xl font-bold text-primary-800">156</p>
+                  <p className="text-2xl font-bold text-primary-800">{clientesList.length}</p>
                 </div>
                 <Users className="h-8 w-8 text-blue-600" />
               </div>
@@ -157,7 +157,7 @@ const Clientes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Activos</p>
-                  <p className="text-2xl font-bold text-primary-800">132</p>
+                  <p className="text-2xl font-bold text-primary-800">{clientesList.filter(c => c.status === 'activo').length}</p>
                 </div>
                 <div className="h-8 w-8 bg-green-100 rounded-lg flex items-center justify-center">
                   <div className="h-3 w-3 bg-green-600 rounded-full"></div>
@@ -170,7 +170,7 @@ const Clientes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Particulares</p>
-                  <p className="text-2xl font-bold text-primary-800">89</p>
+                  <p className="text-2xl font-bold text-primary-800">{clientesList.filter(c => c.tipo === 'particular').length}</p>
                 </div>
                 <div className="h-8 w-8 bg-blue-100 rounded-lg flex items-center justify-center">
                   <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
@@ -183,7 +183,7 @@ const Clientes = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">Empresas</p>
-                  <p className="text-2xl font-bold text-primary-800">67</p>
+                  <p className="text-2xl font-bold text-primary-800">{clientesList.filter(c => c.tipo === 'empresa').length}</p>
                 </div>
                 <div className="h-8 w-8 bg-purple-100 rounded-lg flex items-center justify-center">
                   <div className="h-3 w-3 bg-purple-600 rounded-full"></div>
@@ -202,6 +202,7 @@ const Clientes = () => {
                 <Input
                   placeholder="Pesquisar clientes..."
                   className="pl-10 rounded-xl border-gray-200"
+                  // Adicione lógica de busca se desejar
                 />
               </div>
               <Button variant="outline" className="border-primary-800 text-primary-800">
