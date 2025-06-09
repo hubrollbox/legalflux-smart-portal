@@ -38,7 +38,33 @@ export interface Processo {
   movimentos?: Array<{ data: string; descricao: string }>;
 }
 
+class ErrorBoundary extends React.Component {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div>
+          Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const Processos = () => {
+  console.log("Rendering Processos page");
+
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -86,119 +112,121 @@ const Processos = () => {
   });
 
   return (
-    <DashboardLayout>
-      <div className="p-6">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-primary-800">Processos</h1>
-            <p className="text-gray-600">Gerir todos os processos jurídicos</p>
+    <ErrorBoundary>
+      <DashboardLayout>
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-primary-800">Processos</h1>
+              <p className="text-gray-600">Gerir todos os processos jurídicos</p>
+            </div>
+            <Button className="bg-primary-800 hover:bg-primary-700">
+              <Plus className="h-4 w-4 mr-2" />
+              Novo Processo
+            </Button>
           </div>
-          <Button className="bg-primary-800 hover:bg-primary-700">
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Processo
-          </Button>
-        </div>
 
-        {/* Filters and Search */}
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <Input
-            placeholder="Buscar por número ou título..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="flex-1"
-          />
-          <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="flex-1 md:flex-none">
-              <SelectValue placeholder="Filtrar por status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">Todos</SelectItem>
-              <SelectItem value="activo">Activo</SelectItem>
-              <SelectItem value="pendente">Pendente</SelectItem>
-              <SelectItem value="arquivado">Arquivado</SelectItem>
-              <SelectItem value="concluido">Concluído</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+          {/* Filters and Search */}
+          <div className="flex flex-col md:flex-row gap-4 mb-6">
+            <Input
+              placeholder="Buscar por número ou título..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="flex-1"
+            />
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <SelectTrigger className="flex-1 md:flex-none">
+                <SelectValue placeholder="Filtrar por status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">Todos</SelectItem>
+                <SelectItem value="activo">Activo</SelectItem>
+                <SelectItem value="pendente">Pendente</SelectItem>
+                <SelectItem value="arquivado">Arquivado</SelectItem>
+                <SelectItem value="concluido">Concluído</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Process Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {loading
-            ? Array(PAGE_SIZE)
-                .fill(0)
-                .map((_, i) => (
+          {/* Process Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {loading
+              ? Array(PAGE_SIZE)
+                  .fill(0)
+                  .map((_, i) => (
+                    <div
+                      key={i}
+                      className="animate-pulse h-32 bg-gray-200 rounded-2xl"
+                    ></div>
+                  ))
+              : filteredProcessos.map((proc) => (
                   <div
-                    key={i}
-                    className="animate-pulse h-32 bg-gray-200 rounded-2xl"
-                  ></div>
-                ))
-            : filteredProcessos.map((proc) => (
-                <div
-                  key={proc.id}
-                  className="rounded-2xl border-0 shadow-lg p-4 bg-white"
-                >
-                  <h3 className="text-lg font-bold text-primary-800">
-                    {proc.titulo || proc.numero}
-                  </h3>
-                  <p className="text-sm text-gray-600">
-                    Cliente: {proc.cliente || "N/A"}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Advogado: {proc.advogado || "N/A"}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Prazo: {proc.prazo || "N/A"}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Valor: {proc.valor || "N/A"}
-                  </p>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(
-                      proc.status
-                    )}`}
+                    key={proc.id}
+                    className="rounded-2xl border-0 shadow-lg p-4 bg-white"
                   >
-                    {proc.status}
-                  </span>
-                  <Button
-                    className="mt-4 bg-primary-800 hover:bg-primary-700 w-full"
-                    onClick={() => setSelectedProcesso(proc)}
-                  >
-                    Ver Detalhes
-                  </Button>
-                </div>
-              ))}
-        </div>
+                    <h3 className="text-lg font-bold text-primary-800">
+                      {proc.titulo || proc.numero}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Cliente: {proc.cliente || "N/A"}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Advogado: {proc.advogado || "N/A"}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Prazo: {proc.prazo || "N/A"}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Valor: {proc.valor || "N/A"}
+                    </p>
+                    <span
+                      className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(
+                        proc.status
+                      )}`}
+                    >
+                      {proc.status}
+                    </span>
+                    <Button
+                      className="mt-4 bg-primary-800 hover:bg-primary-700 w-full"
+                      onClick={() => setSelectedProcesso(proc)}
+                    >
+                      Ver Detalhes
+                    </Button>
+                  </div>
+                ))}
+          </div>
 
-        {/* Process Details Dialog */}
-        {selectedProcesso && (
-          <ProcessoDetalhes
-            processo={selectedProcesso}
-            open={!!selectedProcesso}
-            onOpenChange={(open) => !open && setSelectedProcesso(null)}
-          />
-        )}
+          {/* Process Details Dialog */}
+          {selectedProcesso && (
+            <ProcessoDetalhes
+              processo={selectedProcesso}
+              open={!!selectedProcesso}
+              onOpenChange={(open) => !open && setSelectedProcesso(null)}
+            />
+          )}
 
-        {/* Pagination */}
-        <div className="flex justify-center mt-4">
-          <ReactPaginate
-            previousLabel={"Anterior"}
-            nextLabel={"Próxima"}
-            breakLabel={"..."}
-            pageCount={Math.ceil(total / PAGE_SIZE)}
-            marginPagesDisplayed={1}
-            pageRangeDisplayed={2}
-            onPageChange={({ selected }) => setPage(selected)}
-            containerClassName={"flex gap-2"}
-            activeClassName={"font-bold underline"}
-            pageClassName={"px-2"}
-            previousClassName={"px-2"}
-            nextClassName={"px-2"}
-            breakClassName={"px-2"}
-          />
+          {/* Pagination */}
+          <div className="flex justify-center mt-4">
+            <ReactPaginate
+              previousLabel={"Anterior"}
+              nextLabel={"Próxima"}
+              breakLabel={"..."}
+              pageCount={Math.ceil(total / PAGE_SIZE)}
+              marginPagesDisplayed={1}
+              pageRangeDisplayed={2}
+              onPageChange={({ selected }) => setPage(selected)}
+              containerClassName={"flex gap-2"}
+              activeClassName={"font-bold underline"}
+              pageClassName={"px-2"}
+              previousClassName={"px-2"}
+              nextClassName={"px-2"}
+              breakClassName={"px-2"}
+            />
+          </div>
         </div>
-      </div>
-    </DashboardLayout>
+      </DashboardLayout>
+    </ErrorBoundary>
   );
 };
 
