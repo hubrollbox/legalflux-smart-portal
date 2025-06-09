@@ -204,6 +204,45 @@ export type Database = {
           },
         ]
       }
+      available_integrations: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          description: string | null
+          documentation_url: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          oauth_config: Json | null
+          type: Database["public"]["Enums"]["integration_type"]
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          documentation_url?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          oauth_config?: Json | null
+          type: Database["public"]["Enums"]["integration_type"]
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          documentation_url?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          oauth_config?: Json | null
+          type?: Database["public"]["Enums"]["integration_type"]
+        }
+        Relationships: []
+      }
       casos: {
         Row: {
           advogado_id: string | null
@@ -287,6 +326,7 @@ export type Database = {
         Row: {
           advogado_id: string | null
           criado_em: string | null
+          criado_por: string | null
           id: string
           telefone: string | null
           user_id: string
@@ -294,6 +334,7 @@ export type Database = {
         Insert: {
           advogado_id?: string | null
           criado_em?: string | null
+          criado_por?: string | null
           id?: string
           telefone?: string | null
           user_id: string
@@ -301,6 +342,7 @@ export type Database = {
         Update: {
           advogado_id?: string | null
           criado_em?: string | null
+          criado_por?: string | null
           id?: string
           telefone?: string | null
           user_id?: string
@@ -635,6 +677,33 @@ export type Database = {
         }
         Relationships: []
       }
+      system_logs: {
+        Row: {
+          created_at: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          severity: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          severity?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          severity?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       tarefas: {
         Row: {
           atribuido_a: string | null
@@ -704,6 +773,9 @@ export type Database = {
           data_transacao: string | null
           descricao: string | null
           id: string
+          metodo_pagamento: string | null
+          observacoes: string | null
+          referencia: string | null
           tipo: string
           valor: number
         }
@@ -714,6 +786,9 @@ export type Database = {
           data_transacao?: string | null
           descricao?: string | null
           id?: string
+          metodo_pagamento?: string | null
+          observacoes?: string | null
+          referencia?: string | null
           tipo: string
           valor: number
         }
@@ -724,6 +799,9 @@ export type Database = {
           data_transacao?: string | null
           descricao?: string | null
           id?: string
+          metodo_pagamento?: string | null
+          observacoes?: string | null
+          referencia?: string | null
           tipo?: string
           valor?: number
         }
@@ -743,6 +821,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_integrations: {
+        Row: {
+          created_at: string | null
+          credentials: Json | null
+          id: string
+          integration_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          credentials?: Json | null
+          id?: string
+          integration_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          credentials?: Json | null
+          id?: string
+          integration_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       users: {
         Row: {
@@ -786,6 +891,60 @@ export type Database = {
         }
         Relationships: []
       }
+      users_extended: {
+        Row: {
+          criado_por: string | null
+          dados_faturacao: Json | null
+          data_criacao: string | null
+          email: string
+          id: string
+          metodo_pagamento: string | null
+          morada: string | null
+          nif: string | null
+          nome: string | null
+          numero_profissional: string | null
+          role: string
+          status: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          telefone: string | null
+        }
+        Insert: {
+          criado_por?: string | null
+          dados_faturacao?: Json | null
+          data_criacao?: string | null
+          email: string
+          id: string
+          metodo_pagamento?: string | null
+          morada?: string | null
+          nif?: string | null
+          nome?: string | null
+          numero_profissional?: string | null
+          role: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          telefone?: string | null
+        }
+        Update: {
+          criado_por?: string | null
+          dados_faturacao?: Json | null
+          data_criacao?: string | null
+          email?: string
+          id?: string
+          metodo_pagamento?: string | null
+          morada?: string | null
+          nif?: string | null
+          nome?: string | null
+          numero_profissional?: string | null
+          role?: string
+          status?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          telefone?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -801,10 +960,33 @@ export type Database = {
       }
     }
     Enums: {
+      integration_status: "ativo" | "inativo" | "erro" | "pendente"
+      integration_type:
+        | "oauth"
+        | "manual"
+        | "citius"
+        | "sitaf"
+        | "stripe"
+        | "gmail"
+        | "drive"
+        | "outlook"
+        | "whatsapp"
+        | "zoom"
+        | "teams"
+      payment_method:
+        | "stripe"
+        | "transferencia"
+        | "cartao"
+        | "paypal"
+        | "revolut"
+        | "mbway"
       plano_tipo: "gratis" | "basico" | "profissional" | "escritorio"
       status_caso: "activo" | "pendente" | "arquivado" | "concluido"
       status_tarefa: "pendente" | "em_progresso" | "concluida" | "atrasada"
       tipo_documento: "peticao" | "contrato" | "processo" | "recibo" | "outro"
+      transaction_type: "receita" | "despesa" | "honorario" | "reembolso"
+      user_role: "cliente" | "advogado" | "assistente" | "admin"
+      user_status: "pending" | "approved" | "suspended" | "cancelled"
       user_type:
         | "cliente"
         | "assistente"
@@ -926,10 +1108,35 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      integration_status: ["ativo", "inativo", "erro", "pendente"],
+      integration_type: [
+        "oauth",
+        "manual",
+        "citius",
+        "sitaf",
+        "stripe",
+        "gmail",
+        "drive",
+        "outlook",
+        "whatsapp",
+        "zoom",
+        "teams",
+      ],
+      payment_method: [
+        "stripe",
+        "transferencia",
+        "cartao",
+        "paypal",
+        "revolut",
+        "mbway",
+      ],
       plano_tipo: ["gratis", "basico", "profissional", "escritorio"],
       status_caso: ["activo", "pendente", "arquivado", "concluido"],
       status_tarefa: ["pendente", "em_progresso", "concluida", "atrasada"],
       tipo_documento: ["peticao", "contrato", "processo", "recibo", "outro"],
+      transaction_type: ["receita", "despesa", "honorario", "reembolso"],
+      user_role: ["cliente", "advogado", "assistente", "admin"],
+      user_status: ["pending", "approved", "suspended", "cancelled"],
       user_type: [
         "cliente",
         "assistente",

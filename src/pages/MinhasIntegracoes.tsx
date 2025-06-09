@@ -6,226 +6,84 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Link as LinkIcon,
   ExternalLink,
-  Database,
-  Mail,
-  Cloud,
-  Calendar,
-  MessageSquare,
-  CreditCard,
-  FileText,
-  Smartphone,
-  Shield,
-  Globe,
-  Zap,
-  Video,
-  Users,
-  BookOpen,
-  Briefcase
+  Plus,
+  Settings,
+  Trash2,
+  Download,
+  Zap
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import ActiveIntegrationCard from '@/components/integrations/ActiveIntegrationCard';
-import AvailableIntegrationCard from '@/components/integrations/AvailableIntegrationCard';
-import MyIntegrationsStats from '@/components/integrations/MyIntegrationsStats';
+import { useIntegrations } from '@/hooks/useIntegrations';
+import IntegrationModal from '@/components/integrations/IntegrationModal';
 import EmptyActiveIntegrations from '@/components/integrations/EmptyActiveIntegrations';
-import NoIntegrationsFound from '@/components/integrations/NoIntegrationsFound';
+import MyIntegrationsStats from '@/components/integrations/MyIntegrationsStats';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const MinhasIntegracoes = () => {
-  const integracoesConfiguradas = [
-    {
-      id: 1,
-      name: 'CITIUS',
-      status: 'conectado',
-      lastSync: '2024-01-10 14:30',
-      icon: Database,
-      syncFrequency: 'A cada 4 horas',
-      category: 'Tribunais'
-    },
-    {
-      id: 5,
-      name: 'Segurança Social',
-      status: 'conectado',
-      lastSync: '2024-01-09 16:45',
-      icon: Database,
-      syncFrequency: 'Diário',
-      category: 'Governo'
-    },
-    {
-      id: 10,
-      name: 'Gmail',
-      status: 'conectado',
-      lastSync: '2024-01-10 15:20',
-      icon: Mail,
-      syncFrequency: 'Tempo real',
-      category: 'Email'
-    },
-    {
-      id: 20,
-      name: 'Google Drive',
-      status: 'conectado',
-      lastSync: '2024-01-10 16:00',
-      icon: Cloud,
-      syncFrequency: 'Automático',
-      category: 'Armazenamento'
-    },
-    {
-      id: 30,
-      name: 'Google Calendar',
-      status: 'conectado',
-      lastSync: '2024-01-10 14:45',
-      icon: Calendar,
-      syncFrequency: 'Tempo real',
-      category: 'Calendário'
-    }
-  ];
-
-  const integracoesDisponiveis = [
-    {
-      id: 2,
-      name: 'Portal da Justiça',
-      description: 'Acesso aos serviços judiciais online',
-      icon: Globe,
-      category: 'Governo'
-    },
-    {
-      id: 4,
-      name: 'AT - Autoridade Tributária',
-      description: 'Portal das Finanças',
-      icon: Shield,
-      category: 'Fiscal'
-    },
-    {
-      id: 11,
-      name: 'Outlook',
-      description: 'Microsoft Outlook para escritórios',
-      icon: Mail,
-      category: 'Email'
-    },
-    {
-      id: 12,
-      name: 'WhatsApp Business',
-      description: 'Comunicação com clientes via WhatsApp',
-      icon: MessageSquare,
-      category: 'Comunicação'
-    },
-    {
-      id: 13,
-      name: 'Zoom',
-      description: 'Videoconferências para audiências',
-      icon: Video,
-      category: 'Comunicação'
-    },
-    {
-      id: 14,
-      name: 'Microsoft Teams',
-      description: 'Colaboração em equipa',
-      icon: Users,
-      category: 'Comunicação'
-    },
-    {
-      id: 21,
-      name: 'Dropbox',
-      description: 'Sincronização de ficheiros',
-      icon: Cloud,
-      category: 'Armazenamento'
-    },
-    {
-      id: 22,
-      name: 'OneDrive',
-      description: 'Armazenamento Microsoft',
-      icon: Cloud,
-      category: 'Armazenamento'
-    },
-    {
-      id: 31,
-      name: 'Outlook Calendar',
-      description: 'Calendário Microsoft',
-      icon: Calendar,
-      category: 'Calendário'
-    },
-    {
-      id: 40,
-      name: 'Microsoft Office 365',
-      description: 'Suite completa de produtividade',
-      icon: FileText,
-      category: 'Produtividade'
-    },
-    {
-      id: 41,
-      name: 'Google Workspace',
-      description: 'Ferramentas colaborativas Google',
-      icon: FileText,
-      category: 'Produtividade'
-    },
-    {
-      id: 42,
-      name: 'Adobe Acrobat',
-      description: 'Gestão avançada de PDFs',
-      icon: FileText,
-      category: 'Produtividade'
-    },
-    {
-      id: 43,
-      name: 'Notion',
-      description: 'Base de conhecimento e notas',
-      icon: BookOpen,
-      category: 'Produtividade'
-    },
-    {
-      id: 50,
-      name: 'iOS Shortcuts',
-      description: 'Automatizações para iPhone/iPad',
-      icon: Smartphone,
-      category: 'Móvel'
-    },
-    {
-      id: 51,
-      name: 'Android Tasker',
-      description: 'Automatizações para Android',
-      icon: Smartphone,
-      category: 'Móvel'
-    },
-    {
-      id: 60,
-      name: 'Stripe',
-      description: 'Processamento de pagamentos',
-      icon: CreditCard,
-      category: 'Financeiro'
-    },
-    {
-      id: 61,
-      name: 'PayPal',
-      description: 'Pagamentos internacionais',
-      icon: CreditCard,
-      category: 'Financeiro'
-    },
-    {
-      id: 70,
-      name: 'Salesforce',
-      description: 'CRM para escritórios',
-      icon: Briefcase,
-      category: 'CRM'
-    },
-    {
-      id: 71,
-      name: 'HubSpot',
-      description: 'Marketing e vendas',
-      icon: Users,
-      category: 'CRM'
-    },
-    {
-      id: 80,
-      name: 'Zapier',
-      description: 'Automação entre aplicações',
-      icon: Zap,
-      category: 'Automação'
-    }
-  ];
+  const [showModal, setShowModal] = useState(false);
+  const { userIntegrations, availableIntegrations, loading, removeIntegration, updateIntegration } = useIntegrations();
+  const { toast } = useToast();
 
   const handleAddIntegration = () => {
-    const tabs = document.querySelector('[role="tablist"]');
-    const disponiveisTab = tabs?.querySelector('[value="disponiveis"]') as HTMLElement;
-    disponiveisTab?.click();
+    setShowModal(true);
   };
+
+  const handleRemoveIntegration = async (id: string, name: string) => {
+    if (confirm(`Tem certeza que deseja remover a integração com ${name}?`)) {
+      await removeIntegration(id);
+    }
+  };
+
+  const handleExportCredentials = (integration: any) => {
+    const data = {
+      name: integration.name,
+      type: integration.integration_type,
+      credentials: integration.credentials,
+      config: integration.config,
+      exported_at: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${integration.name.toLowerCase().replace(/\s+/g, '-')}-credentials.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Sucesso",
+      description: "Credenciais exportadas com sucesso!"
+    });
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'ativo': return 'bg-green-100 text-green-800 border-green-200';
+      case 'erro': return 'bg-red-100 text-red-800 border-red-200';
+      case 'pendente': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="p-6">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -243,8 +101,12 @@ const MinhasIntegracoes = () => {
             <Button variant="outline" asChild>
               <Link to="/integracoes">
                 <ExternalLink className="h-4 w-4 mr-2" />
-                Ver Todas
+                Ver Catálogo
               </Link>
+            </Button>
+            <Button onClick={handleAddIntegration}>
+              <Plus className="h-4 w-4 mr-2" />
+              Adicionar
             </Button>
           </div>
         </div>
@@ -257,30 +119,110 @@ const MinhasIntegracoes = () => {
 
           <TabsContent value="ativas" className="space-y-6">
             {/* Statistics */}
-            <MyIntegrationsStats activeIntegrationsCount={integracoesConfiguradas.length} />
+            <MyIntegrationsStats activeIntegrationsCount={userIntegrations.length} />
 
             {/* Active Integrations */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {integracoesConfiguradas.map((integracao) => (
-                <ActiveIntegrationCard key={integracao.id} integration={integracao} />
-              ))}
-            </div>
-
-            {integracoesConfiguradas.length === 0 && (
+            {userIntegrations.length === 0 ? (
               <EmptyActiveIntegrations onAddIntegration={handleAddIntegration} />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {userIntegrations.map((integration) => (
+                  <Card key={integration.id} className="rounded-2xl border-0 shadow-lg">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-primary-800 text-lg">{integration.name}</CardTitle>
+                        <Badge className={`text-xs ${getStatusColor(integration.status)}`}>
+                          {integration.status}
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-gray-500 capitalize">{integration.integration_type}</p>
+                    </CardHeader>
+                    
+                    <CardContent>
+                      <div className="space-y-3">
+                        {integration.last_sync && (
+                          <p className="text-xs text-gray-500">
+                            Última sincronização: {new Date(integration.last_sync).toLocaleString('pt-PT')}
+                          </p>
+                        )}
+                        
+                        <div className="flex flex-wrap gap-2">
+                          <Button size="sm" variant="outline">
+                            <Settings className="h-4 w-4 mr-1" />
+                            Editar
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => handleExportCredentials(integration)}
+                          >
+                            <Download className="h-4 w-4 mr-1" />
+                            Exportar
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="destructive"
+                            onClick={() => handleRemoveIntegration(integration.id, integration.name)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Remover
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
             )}
           </TabsContent>
 
           <TabsContent value="disponiveis" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {integracoesDisponiveis.map((integracao) => (
-                <AvailableIntegrationCard key={integracao.id} integration={integracao} />
+              {availableIntegrations.map((integration) => (
+                <Card key={integration.id} className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-shadow">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-3 rounded-xl bg-primary-50">
+                        <Zap className="h-6 w-6 text-primary-800" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-primary-800 text-lg">{integration.name}</CardTitle>
+                        <p className="text-sm text-gray-500">{integration.category}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">{integration.description}</p>
+                  </CardHeader>
+                  
+                  <CardContent>
+                    <div className="flex space-x-2">
+                      <Button 
+                        size="sm" 
+                        className="flex-1 bg-primary-800 hover:bg-primary-700"
+                        onClick={handleAddIntegration}
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        Conectar
+                      </Button>
+                      {integration.documentation_url && (
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={integration.documentation_url} target="_blank" rel="noopener noreferrer">
+                            <ExternalLink className="h-4 w-4" />
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
-
-            <NoIntegrationsFound />
           </TabsContent>
         </Tabs>
+
+        <IntegrationModal
+          open={showModal}
+          onOpenChange={setShowModal}
+          availableIntegrations={availableIntegrations}
+        />
       </div>
     </DashboardLayout>
   );
