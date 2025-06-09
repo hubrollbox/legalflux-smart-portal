@@ -1,7 +1,6 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
 export interface ExtendedUser {
@@ -14,7 +13,7 @@ export interface ExtendedUser {
   nif: string | null;
   numero_profissional: string | null;
   morada: string | null;
-  dados_faturacao: any;
+  dados_faturacao: unknown;
   metodo_pagamento: string | null;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
@@ -29,7 +28,7 @@ export const useUserManagement = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('users_extended')
@@ -42,7 +41,8 @@ export const useUserManagement = () => {
       const mappedData: ExtendedUser[] = (data || []).map(item => ({
         ...item,
         role: item.role as ExtendedUser['role'],
-        status: item.status as ExtendedUser['status']
+        status: item.status as ExtendedUser['status'],
+        dados_faturacao: typeof item.dados_faturacao === 'object' && item.dados_faturacao !== null ? item.dados_faturacao : null
       }));
       
       setUsers(mappedData);
@@ -55,7 +55,7 @@ export const useUserManagement = () => {
         variant: "destructive"
       });
     }
-  };
+  }, [toast]);
 
   const approveUser = async (userId: string) => {
     try {
@@ -92,11 +92,22 @@ export const useUserManagement = () => {
     try {
       const { data, error } = await supabase
         .from('users_extended')
-        .insert([{
-          ...userData,
-          status: 'approved',
-          criado_por: user.id
-        }])
+        .insert([
+          {
+            ...userData,
+            status: 'approved',
+            criado_por: user.id,
+            id: crypto.randomUUID(), // Gera um id único para o novo usuário
+            dados_faturacao: null,
+            data_criacao: new Date().toISOString(),
+            metodo_pagamento: null,
+            morada: null,
+            nif: null,
+            numero_profissional: null,
+            stripe_customer_id: null,
+            stripe_subscription_id: null
+          }
+        ])
         .select()
         .single();
 
@@ -123,7 +134,7 @@ export const useUserManagement = () => {
   useEffect(() => {
     fetchUsers();
     setLoading(false);
-  }, []);
+  }, [fetchUsers]);
 
   return {
     users,

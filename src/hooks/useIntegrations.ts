@@ -1,20 +1,22 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import type { Json } from '@/integrations/supabase/types';
 
+// Ajustar o tipo UserIntegration para refletir apenas os campos realmente existentes na tabela user_integrations
 export interface UserIntegration {
   id: string;
   user_id: string;
   integration_type: string;
-  name: string;
-  credentials: any;
-  status: 'ativo' | 'inativo' | 'erro' | 'pendente';
-  last_sync: string | null;
-  config: any;
-  created_at: string;
-  updated_at: string;
+  credentials: Json | null;
+  created_at: string | null;
+  updated_at: string | null;
+  // Os campos abaixo são mockados para compatibilidade de UI, mas não existem no banco
+  name?: string;
+  status?: 'ativo' | 'inativo' | 'erro' | 'pendente';
+  last_sync?: string | null;
+  config?: Json;
 }
 
 export interface AvailableIntegration {
@@ -26,7 +28,7 @@ export interface AvailableIntegration {
   icon_url: string | null;
   documentation_url: string | null;
   is_active: boolean;
-  oauth_config: any;
+  oauth_config: Json;
 }
 
 export const useIntegrations = () => {
@@ -36,7 +38,7 @@ export const useIntegrations = () => {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const fetchUserIntegrations = async () => {
+  const fetchUserIntegrations = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -47,18 +49,14 @@ export const useIntegrations = () => {
 
       if (error) throw error;
       
-      // Map the data to ensure all required fields
+      // Ajustar o mapeamento para refletir apenas os campos realmente existentes na tabela user_integrations
       const mappedData: UserIntegration[] = (data || []).map(item => ({
         id: item.id,
         user_id: item.user_id,
         integration_type: item.integration_type,
-        name: item.name || 'Integração sem nome',
-        credentials: item.credentials || {},
-        status: (item.status as UserIntegration['status']) || 'pendente',
-        last_sync: item.last_sync,
-        config: item.config || {},
-        created_at: item.created_at,
-        updated_at: item.updated_at
+        credentials: item.credentials ?? {},
+        created_at: item.created_at ?? '',
+        updated_at: item.updated_at ?? ''
       }));
       
       setUserIntegrations(mappedData);
@@ -70,7 +68,7 @@ export const useIntegrations = () => {
         variant: "destructive"
       });
     }
-  };
+  }, [user, toast]);
 
   const fetchAvailableIntegrations = async () => {
     try {
@@ -81,7 +79,10 @@ export const useIntegrations = () => {
         .order('name');
 
       if (error) throw error;
-      setAvailableIntegrations(data || []);
+      setAvailableIntegrations((data || []).map(item => ({
+        ...item,
+        oauth_config: item.oauth_config ?? {},
+      })));
     } catch (error) {
       console.error('Error fetching available integrations:', error);
     }
@@ -90,18 +91,20 @@ export const useIntegrations = () => {
   const addIntegration = async (integrationData: {
     integration_type: string;
     name: string;
-    credentials: any;
-    config?: any;
+    credentials: Json;
+    config?: Json;
   }) => {
     if (!user) return null;
 
     try {
       const { data, error } = await supabase
         .from('user_integrations')
-        .insert([{
-          user_id: user.id,
-          ...integrationData
-        }])
+        .insert([
+          {
+            ...integrationData,
+            user_id: user.id
+          }
+        ])
         .select()
         .single();
 
@@ -184,7 +187,7 @@ export const useIntegrations = () => {
     };
 
     loadData();
-  }, [user]);
+  }, [user, fetchUserIntegrations]);
 
   return {
     userIntegrations,
