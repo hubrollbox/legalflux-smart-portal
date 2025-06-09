@@ -18,6 +18,8 @@ import Financeiro from "./pages/Financeiro";
 import Definicoes from "./pages/Definicoes";
 import IAAssistant from "./pages/IAAssistant";
 import MinhasIntegracoes from "./pages/MinhasIntegracoes";
+import ApproveUsers from "./pages/admin/ApproveUsers";
+import CreateUser from "./pages/juridico/CreateUser";
 import Sobre from "./pages/Sobre";
 import Recursos from "./pages/Recursos";
 import Seguranca from "./pages/Seguranca";
@@ -83,6 +85,16 @@ const App = () => (
             <Route path="/minhas-integracoes" element={
               <ProtectedRoute>
                 <MinhasIntegracoes />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/approve-users" element={
+              <ProtectedRoute>
+                <ApproveUsers />
+              </ProtectedRoute>
+            } />
+            <Route path="/juridico/create-user" element={
+              <ProtectedRoute>
+                <CreateUser />
               </ProtectedRoute>
             } />
             <Route path="/definicoes" element={

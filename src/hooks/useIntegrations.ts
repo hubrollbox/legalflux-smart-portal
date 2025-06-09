@@ -46,7 +46,22 @@ export const useIntegrations = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setUserIntegrations(data || []);
+      
+      // Map the data to ensure all required fields
+      const mappedData: UserIntegration[] = (data || []).map(item => ({
+        id: item.id,
+        user_id: item.user_id,
+        integration_type: item.integration_type,
+        name: item.name || 'Integração sem nome',
+        credentials: item.credentials || {},
+        status: (item.status as UserIntegration['status']) || 'pendente',
+        last_sync: item.last_sync,
+        config: item.config || {},
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
+      
+      setUserIntegrations(mappedData);
     } catch (error) {
       console.error('Error fetching user integrations:', error);
       toast({
