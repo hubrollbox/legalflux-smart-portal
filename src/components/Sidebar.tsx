@@ -39,7 +39,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="bg-primary-800 p-2 md:p-4 min-h-[60px] md:min-h-screen w-full md:w-64 flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start">
+    <aside className="bg-white p-2 md:p-4 min-h-[60px] md:min-h-screen w-full md:w-64 flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start border-r border-gray-200">
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
         <img src={logo} alt="Legalflux Logo" className="h-10 w-auto mb-0 md:mb-4" />
