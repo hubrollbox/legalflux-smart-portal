@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { ConflictService } from './ConflictService';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -18,6 +19,13 @@ export async function fetchProcessos(page = 1, limit = 5) {
 }
 
 export async function addProcesso(processo) {
+  // Verificação automática de conflito
+  if (processo.clienteId) {
+    const conflicts = await ConflictService.list({ entity_id: processo.clienteId, resolved: false });
+    if (conflicts.length > 0) {
+      throw new Error('Conflito de interesse detectado para este cliente. Processo não pode ser criado até resolução.');
+    }
+  }
   const { data, error } = await supabase
     .from('processos')
     .insert([processo])
@@ -44,3 +52,10 @@ export async function deleteProcesso(id) {
   if (error) throw error;
   return true;
 }
+
+export const ProcessoService = {
+  fetchProcessos,
+  addProcesso,
+  updateProcesso,
+  deleteProcesso,
+};

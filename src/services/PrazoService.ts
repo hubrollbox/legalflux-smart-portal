@@ -1,6 +1,6 @@
 // PrazoService.ts
 // CRUD for deadlines (prazos) using Supabase
-import { supabase } from '@/integrations/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Prazo {
   id?: string;

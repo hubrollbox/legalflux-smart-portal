@@ -1,9 +1,10 @@
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
 import { generateBlurPlaceholder } from '@/lib/imageUtils';
+import { AlarmeService } from '@/services/AlarmeService';
 
 const blurPlaceholder = generateBlurPlaceholder(100, 40); // Placeholder dimensions for logo
 
@@ -80,6 +81,23 @@ const Header = () => {
 
         {/* Action Buttons */}
         <div className="hidden md:flex items-center space-x-4">
+          <Button
+            variant="ghost"
+            className="text-primary-600 hover:bg-primary-100"
+            aria-label="Ativar notificações"
+            onClick={async () => {
+              const granted = await AlarmeService.requestPermission();
+              if (granted) {
+                AlarmeService.sendPushNotification({
+                  title: 'Notificações Ativadas',
+                  body: 'Você receberá lembretes de prazos e eventos!',
+                });
+              }
+            }}
+          >
+            <Bell className="h-5 w-5 mr-1" />
+            Notificações
+          </Button>
           <Button variant="ghost" className="text-primary-600 hover:bg-primary-100" asChild>
             <Link to="/login">Entrar</Link>
           </Button>

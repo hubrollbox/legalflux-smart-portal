@@ -253,8 +253,14 @@ const Calendario = () => {
                 <Input value={novoEvento.titulo} onChange={e => setNovoEvento({ ...novoEvento, titulo: e.target.value })} required />
               </div>
               <div>
-                <Label>Tipo</Label>
-                <select className="input" value={novoEvento.tipo} onChange={e => setNovoEvento({ ...novoEvento, tipo: e.target.value })}>
+                <Label htmlFor="tipo-evento">Tipo</Label>
+                <select
+                  id="tipo-evento"
+                  className="input"
+                  value={novoEvento.tipo}
+                  onChange={e => setNovoEvento({ ...novoEvento, tipo: e.target.value })}
+                  required
+                >
                   <option value="reuniao">Reunião</option>
                   <option value="audiencia">Audiência</option>
                   <option value="outro">Outro</option>

@@ -6,6 +6,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { Button } from '@/components/ui/button';
 import { toast } from 'react-hot-toast';
+import { AlarmeService } from '@/services/AlarmeService';
 
 interface EventoAgenda {
   id?: string;
@@ -28,15 +29,29 @@ const mockEventos: EventoAgenda[] = [
 export default function AgendaPage() {
   const [eventos, setEventos] = useState<EventoAgenda[]>(mockEventos);
 
-  // Lembrete simples (notificação local)
+  // Solicita permissão e subscreve push ao carregar
+  useEffect(() => {
+    AlarmeService.requestPermission();
+    AlarmeService.subscribeUserToPush();
+  }, []);
+
+  // Agenda lembretes para eventos futuros
   useEffect(() => {
     const now = new Date();
     eventos.forEach(ev => {
       if (ev.lembreteMinutos && ev.dataInicio) {
         const eventoDate = new Date(ev.dataInicio);
         const diff = (eventoDate.getTime() - now.getTime()) / 60000;
-        if (diff > 0 && diff < ev.lembreteMinutos + 1) {
-          toast(`Lembrete: ${ev.titulo} em ${Math.round(diff)} minutos!`);
+        if (diff > 0) {
+          // Agenda notificação para o horário correto
+          const notifyAt = new Date(eventoDate.getTime() - ev.lembreteMinutos * 60000);
+          if (notifyAt > now) {
+            AlarmeService.scheduleLocalNotification({
+              title: `Lembrete: ${ev.titulo}`,
+              body: `O evento começa em ${ev.lembreteMinutos} minutos!`,
+              date: notifyAt
+            });
+          }
         }
       }
     });

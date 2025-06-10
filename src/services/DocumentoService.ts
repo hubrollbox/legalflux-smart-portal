@@ -1,17 +1,14 @@
 // DocumentoService.ts
 // Serviço para upload, versionamento e busca de documentos jurídicos
-import { supabase } from '@/integrations/supabase';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Documento {
   id?: string;
+  caso_id: string;
   nome: string;
   url: string;
-  versao: number;
-  criadoEm?: string;
-  atualizadoEm?: string;
-  processoId?: string;
-  clienteId?: string;
-  textoIndexado?: string;
+  descricao?: string | null;
+  criado_em?: string | null;
 }
 
 const TABLE = 'documentos';
@@ -19,9 +16,8 @@ const TABLE = 'documentos';
 export const DocumentoService = {
   async list(filtro: Partial<Documento> = {}) {
     let query = supabase.from(TABLE).select('*');
-    if (filtro.processoId) query = query.eq('processoId', filtro.processoId);
-    if (filtro.clienteId) query = query.eq('clienteId', filtro.clienteId);
-    const { data, error } = await query.order('atualizadoEm', { ascending: false });
+    if (filtro.caso_id) query = query.eq('caso_id', filtro.caso_id);
+    const { data, error } = await query.order('criado_em', { ascending: false });
     if (error) throw error;
     return data as Documento[];
   },
@@ -31,13 +27,11 @@ export const DocumentoService = {
     const { data, error } = await supabase.storage.from('documentos').upload(filePath, file);
     if (error) throw error;
     // Salvar metadados no banco
-    const doc: Documento = {
+    const doc: Partial<Documento> = {
       ...meta,
       nome: file.name,
       url: data?.path || '',
-      versao: 1,
-      criadoEm: new Date().toISOString(),
-      atualizadoEm: new Date().toISOString(),
+      criado_em: new Date().toISOString(),
     };
     const { data: docData, error: docError } = await supabase.from(TABLE).insert([doc]).select().single();
     if (docError) throw docError;
@@ -48,28 +42,15 @@ export const DocumentoService = {
     const { data: doc, error } = await supabase.from(TABLE).select('*').eq('id', id).single();
     if (error) throw error;
     // Upload nova versão
-    const filePath = `${Date.now()}-v${(doc.versao || 1) + 1}-${file.name}`;
+    const filePath = `${Date.now()}-v2-${file.name}`;
     const { data: uploadData, error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
     if (uploadError) throw uploadError;
     // Atualizar registro
     const { data: updated, error: updateError } = await supabase.from(TABLE).update({
       url: uploadData?.path,
-      versao: (doc.versao || 1) + 1,
-      atualizadoEm: new Date().toISOString(),
+      criado_em: new Date().toISOString(),
     }).eq('id', id).select().single();
     if (updateError) throw updateError;
     return updated as Documento;
-  },
-  async indexarTexto(id: string, texto: string) {
-    // Salva texto extraído/ocr para busca
-    const { data, error } = await supabase.from(TABLE).update({ textoIndexado: texto }).eq('id', id).select().single();
-    if (error) throw error;
-    return data as Documento;
-  },
-  async buscarPorConteudo(query: string) {
-    // Busca por texto indexado
-    const { data, error } = await supabase.from(TABLE).select('*').ilike('textoIndexado', `%${query}%`);
-    if (error) throw error;
-    return data as Documento[];
   },
 };

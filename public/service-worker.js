@@ -23,3 +23,29 @@ self.addEventListener('fetch', (event) => {
     })
   );
 });
+
+// Push notification event
+self.addEventListener('push', function(event) {
+  let data = {};
+  try {
+    data = event.data.json();
+  } catch (e) {
+    data = { title: 'Alerta', body: event.data ? event.data.text() : 'Você tem um novo lembrete.' };
+  }
+  const title = data.title || 'Alerta';
+  const options = {
+    body: data.body || 'Você tem um novo lembrete.',
+    icon: '/logo-legalflux-192.png',
+    badge: '/logo-legalflux-192.png',
+    data: data.url ? { url: data.url } : undefined
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+
+// Notification click event
+self.addEventListener('notificationclick', function(event) {
+  event.notification.close();
+  if (event.notification.data && event.notification.data.url) {
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+  }
+});

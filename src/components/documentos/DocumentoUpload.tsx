@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 
 interface DocumentoUploadProps {
   onUpload: (doc: Documento) => void;
-  processoId?: string;
-  clienteId?: string;
+  casoId: string; // required, matches Supabase schema
+  descricao?: string | null;
 }
 
-export default function DocumentoUpload({ onUpload, processoId, clienteId }: DocumentoUploadProps) {
+export default function DocumentoUpload({ onUpload, casoId, descricao }: DocumentoUploadProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ export default function DocumentoUpload({ onUpload, processoId, clienteId }: Doc
     if (!file) return;
     setLoading(true);
     try {
-      const doc = await DocumentoService.upload(file, { processoId, clienteId });
+      const doc = await DocumentoService.upload(file, { caso_id: casoId, descricao });
       onUpload(doc);
       if (fileRef.current) fileRef.current.value = '';
     } catch (err) {
@@ -31,7 +31,8 @@ export default function DocumentoUpload({ onUpload, processoId, clienteId }: Doc
 
   return (
     <form onSubmit={handleUpload} className="flex gap-2 items-center">
-      <input type="file" ref={fileRef} className="input" required />
+      <label htmlFor="file-upload" className="sr-only">Arquivo</label>
+      <input id="file-upload" type="file" ref={fileRef} className="input" required />
       <Button type="submit" disabled={loading}>{loading ? 'Enviando...' : 'Upload'}</Button>
     </form>
   );

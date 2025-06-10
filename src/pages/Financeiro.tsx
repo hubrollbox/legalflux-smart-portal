@@ -20,15 +20,40 @@ import {
   Plus,
   Filter
 } from 'lucide-react';
-import { useState } from 'react';
-import FinanceiroForm from '@/components/financeiro/FinanceiroForm';
-import FinanceiroList from '@/components/financeiro/FinanceiroList';
-import { ContaFinanceira } from '@/services/FinanceiroService';
-import DashboardChart from '@/components/DashboardChart';
+import { useState, useEffect } from 'react';
+import TransacaoForm from '@/components/financeiro/TransacaoForm';
+import { FinanceiroService, ContaFinanceira } from '@/services/FinanceiroService';
 
 export default function FinanceiroPage() {
   const [editing, setEditing] = useState<ContaFinanceira | null>(null);
   const [refresh, setRefresh] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [transacoesList, setTransacoesList] = useState<ContaFinanceira[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [resumoFinanceiro, setResumoFinanceiro] = useState({
+    receita_mensal: 0,
+    despesas_mensais: 0,
+    pendente_recebimento: 0,
+    margem_lucro: 0,
+  });
+
+  useEffect(() => {
+    setLoading(true);
+    FinanceiroService.list().then(data => {
+      setTransacoesList(data);
+      // Calcular resumo
+      const receita = data.filter(t => t.tipo === 'receita').reduce((sum, t) => sum + (t.valor || 0), 0);
+      const despesas = data.filter(t => t.tipo === 'despesa').reduce((sum, t) => sum + (t.valor || 0), 0);
+      const pendente = data.filter(t => t.tipo === 'receita' && t.status === 'pendente').reduce((sum, t) => sum + (t.valor || 0), 0);
+      const margem = receita > 0 ? Math.round(((receita - despesas) / receita) * 100) : 0;
+      setResumoFinanceiro({
+        receita_mensal: receita,
+        despesas_mensais: despesas,
+        pendente_recebimento: pendente,
+        margem_lucro: margem,
+      });
+    }).finally(() => setLoading(false));
+  }, [refresh]);
 
   const handleSave = () => {
     setEditing(null);
@@ -37,11 +62,29 @@ export default function FinanceiroPage() {
   const handleEdit = (conta: ContaFinanceira) => setEditing(conta);
   const handleDelete = async (id: string) => {
     if (window.confirm('Excluir esta conta?')) {
-      // @ts-ignore
+      // @ts-expect-error dynamic import for service, type not inferred
       await import('@/services/FinanceiroService').then(s => s.FinanceiroService.remove(id));
       setRefresh(r => r + 1);
     }
   };
+
+  function getTipoColor(tipo: string) {
+    if (tipo === 'receita') return 'text-green-700';
+    if (tipo === 'despesa') return 'text-red-700';
+    return '';
+  }
+  function getStatusColor(status: string) {
+    if (status === 'pago') return 'bg-green-100 text-green-800';
+    if (status === 'pendente') return 'bg-yellow-100 text-yellow-800';
+    if (status === 'atrasado') return 'bg-red-100 text-red-800';
+    return 'bg-gray-100 text-gray-800';
+  }
+
+  async function handleAddTransacao(data: Omit<ContaFinanceira, 'id'>) {
+    await FinanceiroService.create(data as ContaFinanceira);
+    setShowForm(false);
+    setRefresh(r => r + 1);
+  }
 
   // Exemplo de dados para o gráfico (substituir por dados reais do FinanceiroService)
   const chartData = {

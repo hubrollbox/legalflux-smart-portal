@@ -1,4 +1,3 @@
-
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,7 @@ import {
   Building,
   Save
 } from 'lucide-react';
+import '../components/usage-bars.css';
 
 const Definicoes = () => {
   return (
@@ -240,7 +240,7 @@ const Definicoes = () => {
                         <span>24 / ∞</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-primary-800 h-2 rounded-full" style={{width: '30%'}}></div>
+                        <div className="bg-primary-800 h-2 rounded-full usage-bar-processos"></div>
                       </div>
                     </div>
                     <div>
@@ -249,7 +249,7 @@ const Definicoes = () => {
                         <span>12GB / 25GB</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-accent-600 h-2 rounded-full" style={{width: '48%'}}></div>
+                        <div className="bg-accent-600 h-2 rounded-full usage-bar-armazenamento"></div>
                       </div>
                     </div>
                   </div>
