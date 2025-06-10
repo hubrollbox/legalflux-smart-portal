@@ -3,10 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
-import Image from 'next/image';
-import logo from '@/public/logo.png';
 import { generateBlurPlaceholder } from '@/lib/imageUtils';
-import SearchBar from './SearchBar';
 
 const blurPlaceholder = generateBlurPlaceholder(100, 40); // Placeholder dimensions for logo
 
@@ -28,36 +25,38 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
         <div className="flex items-center gap-4">
           <Link to="/">
-            <Image 
+            <img 
               src="/logo-legalflux-192.png" 
               alt="Legalflux Logo" 
               width={40} 
               height={40} 
-              priority
               className="h-10 w-auto logo-placeholder"
             />
           </Link>
-          <div className="hidden md:block w-80">
-            <SearchBar onSearch={() => {}} />
-          </div>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/recursos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
-            Recursos
-          </Link>
-          <Link to="/planos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
-            Planos
-          </Link>
-          <Link to="/sobre" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
-            Sobre
+          <Link to="/clientes" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Clientes
           </Link>
           <Link to="/contato" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Contacto
           </Link>
+          <Link to="/integracoes" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Integrações
+          </Link>
+          <Link to="/planos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Planos
+          </Link>
+          <Link to="/recursos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Recursos
+          </Link>
           <Link to="/seguranca" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Segurança
+          </Link>
+          <Link to="/sobre" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Sobre
           </Link>
         </nav>
 
@@ -117,11 +116,6 @@ const Header = () => {
           </div>
         </div>
       )}
-
-      {/* Para mobile, barra de busca abaixo do menu */}
-      <div className="block md:hidden w-full mt-2">
-        <SearchBar onSearch={() => {}} />
-      </div>
     </header>
   );
 };

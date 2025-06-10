@@ -14,6 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ProcessoDetalhes from "@/components/processos/ProcessoDetalhes";
+import AtividadesLog from "@/components/AtividadesLog";
+import ModelosJuridicos from "@/components/ModelosJuridicos";
 
 const PAGE_SIZE = 5;
 
@@ -114,6 +116,16 @@ const Processos = () => {
     return matchesSearch && matchesStatus;
   });
 
+  // Exemplo de uso dos componentes:
+  const logs = [
+    { user: "Usuário X", action: "editou", target: "documento Y", date: "01/10/2023" },
+    { user: "Usuário Y", action: "criou", target: "caso Z", date: "02/10/2023" },
+  ];
+  const modelos = [
+    { nome: "Contrato de Prestação de Serviços", url: "/modelos/contrato-prestacao.pdf" },
+    { nome: "Petição Inicial", url: "/modelos/peticao-inicial.docx" },
+  ];
+
   return (
     <ErrorBoundary>
       <DashboardLayout>
@@ -208,6 +220,20 @@ const Processos = () => {
               onOpenChange={(open) => !open && setSelectedProcesso(null)}
             />
           )}
+
+          {/* Atividades Log e Modelos Jurídicos - Exemplo de uso dos novos componentes */}
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-primary-800 mb-4">
+              Histórico de Alterações
+            </h2>
+            <AtividadesLog logs={logs} />
+          </div>
+          <div className="mt-8">
+            <h2 className="text-2xl font-bold text-primary-800 mb-4">
+              Modelos Jurídicos
+            </h2>
+            <ModelosJuridicos modelos={modelos} />
+          </div>
 
           {/* Pagination */}
           <div className="flex justify-center mt-4">

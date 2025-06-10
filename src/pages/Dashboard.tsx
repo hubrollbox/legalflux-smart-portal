@@ -16,6 +16,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import '../components/DashboardGrid.css';
 import DashboardChart from '@/components/DashboardChart';
+import SearchBar from '@/components/SearchBar';
 
 const Dashboard = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -120,7 +121,11 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="mb-6">
+          <SearchBar onSearch={() => {}} />
+        </div>
+
         {/* Header */}
         <div className="flex justify-between items-center mb-8 dashboard-header">
           <div>

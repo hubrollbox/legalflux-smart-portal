@@ -10,7 +10,6 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
 import { Eye, EyeOff } from 'lucide-react';
-import Image from 'next/image';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -124,7 +123,7 @@ const Register = () => {
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4 register-page">
       <div className="w-full max-w-md flex flex-col items-center">
         <Link to="/">
-          <Image src="/logo-legalflux-192.png" alt="Legalflux Logo" width={64} height={64} className="mb-4" priority />
+          <img src="/logo-legalflux-192.png" alt="Legalflux Logo" width={64} height={64} className="mb-4" />
         </Link>
         <Card className="w-full rounded-2xl border-0 shadow-2xl">
           <CardHeader className="text-center pb-6">
