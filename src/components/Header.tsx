@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
 import logo from '@/public/logo.png';
+import { generateBlurPlaceholder } from '@/lib/imageUtils';
+
+const blurPlaceholder = generateBlurPlaceholder(100, 40); // Placeholder dimensions for logo
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,7 +24,11 @@ const Header = () => {
   return (
     <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200 shadow">
       <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
-        <img src="/logo.png" alt="Legalflux Logo" className="h-10 w-auto" />
+        <img 
+          src="/logo.png" 
+          alt="Legalflux Logo" 
+          className="h-10 w-auto logo-placeholder" 
+        />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">

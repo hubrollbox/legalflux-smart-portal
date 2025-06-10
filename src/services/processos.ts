@@ -51,6 +51,7 @@ export const fetchProcessos = async (page = 1, limit = 5) => {
     return { data, total: Number(total) };
   } catch {
     // Fallback para mock local
+    console.log('Fallback acionado: Mock data carregado', mockProcessos);
     const start = (page - 1) * limit;
     const data = mockProcessos.slice(start, start + limit);
     return { data, total: mockProcessos.length };

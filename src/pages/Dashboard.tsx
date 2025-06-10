@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import OnboardingTour from '@/components/OnboardingTour';
@@ -15,6 +14,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import './components/DashboardGrid.css';
 
 const Dashboard = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
