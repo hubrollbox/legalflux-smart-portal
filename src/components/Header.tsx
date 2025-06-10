@@ -31,24 +31,36 @@ const Header = () => {
               width={40} 
               height={40} 
               className="h-10 w-auto logo-placeholder"
+              onError={e => { (e.target as HTMLImageElement).src = '/logo.png'; }}
             />
           </Link>
         </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link to="/clientes" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+          {/* <Link to="/clientes" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Clientes
-          </Link>
+          </Link> */}
           <Link to="/contato" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Contacto
           </Link>
           <Link to="/integracoes" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Integrações
           </Link>
-          <Link to="/planos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+          <button
+            type="button"
+            className="text-gray-800 hover:text-primary-600 transition-colors font-medium bg-transparent border-0 cursor-pointer"
+            onClick={() => {
+              if (window.location.pathname !== '/') {
+                window.location.href = '/#planos';
+              } else {
+                const el = document.getElementById('planos');
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
             Planos
-          </Link>
+          </button>
           <Link to="/recursos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Recursos
           </Link>
@@ -91,7 +103,15 @@ const Header = () => {
               Recursos
             </Link>
             <button 
-              onClick={() => scrollToSection('planos')} 
+              onClick={() => {
+                setIsMenuOpen(false);
+                if (window.location.pathname !== '/') {
+                  window.location.href = '/#planos';
+                } else {
+                  const el = document.getElementById('planos');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className="text-gray-800 hover:text-primary-600 transition-colors font-medium px-2 py-1 text-left"
             >
               Planos
