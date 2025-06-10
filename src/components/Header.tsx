@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
+import Image from 'next/image';
 import logo from '@/public/logo.png';
 import { generateBlurPlaceholder } from '@/lib/imageUtils';
 
@@ -24,28 +25,33 @@ const Header = () => {
   return (
     <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200 shadow">
       <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
-        <img 
-          src="/logo.png" 
-          alt="Legalflux Logo" 
-          className="h-10 w-auto logo-placeholder" 
-        />
+        <Link to="/">
+          <Image 
+            src="/logo.png" 
+            alt="Legalflux Logo" 
+            width={100} 
+            height={40} 
+            priority
+            className="h-10 w-auto logo-placeholder"
+          />
+        </Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <Link to="/recursos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Recursos
           </Link>
-          <button 
-            onClick={() => scrollToSection('planos')} 
-            className="text-gray-800 hover:text-primary-600 transition-colors font-medium"
-          >
+          <Link to="/planos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Planos
-          </button>
+          </Link>
           <Link to="/sobre" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Sobre
           </Link>
           <Link to="/contato" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Contacto
+          </Link>
+          <Link to="/seguranca" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Segurança
           </Link>
         </nav>
 
@@ -90,6 +96,9 @@ const Header = () => {
             </Link>
             <Link to="/contato" className="text-gray-800 hover:text-primary-600 transition-colors font-medium px-2 py-1">
               Contacto
+            </Link>
+            <Link to="/seguranca" className="text-gray-800 hover:text-primary-600 transition-colors font-medium px-2 py-1">
+              Segurança
             </Link>
             <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
               <Button variant="ghost" className="text-primary-600 hover:bg-primary-100 justify-start" asChild>

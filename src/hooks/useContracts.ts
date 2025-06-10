@@ -13,16 +13,10 @@ export const useContracts = () => {
 
   return useInfiniteQuery({
     queryKey: ['contracts'],
-    queryFn: ({ pageParam = 0 }: { pageParam: number }) => fetchContracts({ pageParam }),
+    queryFn: async ({ pageParam }: { pageParam: unknown }) => fetchContracts({ pageParam: (pageParam as number) || 0 }),
     getNextPageParam: (lastPage: Contract[], allPages) => {
       return lastPage.length === 10 ? allPages.length : undefined;
     },
-    onError: (error) => {
-      toast({
-        title: 'Erro ao carregar contratos',
-        description: error.message,
-        status: 'error',
-      });
-    },
+    initialPageParam: 0,
   });
 };
