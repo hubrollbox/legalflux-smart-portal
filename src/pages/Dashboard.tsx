@@ -14,7 +14,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import './components/DashboardGrid.css';
+import '../components/DashboardGrid.css';
 
 const Dashboard = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
