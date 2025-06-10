@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../components/DashboardGrid.css';
+import DashboardChart from '@/components/DashboardChart';
 
 const Dashboard = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -235,6 +236,12 @@ const Dashboard = () => {
               </Button>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Gráfico de Receita */}
+        <div className="mb-8">
+          <h2 className="text-xl font-bold text-primary-800 mb-4">Análises</h2>
+          <DashboardChart />
         </div>
 
         {/* Quick Actions */}
