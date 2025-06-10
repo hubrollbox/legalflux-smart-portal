@@ -38,7 +38,10 @@ export interface Processo {
   movimentos?: Array<{ data: string; descricao: string }>;
 }
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
   state = { hasError: false };
 
   static getDerivedStateFromError() {
