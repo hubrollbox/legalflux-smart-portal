@@ -50,36 +50,45 @@ const Login = () => {
 
     const { email, password } = formData;
 
-    try {
-      logEvent('Usuário tentou login', 'info', { email });
-      const { error } = await signIn(email, password);
-      
-      if (error) {
-        const errorMsg = typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : '';
-        if (errorMsg.includes('Invalid login credentials')) {
-          setError('Email ou palavra-passe incorrectos.');
-        } else if (errorMsg.includes('Email not confirmed')) {
-          setError('Por favor, confirme o seu email antes de fazer login.');
-        } else if (errorMsg.includes('Too many requests')) {
-          setError('Muitas tentativas. Tente novamente mais tarde.');
+    const MAX_RETRIES = 3;
+    let attempts = 0;
+
+    while (attempts < MAX_RETRIES) {
+      try {
+        logEvent('Usuário tentou login', 'info', { email });
+        const { error } = await signIn(email, password);
+        
+        if (error) {
+          const errorMsg = typeof error === 'object' && error && 'message' in error ? (error as { message: string }).message : '';
+          if (errorMsg.includes('Invalid login credentials')) {
+            setError('Email ou palavra-passe incorrectos.');
+          } else if (errorMsg.includes('Email not confirmed')) {
+            setError('Por favor, confirme o seu email antes de fazer login.');
+          } else if (errorMsg.includes('Too many requests')) {
+            setError('Muitas tentativas. Tente novamente mais tarde.');
+          } else {
+            setError('Erro ao fazer login.');
+          }
+          setLoading(false);
+          return;
         } else {
-          setError('Erro ao fazer login.');
+          toast({
+            title: "Login realizado com sucesso!",
+            description: "Bem-vindo ao Legalflux",
+          });
+          navigate('/dashboard');
+          return;
         }
-        setLoading(false);
-        return;
-      } else {
-        toast({
-          title: "Login realizado com sucesso!",
-          description: "Bem-vindo ao Legalflux",
-        });
-        navigate('/dashboard');
+      } catch (error) {
+        attempts++;
+        if (attempts >= MAX_RETRIES) {
+          setError('Erro ao fazer login. Por favor, tente novamente mais tarde.');
+          console.error('Login failed after retries:', error);
+        }
       }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-      setError('Erro inesperado. Tente novamente.');
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
@@ -181,7 +190,7 @@ const Login = () => {
 
               <Button 
                 type="submit"
-                className="w-full bg-primary-800 hover:bg-primary-700 text-white py-3 rounded-xl font-semibold"
+                className={`w-full py-3 rounded-xl font-semibold transition-opacity ${loading ? 'opacity-50 cursor-not-allowed' : 'bg-primary-800 hover:bg-primary-700 text-white'}`}
                 disabled={loading}
               >
                 {loading ? 'A entrar...' : 'Entrar'}

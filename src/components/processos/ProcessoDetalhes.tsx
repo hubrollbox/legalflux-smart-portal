@@ -30,7 +30,10 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
     { name: 'Despacho.pdf', url: '#' }
   ]);
   const [uploading, setUploading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const PAGE_SIZE = 5;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -58,6 +61,11 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
     }
   };
 
+  const paginatedDocs = docs.slice(
+    currentPage * PAGE_SIZE,
+    (currentPage + 1) * PAGE_SIZE
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
@@ -70,6 +78,25 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
 
         <ScrollArea className="h-[calc(90vh-8rem)]">
           <div className="p-4">
+            {/* Upload Button with Feedback */}
+            <div className="flex items-center space-x-4 mb-6">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                className="hidden"
+                title="Selecione um arquivo para upload"
+                placeholder="Escolha um arquivo"
+              />
+              <Button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading}
+                className={`transition-colors ${uploading ? 'bg-gray-400' : 'bg-primary-800 hover:bg-primary-700'}`}
+              >
+                {uploading ? 'Carregando...' : 'Anexar Documento'}
+              </Button>
+            </div>
+
             {/* Info Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <Card>
@@ -162,31 +189,34 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {docs.map((doc, idx) => (
-                        <Button key={idx} variant="outline" className="w-full justify-start" asChild>
-                          <a href={doc.url} target="_blank" rel="noopener noreferrer">
-                            <Paperclip className="h-4 w-4 mr-2" />
-                            {doc.name}
-                          </a>
-                        </Button>
+                      {paginatedDocs.map((doc, index) => (
+                        <div key={index} className="flex items-center justify-between">
+                          <span>{doc.name}</span>
+                          <Button
+                            variant="outline"
+                            className="text-sm"
+                            onClick={() => console.log(`Downloading ${doc.name}`)}
+                          >
+                            Baixar
+                          </Button>
+                        </div>
                       ))}
-                      <div className="flex items-center gap-2 mt-4">
-                        <input
-                          type="file"
-                          ref={fileInputRef}
-                          className="hidden"
-                          onChange={handleFileUpload}
-                          accept="application/pdf"
-                          title="Selecione um documento para anexar"
-                        />
-                        <Button
-                          variant="secondary"
-                          onClick={() => fileInputRef.current?.click()}
-                          disabled={uploading}
-                        >
-                          {uploading ? 'A carregar...' : 'Anexar Documento'}
-                        </Button>
-                      </div>
+                    </div>
+                    <div className="flex justify-center mt-4">
+                      <Button
+                        variant="outline"
+                        disabled={currentPage === 0}
+                        onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 0))}
+                      >
+                        Anterior
+                      </Button>
+                      <Button
+                        variant="outline"
+                        disabled={(currentPage + 1) * PAGE_SIZE >= docs.length}
+                        onClick={() => setCurrentPage((prev) => prev + 1)}
+                      >
+                        Próxima
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

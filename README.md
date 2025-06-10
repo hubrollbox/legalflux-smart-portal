@@ -72,3 +72,49 @@ A: Node.js v18+ e npm v9+.
 
 Q: Como obtenho suporte?
 A: Abra uma issue no GitHub.
+
+## Setup e Deploy
+
+### Pré-requisitos
+- Node.js v18+ e npm v9+ (recomendado).
+- Instale com [nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+
+### Passos para Configuração
+1. Clone o repositório:
+   ```sh
+   git clone https://github.com/hubrollbox/legalflux-smart-portal.git
+   ```
+2. Navegue até o diretório do projeto:
+   ```sh
+   cd legalflux-smart-portal
+   ```
+3. Instale as dependências:
+   ```sh
+   npm install
+   ```
+4. Inicie o servidor de desenvolvimento:
+   ```sh
+   npm run dev
+   ```
+
+### Deploy
+Utilize plataformas como Vercel, Netlify ou AWS para deploy.
+
+#### Exemplo com Vercel
+1. Crie uma conta em [Vercel](https://vercel.com).
+2. Importe o repositório e siga as instruções da plataforma.
+
+## Melhorias Implementadas
+
+### Segurança
+- Gestão de credenciais AWS aprimorada com variáveis de ambiente.
+
+### Estabilidade
+- Correções de erros de login e carregamento.
+
+### Funcionalidades
+- Paginação para listas longas.
+- Estados de carregamento durante ações.
+
+### Testes
+- Configuração inicial para Jest e Cypress adicionada.
