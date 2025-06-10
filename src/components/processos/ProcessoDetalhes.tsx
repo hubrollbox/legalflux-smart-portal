@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -31,9 +31,25 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
   ]);
   const [uploading, setUploading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
+  const [filters, setFilters] = useState({});
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const PAGE_SIZE = 5;
+
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('processFilters');
+    if (savedFilters) {
+      setFilters(JSON.parse(savedFilters));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('processFilters', JSON.stringify(filters));
+  }, [filters]);
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -53,11 +69,33 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Verificar tipo MIME
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Tipo de arquivo não permitido. Apenas PDF, JPEG e PNG são aceitos.');
+        return;
+      }
+
+      // Limitar tamanho do arquivo (5MB)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        alert('O arquivo excede o tamanho máximo permitido de 5MB.');
+        return;
+      }
+
       setUploading(true);
       setTimeout(() => {
-        setDocs((prev) => [...prev, { name: file.name, url: '#' }]);
+        setDocs((prev) => [...prev, { name: file.name.replace(/[^a-zA-Z0-9.]/g, '_'), url: '#' }]);
         setUploading(false);
       }, 1200);
+    }
+  };
+
+  const handlePreview = (doc) => {
+    if (doc.url.endsWith('.pdf')) {
+      window.open(doc.url, '_blank');
+    } else {
+      alert('Preview não disponível para este tipo de documento.');
     }
   };
 
@@ -192,13 +230,22 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
                       {paginatedDocs.map((doc, index) => (
                         <div key={index} className="flex items-center justify-between">
                           <span>{doc.name}</span>
-                          <Button
-                            variant="outline"
-                            className="text-sm"
-                            onClick={() => console.log(`Downloading ${doc.name}`)}
-                          >
-                            Baixar
-                          </Button>
+                          <div className="flex space-x-2">
+                            <Button
+                              variant="outline"
+                              className="text-sm"
+                              onClick={() => handlePreview(doc)}
+                            >
+                              Preview
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="text-sm"
+                              onClick={() => console.log(`Downloading ${doc.name}`)}
+                            >
+                              Baixar
+                            </Button>
+                          </div>
                         </div>
                       ))}
                     </div>

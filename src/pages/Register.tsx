@@ -39,6 +39,27 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validação de e-mail
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      toast({
+        title: 'Erro',
+        description: 'E-mail inválido.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Validação de força de senha
+    if (formData.password.length < 8) {
+      toast({
+        title: 'Erro',
+        description: 'A senha deve ter pelo menos 8 caracteres.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     // Validação de confirmação de senha
     if (formData.password !== formData.confirmPassword) {
       toast({
