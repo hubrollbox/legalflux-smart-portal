@@ -6,6 +6,7 @@ import { useScrollToTop } from '@/hooks/useScrollToTop';
 import Image from 'next/image';
 import logo from '@/public/logo.png';
 import { generateBlurPlaceholder } from '@/lib/imageUtils';
+import SearchBar from './SearchBar';
 
 const blurPlaceholder = generateBlurPlaceholder(100, 40); // Placeholder dimensions for logo
 
@@ -23,18 +24,23 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200 shadow">
+    <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200 shadow sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
-        <Link to="/">
-          <Image 
-            src="/logo-legalflux-192.png" 
-            alt="Legalflux Logo" 
-            width={40} 
-            height={40} 
-            priority
-            className="h-10 w-auto logo-placeholder"
-          />
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link to="/">
+            <Image 
+              src="/logo-legalflux-192.png" 
+              alt="Legalflux Logo" 
+              width={40} 
+              height={40} 
+              priority
+              className="h-10 w-auto logo-placeholder"
+            />
+          </Link>
+          <div className="hidden md:block w-80">
+            <SearchBar onSearch={() => {}} />
+          </div>
+        </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
@@ -111,6 +117,11 @@ const Header = () => {
           </div>
         </div>
       )}
+
+      {/* Para mobile, barra de busca abaixo do menu */}
+      <div className="block md:hidden w-full mt-2">
+        <SearchBar onSearch={() => {}} />
+      </div>
     </header>
   );
 };

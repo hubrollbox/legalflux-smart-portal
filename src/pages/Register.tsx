@@ -6,12 +6,11 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import type { Database } from '@/integrations/supabase/types';
-import { Eye, EyeOff, Scale } from 'lucide-react';
-import logo from '@/../public/logo.png';
+import { Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -123,194 +122,118 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center p-4 register-page">
-      <img src={logo} alt="Legalflux Logo" className="h-12 w-auto mb-6" />
-      <Card className="w-full max-w-2xl rounded-2xl border-0 shadow-2xl">
-        <CardHeader className="text-center pb-8">
-          <div className="flex justify-center mb-4">
-            <Scale className="h-12 w-12 text-primary-800" />
-          </div>
-          <CardTitle className="text-3xl font-bold text-primary-800">
-            Criar Conta - LegalFlux
-          </CardTitle>
-          <p className="text-gray-600">
-            Junte-se à plataforma jurídica mais avançada dos PALOP
-          </p>
-        </CardHeader>
-
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Dados Básicos */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="nome">Nome Completo *</Label>
-                <Input
-                  id="nome"
-                  type="text"
-                  value={formData.nome}
-                  onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="email">Email *</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="password">Palavra-passe *</Label>
-                <div className="relative">
+      <div className="w-full max-w-md flex flex-col items-center">
+        <Link to="/">
+          <Image src="/logo-legalflux-192.png" alt="Legalflux Logo" width={64} height={64} className="mb-4" priority />
+        </Link>
+        <Card className="w-full rounded-2xl border-0 shadow-2xl">
+          <CardHeader className="text-center pb-6">
+            <CardTitle className="text-2xl font-bold text-primary-800">
+              Criar Conta
+            </CardTitle>
+            <p className="text-gray-600 text-base">
+              Junte-se à plataforma jurídica mais avançada dos PALOP
+            </p>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="nome">Nome Completo *</Label>
                   <Input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    id="nome"
+                    type="text"
+                    value={formData.nome}
+                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                     required
                   />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
+                </div>
+                <div>
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                  />
                 </div>
               </div>
-              <div>
-                <Label htmlFor="confirmPassword">Confirmar Palavra-passe *</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="telefone">Telefone</Label>
-                <Input
-                  id="telefone"
-                  type="tel"
-                  value={formData.telefone}
-                  onChange={(e) => setFormData({ ...formData, telefone: e.target.value })}
-                />
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="password">Palavra-passe *</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Esconder palavra-passe' : 'Mostrar palavra-passe'}
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
+                    </Button>
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="confirmPassword">Confirmar Palavra-passe *</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    value={formData.confirmPassword}
+                    onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                    required
+                  />
+                </div>
               </div>
               <div>
                 <Label htmlFor="tipo">Tipo de Utilizador *</Label>
                 <Select value={formData.tipo} onValueChange={(value) => setFormData({ ...formData, tipo: value })}>
-                  <SelectTrigger>
+                  <SelectTrigger id="tipo" name="tipo" required>
                     <SelectValue placeholder="Selecione o tipo" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="cliente">Cliente</SelectItem>
                     <SelectItem value="advogado">Advogado</SelectItem>
                     <SelectItem value="assistente">Assistente</SelectItem>
-                    <SelectItem value="empresa">Empresa</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-            </div>
-
-            {/* Campos Condicionais */}
-            {formData.tipo === 'advogado' && (
-              <div>
-                <Label htmlFor="numero_profissional">Número Profissional *</Label>
-                <Input
-                  id="numero_profissional"
-                  type="text"
-                  value={formData.numero_profissional}
-                  onChange={(e) => setFormData({ ...formData, numero_profissional: e.target.value })}
-                  placeholder="Ex: 12345-OA"
-                  required
-                />
-              </div>
-            )}
-
-            {formData.tipo === 'empresa' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {formData.tipo === 'advogado' && (
                 <div>
-                  <Label htmlFor="nome_empresa">Nome da Empresa</Label>
+                  <Label htmlFor="numero_profissional">Número Profissional *</Label>
                   <Input
-                    id="nome_empresa"
+                    id="numero_profissional"
                     type="text"
-                    value={formData.dados_empresa.nome_empresa}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      dados_empresa: { ...formData.dados_empresa, nome_empresa: e.target.value }
-                    })}
+                    value={formData.numero_profissional}
+                    onChange={(e) => setFormData({ ...formData, numero_profissional: e.target.value })}
+                    placeholder="Ex: 12345-OA"
+                    required
                   />
                 </div>
-                <div>
-                  <Label htmlFor="setor">Setor</Label>
-                  <Input
-                    id="setor"
-                    type="text"
-                    value={formData.dados_empresa.setor}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      dados_empresa: { ...formData.dados_empresa, setor: e.target.value }
-                    })}
-                  />
-                </div>
+              )}
+              <Button type="submit" className="w-full bg-primary-800 hover:bg-primary-700">
+                {loading ? 'Aguarde...' : 'Criar Conta'}
+              </Button>
+              <div className="text-center">
+                <p className="text-gray-600">
+                  Já tem conta?{' '}
+                  <Link to="/login" className="text-primary-800 hover:underline font-medium">
+                    Fazer login
+                  </Link>
+                </p>
               </div>
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="nif">NIF</Label>
-                <Input
-                  id="nif"
-                  type="text"
-                  value={formData.nif}
-                  onChange={(e) => setFormData({ ...formData, nif: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="metodo_pagamento">Método de Pagamento *</Label>
-                <RadioGroup
-                  id="metodo_pagamento"
-                  value={formData.metodo_pagamento}
-                  onValueChange={(value) => setFormData({ ...formData, metodo_pagamento: value })}
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="paypal" id="paypal" />
-                    <Label htmlFor="paypal">PayPal</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="revolut" id="revolut" />
-                    <Label htmlFor="revolut">Revolut</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full bg-primary-800 hover:bg-primary-700">
-              {loading ? 'Aguarde...' : 'Criar Conta'}
-            </Button>
-
-            <div className="text-center">
-              <p className="text-gray-600">
-                Já tem conta?{' '}
-                <Link to="/login" className="text-primary-800 hover:underline font-medium">
-                  Fazer login
-                </Link>
-              </p>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
