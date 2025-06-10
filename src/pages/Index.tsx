@@ -20,7 +20,7 @@ const Index = () => {
         </div>
       </main>
       <Footer />
-      <Image src="/logo.png" alt="Logo" width={200} height={100} priority />
+      <Image src="/logo.png" alt="Logo" width={200} height={100} loading="lazy" priority />
     </div>
   );
 };

@@ -17,3 +17,23 @@ export const fetchContracts = async ({ pageParam = 0 }) => {
 
   return data;
 };
+
+export async function getTemplate(templateId: string, userId: string) {
+  const { data: template } = await supabase
+    .from('templates')
+    .select('*')
+    .eq('id', templateId)
+    .eq('owner_id', userId) // Verifica se o usuário é o dono
+    .single();
+  if (!template) {
+    throw new Error('Acesso negado ao template.');
+  }
+  return template;
+}
+
+export async function getUserContracts(userId: string) {
+  return supabase
+    .from('contracts')
+    .select('id, title, status') // Remove 'parties'
+    .eq('user_id', userId);
+}
