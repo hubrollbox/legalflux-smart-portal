@@ -27,9 +27,9 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
         <Link to="/">
           <Image 
-            src="/logo.png" 
+            src="/logo-legalflux-192.png" 
             alt="Legalflux Logo" 
-            width={100} 
+            width={40} 
             height={40} 
             priority
             className="h-10 w-auto logo-placeholder"
