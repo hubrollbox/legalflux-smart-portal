@@ -15,6 +15,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 import type { Processo } from '@/pages/Processos';
+import { useNavigate } from 'react-router-dom';
 
 interface ProcessoDetalhesProps {
   processo: Processo;
@@ -23,6 +24,7 @@ interface ProcessoDetalhesProps {
 }
 
 const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProps) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('resumo');
   const [docs, setDocs] = useState([
     { name: 'Petição Inicial.pdf', url: '#' },
@@ -108,11 +110,24 @@ const ProcessoDetalhes = ({ processo, open, onOpenChange }: ProcessoDetalhesProp
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
         <DialogHeader>
+          <button
+            onClick={() => navigate(-1)}
+            className="text-sm text-primary-800 hover:underline mb-4"
+          >
+            &larr; Voltar
+          </button>
           <DialogTitle className="text-2xl font-bold text-primary-800 flex items-center">
             <FileText className="h-6 w-6 mr-2" />
             {processo.titulo || processo.numero}
           </DialogTitle>
         </DialogHeader>
+
+        {/* Breadcrumbs */}
+        <nav className="text-sm text-gray-600 mb-4">
+          <span className="hover:underline cursor-pointer" onClick={() => navigate('/dashboard')}>Dashboard</span> &gt; 
+          <span className="hover:underline cursor-pointer" onClick={() => navigate('/processos')}>Processos</span> &gt; 
+          <span>{processo.titulo || processo.numero}</span>
+        </nav>
 
         <ScrollArea className="h-[calc(90vh-8rem)]">
           <div className="p-4">
