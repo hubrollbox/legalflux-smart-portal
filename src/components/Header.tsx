@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
-import logo from '@/../public/logo.png';
+import logo from '@/public/logo.png';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,48 +19,50 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200">
-      <img src={logo} alt="Legalflux Logo" className="h-10 w-auto" />
+    <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200 shadow">
+      <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
+        <img src={logo} alt="Legalflux Logo" className="h-10 w-auto" />
 
-      {/* Desktop Navigation */}
-      <nav className="hidden md:flex items-center space-x-8">
-        <Link to="/recursos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
-          Recursos
-        </Link>
-        <button 
-          onClick={() => scrollToSection('planos')} 
-          className="text-gray-800 hover:text-primary-600 transition-colors font-medium"
-        >
-          Planos
-        </button>
-        <Link to="/sobre" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
-          Sobre
-        </Link>
-        <Link to="/contato" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
-          Contacto
-        </Link>
-      </nav>
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-8">
+          <Link to="/recursos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Recursos
+          </Link>
+          <button 
+            onClick={() => scrollToSection('planos')} 
+            className="text-gray-800 hover:text-primary-600 transition-colors font-medium"
+          >
+            Planos
+          </button>
+          <Link to="/sobre" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Sobre
+          </Link>
+          <Link to="/contato" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Contacto
+          </Link>
+        </nav>
 
-      {/* Action Buttons */}
-      <div className="hidden md:flex items-center space-x-4">
-        <Button variant="ghost" className="text-primary-600 hover:bg-primary-100" asChild>
-          <Link to="/login">Entrar</Link>
-        </Button>
-        <Button className="bg-primary-600 hover:bg-primary-500 text-white px-6" asChild>
-          <Link to="/register">Começar Gratuitamente</Link>
-        </Button>
-      </div>
+        {/* Action Buttons */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Button variant="ghost" className="text-primary-600 hover:bg-primary-100" asChild>
+            <Link to="/login">Entrar</Link>
+          </Button>
+          <Button className="bg-primary-600 hover:bg-primary-500 text-white px-6" asChild>
+            <Link to="/register">Começar Gratuitamente</Link>
+          </Button>
+        </div>
 
-      {/* Mobile Menu Button */}
-      <div className="md:hidden">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="text-primary-600"
-        >
-          {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </Button>
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-primary-600"
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </Button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
