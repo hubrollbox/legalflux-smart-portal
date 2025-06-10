@@ -21,7 +21,7 @@ const Header = () => {
   return (
     <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200 shadow">
       <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
-        <img src={logo} alt="Legalflux Logo" className="h-10 w-auto" />
+        <img src="/logo.png" alt="Legalflux Logo" className="h-10 w-auto" />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
