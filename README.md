@@ -1,73 +1,74 @@
-# Welcome to your Lovable project
+LegalFlux Smart Portal
+Uma plataforma moderna e completa construída com Vite, TypeScript, React, shadcn-ui e Tailwind CSS. O portal foi projetado para simplificar fluxos jurídicos, com um ambiente de desenvolvimento amigável para equipes e indivíduos.
 
-## Project info
+Índice
+Visão Geral do Projeto
+Como editar o código
+Desenvolvimento Local
+Editar diretamente no GitHub
+GitHub Codespaces
+Tecnologias Utilizadas
+Deploy
+Contribuindo
+Licença
+FAQ
+Visão Geral do Projeto
+LegalFlux Smart Portal busca simplificar fluxos jurídicos para times e indivíduos, com uma stack moderna e fácil de manter.
 
-**URL**: https://lovable.dev/projects/83995024-ea83-4eec-803c-2a3888e7a741
+Como editar o código
+Você pode contribuir ou modificar o projeto das seguintes formas:
 
-## How can I edit this code?
+1. Desenvolvimento local
+Pré-requisitos:
 
-There are several ways of editing your application.
+Node.js (recomendado v18+) e npm (recomendado v9+). Instale com nvm.
+Passos:
 
-**Use Lovable**
+sh
+# Clone o repositório
+git clone https://github.com/hubrollbox/legalflux-smart-portal.git
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/83995024-ea83-4eec-803c-2a3888e7a741) and start prompting.
+# Acesse o diretório do projeto
+cd legalflux-smart-portal
 
-Changes made via Lovable will be committed automatically to this repo.
+# Instale as dependências
+npm install
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Inicie o servidor de desenvolvimento
 npm run dev
-```
+2. Editar diretamente no GitHub
+Navegue até o arquivo desejado.
+Clique no ícone de lápis ("Edit").
+Faça suas alterações e clique em "Commit changes".
+3. GitHub Codespaces
+Abra a página principal do repositório.
+Clique no botão "Code" e selecione a aba "Codespaces".
+Clique em "New codespace".
+Faça as edições desejadas e submeta suas alterações normalmente.
+Tecnologias Utilizadas
+Vite
+TypeScript
+React
+shadcn/ui
+Tailwind CSS
+Deploy
+Para fazer deploy, utilize sua plataforma de hospedagem preferida compatível com aplicações React/Vite, como Vercel, Netlify ou GitHub Pages.
 
-**Edit a file directly in GitHub**
+Exemplo com Vercel:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Crie uma conta em Vercel.
+Importe o repositório e siga as instruções da plataforma.
+Contribuindo
+Contribuições são bem-vindas! Envie um pull request ou abra uma issue para sugestões e correções.
 
-**Use GitHub Codespaces**
+Licença
+MIT License
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Este projeto está licenciado sob os termos da licença MIT. Veja o arquivo LICENSE para mais detalhes.
 
-## What technologies are used for this project?
+FAQ
+Q: Quais versões do Node.js e npm são recomendadas?
+A: Node.js v18+ e npm v9+.
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/83995024-ea83-4eec-803c-2a3888e7a741) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Q: Como obtenho suporte?
+A: Abra uma issue no GitHub.
