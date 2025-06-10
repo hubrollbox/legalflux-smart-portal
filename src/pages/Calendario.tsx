@@ -1,4 +1,3 @@
-
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,14 +10,28 @@ import {
   Clock,
   MapPin
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Prazo, PrazoService } from '@/services/PrazoService';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 const Calendario = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  
-  const eventos = [
+  const [prazos, setPrazos] = useState<Prazo[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [novoEvento, setNovoEvento] = useState({
+    titulo: '',
+    tipo: 'reuniao',
+    data: '',
+    hora: '',
+    local: '',
+    processo: '',
+    cliente: ''
+  });
+  const [eventosAgenda, setEventosAgenda] = useState([
     {
-      id: 1,
+      id: 'a1',
       titulo: 'Audiência - Caso Silva',
       tipo: 'audiencia',
       data: '2024-01-12',
@@ -28,7 +41,7 @@ const Calendario = () => {
       cliente: 'João Silva'
     },
     {
-      id: 2,
+      id: 'a2',
       titulo: 'Reunião - Cliente Santos',
       tipo: 'reuniao',
       data: '2024-01-13',
@@ -36,17 +49,26 @@ const Calendario = () => {
       local: 'Escritório',
       processo: 'Divórcio',
       cliente: 'Maria Santos'
-    },
-    {
-      id: 3,
-      titulo: 'Prazo - Entrega de Petição',
-      tipo: 'prazo',
-      data: '2024-01-15',
-      hora: '17:00',
-      local: 'Online',
-      processo: 'Contrato Empresarial',
-      cliente: 'TechCorp'
     }
+  ]);
+
+  useEffect(() => {
+    PrazoService.list().then(setPrazos);
+  }, []);
+
+  // Unir prazos e eventos de agenda para exibir no calendário
+  const eventos = [
+    ...eventosAgenda,
+    ...prazos.map(p => ({
+      id: p.id,
+      titulo: p.titulo,
+      tipo: 'prazo',
+      data: p.dataVencimento,
+      hora: '',
+      local: '',
+      processo: '',
+      cliente: ''
+    }))
   ];
 
   const getTipoColor = (tipo: string) => {
@@ -76,7 +98,7 @@ const Calendario = () => {
             <h1 className="text-3xl font-bold text-primary-800">Calendário</h1>
             <p className="text-gray-600">Gerir prazos, audiências e compromissos</p>
           </div>
-          <Button className="bg-primary-800 hover:bg-primary-700">
+          <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setShowModal(true)}>
             <Plus className="h-4 w-4 mr-2" />
             Novo Evento
           </Button>
@@ -115,8 +137,9 @@ const Calendario = () => {
                   {Array.from({ length: 35 }, (_, i) => {
                     const day = i - 6; // Start from previous month
                     const isCurrentMonth = day > 0 && day <= 31;
-                    const hasEvent = [12, 13, 15].includes(day);
-                    
+                    // Verifica se há evento neste dia
+                    const dayStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                    const hasEvent = eventos.some(ev => ev.data === dayStr);
                     return (
                       <div 
                         key={i}
@@ -124,7 +147,7 @@ const Calendario = () => {
                           isCurrentMonth 
                             ? 'text-gray-900 hover:bg-primary-50' 
                             : 'text-gray-300'
-                        } ${hasEvent ? 'bg-accent-100 text-accent-800' : ''}`}
+                        } ${hasEvent ? 'bg-accent-100 text-accent-800 font-bold' : ''}`}
                       >
                         {isCurrentMonth ? day : ''}
                         {hasEvent && (
@@ -146,7 +169,9 @@ const Calendario = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {eventos.map((evento) => (
+                  {eventos
+                    .sort((a, b) => (a.data > b.data ? 1 : -1))
+                    .map((evento) => (
                     <div key={evento.id} className="p-4 bg-gray-50 rounded-xl">
                       <div className="flex justify-between items-start mb-2">
                         <h4 className="font-medium text-primary-800">{evento.titulo}</h4>
@@ -157,15 +182,19 @@ const Calendario = () => {
                       <div className="space-y-1 text-sm text-gray-600">
                         <div className="flex items-center">
                           <Clock className="h-4 w-4 mr-2" />
-                          {evento.data} às {evento.hora}
+                          {evento.data}{evento.hora ? ` às ${evento.hora}` : ''}
                         </div>
-                        <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-2" />
-                          {evento.local}
-                        </div>
-                        <p className="text-xs text-gray-500">
-                          {evento.processo} - {evento.cliente}
-                        </p>
+                        {evento.local && (
+                          <div className="flex items-center">
+                            <MapPin className="h-4 w-4 mr-2" />
+                            {evento.local}
+                          </div>
+                        )}
+                        {evento.processo && evento.cliente && (
+                          <p className="text-xs text-gray-500">
+                            {evento.processo} - {evento.cliente}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -200,6 +229,66 @@ const Calendario = () => {
             </Card>
           </div>
         </div>
+
+        {/* Modal de novo evento */}
+        <Dialog open={showModal} onOpenChange={setShowModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Novo Evento de Agenda</DialogTitle>
+            </DialogHeader>
+            <form
+              className="space-y-4"
+              onSubmit={e => {
+                e.preventDefault();
+                setEventosAgenda(evts => [
+                  ...evts,
+                  { ...novoEvento, id: `a${Date.now()}` }
+                ]);
+                setNovoEvento({ titulo: '', tipo: 'reuniao', data: '', hora: '', local: '', processo: '', cliente: '' });
+                setShowModal(false);
+              }}
+            >
+              <div>
+                <Label>Título</Label>
+                <Input value={novoEvento.titulo} onChange={e => setNovoEvento({ ...novoEvento, titulo: e.target.value })} required />
+              </div>
+              <div>
+                <Label>Tipo</Label>
+                <select className="input" value={novoEvento.tipo} onChange={e => setNovoEvento({ ...novoEvento, tipo: e.target.value })}>
+                  <option value="reuniao">Reunião</option>
+                  <option value="audiencia">Audiência</option>
+                  <option value="outro">Outro</option>
+                </select>
+              </div>
+              <div className="flex gap-2">
+                <div className="flex-1">
+                  <Label>Data</Label>
+                  <Input type="date" value={novoEvento.data} onChange={e => setNovoEvento({ ...novoEvento, data: e.target.value })} required />
+                </div>
+                <div className="flex-1">
+                  <Label>Hora</Label>
+                  <Input type="time" value={novoEvento.hora} onChange={e => setNovoEvento({ ...novoEvento, hora: e.target.value })} />
+                </div>
+              </div>
+              <div>
+                <Label>Local</Label>
+                <Input value={novoEvento.local} onChange={e => setNovoEvento({ ...novoEvento, local: e.target.value })} />
+              </div>
+              <div>
+                <Label>Processo</Label>
+                <Input value={novoEvento.processo} onChange={e => setNovoEvento({ ...novoEvento, processo: e.target.value })} />
+              </div>
+              <div>
+                <Label>Cliente</Label>
+                <Input value={novoEvento.cliente} onChange={e => setNovoEvento({ ...novoEvento, cliente: e.target.value })} />
+              </div>
+              <div className="flex gap-2 justify-end">
+                <Button type="button" variant="secondary" onClick={() => setShowModal(false)}>Cancelar</Button>
+                <Button type="submit" className="btn btn-primary">Salvar</Button>
+              </div>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

@@ -20,106 +20,44 @@ import {
   Plus,
   Filter
 } from 'lucide-react';
-import TransacaoForm from '@/components/financeiro/TransacaoForm';
 import { useState } from 'react';
+import FinanceiroForm from '@/components/financeiro/FinanceiroForm';
+import FinanceiroList from '@/components/financeiro/FinanceiroList';
+import { ContaFinanceira } from '@/services/FinanceiroService';
+import DashboardChart from '@/components/DashboardChart';
 
-export interface Transacao {
-  id: number;
-  descricao: string;
-  valor: number;
-  tipo: string;
-  data: string;
-  status: string;
-  cliente: string;
-  metodo: string;
-}
+export default function FinanceiroPage() {
+  const [editing, setEditing] = useState<ContaFinanceira | null>(null);
+  const [refresh, setRefresh] = useState(0);
 
-const initialTransacoes: Transacao[] = [
-  {
-    id: 1,
-    descricao: 'Honorários - Processo Trabalhista João Silva',
-    valor: 2500,
-    tipo: 'receita',
-    data: '2024-01-10',
-    status: 'pago',
-    cliente: 'João Silva',
-    metodo: 'Transferência'
-  },
-  {
-    id: 2,
-    descricao: 'Honorários - Divórcio Maria Santos',
-    valor: 1800,
-    tipo: 'receita',
-    data: '2024-01-08',
-    status: 'pendente',
-    cliente: 'Maria Santos',
-    metodo: 'Por definir'
-  },
-  {
-    id: 3,
-    descricao: 'Despesas de deslocação - Tribunal',
-    valor: 45,
-    tipo: 'despesa',
-    data: '2024-01-07',
-    status: 'pago',
-    cliente: '-',
-    metodo: 'Cartão'
-  },
-  {
-    id: 4,
-    descricao: 'Honorários - Contrato TechCorp',
-    valor: 5000,
-    tipo: 'receita',
-    data: '2024-01-05',
-    status: 'pago',
-    cliente: 'TechCorp',
-    metodo: 'Transferência'
-  }
-];
-
-const Financeiro = () => {
-  const resumoFinanceiro = {
-    receita_mensal: 15280,
-    despesas_mensais: 3420,
-    pendente_recebimento: 8950,
-    margem_lucro: 77.6
+  const handleSave = () => {
+    setEditing(null);
+    setRefresh(r => r + 1);
+  };
+  const handleEdit = (conta: ContaFinanceira) => setEditing(conta);
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Excluir esta conta?')) {
+      // @ts-ignore
+      await import('@/services/FinanceiroService').then(s => s.FinanceiroService.remove(id));
+      setRefresh(r => r + 1);
+    }
   };
 
-  const [showForm, setShowForm] = useState(false);
-  const [transacoesList, setTransacoesList] = useState<Transacao[]>(initialTransacoes);
-
-  const handleAddTransacao = async (data: Omit<Transacao, 'id'>) => {
-    setTransacoesList((prev) => [
+  // Exemplo de dados para o gráfico (substituir por dados reais do FinanceiroService)
+  const chartData = {
+    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+    datasets: [
       {
-        id: prev.length + 1,
-        ...data
+        label: 'Receita',
+        data: [1200, 1500, 1100, 1800, 1700, 2000],
+        backgroundColor: 'rgba(34,197,94,0.5)',
       },
-      ...prev
-    ]);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pago':
-        return 'bg-green-100 text-green-800';
-      case 'pendente':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'atrasado':
-        return 'bg-red-100 text-red-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getTipoColor = (tipo: string) => {
-    switch (tipo) {
-      case 'receita':
-        return 'text-green-600';
-      case 'despesa':
-        return 'text-red-600';
-      default:
-        return 'text-gray-600';
-    }
+      {
+        label: 'Despesa',
+        data: [800, 900, 700, 1200, 1100, 1300],
+        backgroundColor: 'rgba(239,68,68,0.5)',
+      },
+    ],
   };
 
   return (
@@ -136,7 +74,7 @@ const Financeiro = () => {
               <Download className="h-4 w-4 mr-2" />
               Exportar
             </Button>
-            <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setShowForm(true)}>
+            <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setEditing({ descricao: '', valor: 0, tipo: 'receita', status: 'pendente', dataVencimento: '' })}>
               <Plus className="h-4 w-4 mr-2" />
               Nova Transação
             </Button>
@@ -301,5 +239,3 @@ const Financeiro = () => {
     </DashboardLayout>
   );
 };
-
-export default Financeiro;

@@ -70,6 +70,12 @@ const Header = () => {
           <Link to="/sobre" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
             Sobre
           </Link>
+          <Link to="/prazos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Prazos
+          </Link>
+          <Link to="/agenda" className="text-gray-800 hover:text-primary-600 transition-colors font-medium">
+            Agenda
+          </Link>
         </nav>
 
         {/* Action Buttons */}
@@ -124,6 +130,12 @@ const Header = () => {
             </Link>
             <Link to="/seguranca" className="text-gray-800 hover:text-primary-600 transition-colors font-medium px-2 py-1">
               Segurança
+            </Link>
+            <Link to="/prazos" className="text-gray-800 hover:text-primary-600 transition-colors font-medium px-2 py-1">
+              Prazos
+            </Link>
+            <Link to="/agenda" className="text-gray-800 hover:text-primary-600 transition-colors font-medium px-2 py-1">
+              Agenda
             </Link>
             <div className="flex flex-col space-y-2 pt-4 border-t border-gray-200">
               <Button variant="ghost" className="text-primary-600 hover:bg-primary-100 justify-start" asChild>
