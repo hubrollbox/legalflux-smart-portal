@@ -38,12 +38,13 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Validação de confirmação de senha
     if (formData.password !== formData.confirmPassword) {
       toast({
-        title: "Erro",
-        description: "As palavras-passe não coincidem.",
-        variant: "destructive"
+        title: 'Erro',
+        description: 'As senhas não correspondem.',
+        variant: 'destructive',
       });
       return;
     }
