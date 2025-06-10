@@ -23,7 +23,8 @@ import {
   MoreHorizontal
 } from 'lucide-react';
 import ClienteForm from '@/components/clientes/ClienteForm';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchClientes, addCliente, updateCliente, deleteCliente } from '@/services/ClienteService';
 
 export interface Cliente {
   id: number;
@@ -39,42 +40,6 @@ export interface Cliente {
   morada?: string;
   notas?: string;
 }
-
-const initialClientes: Cliente[] = [
-  {
-    id: 1,
-    nome: 'João Silva',
-    email: 'joao.silva@email.com',
-    telefone: '+351 912 345 678',
-    tipo: 'particular',
-    processos: 3,
-    status: 'activo',
-    ultimo_contacto: '2024-01-10',
-    valor_total: '€8,500'
-  },
-  {
-    id: 2,
-    nome: 'Maria Santos',
-    email: 'maria.santos@email.com',
-    telefone: '+351 923 456 789',
-    tipo: 'particular',
-    processos: 1,
-    status: 'activo',
-    ultimo_contacto: '2024-01-08',
-    valor_total: '€3,500'
-  },
-  {
-    id: 3,
-    nome: 'TechCorp Lda',
-    email: 'contacto@techcorp.pt',
-    telefone: '+351 234 567 890',
-    tipo: 'empresa',
-    processos: 5,
-    status: 'inactivo',
-    ultimo_contacto: '2023-12-20',
-    valor_total: '€25,000'
-  }
-];
 
 const Clientes = () => {
   const getStatusColor = (status: string) => {
@@ -102,26 +67,59 @@ const Clientes = () => {
   };
 
   const [showForm, setShowForm] = useState(false);
-  const [clientesList, setClientesList] = useState<Cliente[]>(initialClientes);
+  const [clientesList, setClientesList] = useState<Cliente[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editCliente, setEditCliente] = useState<Cliente | null>(null);
+
+  useEffect(() => {
+    async function loadClientes() {
+      setLoading(true);
+      try {
+        const data = await fetchClientes();
+        setClientesList(data || []);
+      } catch (e) {
+        // TODO: toast de erro
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadClientes();
+  }, []);
 
   const handleAddCliente = async (data: Omit<Cliente, 'id' | 'processos' | 'status' | 'ultimo_contacto' | 'valor_total'>) => {
-    setClientesList((prev) => [
-      {
-        id: prev.length + 1,
-        nome: data.nome,
-        email: data.email,
-        telefone: data.telefone,
-        tipo: data.tipo,
-        processos: 0,
+    try {
+      const novo = await addCliente({
+        ...data,
         status: 'pendente',
+        processos: 0,
         ultimo_contacto: new Date().toISOString().slice(0, 10),
         valor_total: '€0',
-        nif: data.nif,
-        morada: data.morada,
-        notas: data.notas
-      },
-      ...prev
-    ]);
+      });
+      setClientesList((prev) => [novo, ...prev]);
+    } catch (e) {
+      // TODO: toast de erro
+    }
+  };
+
+  const handleEditCliente = async (data) => {
+    if (!editCliente) return;
+    try {
+      const atualizado = await updateCliente(editCliente.id, data);
+      setClientesList((prev) => prev.map(c => c.id === atualizado.id ? atualizado : c));
+      setEditCliente(null);
+    } catch (e) {
+      // TODO: toast de erro
+    }
+  };
+
+  const handleDeleteCliente = async (id: number) => {
+    if (!window.confirm('Tem certeza que deseja remover este cliente?')) return;
+    try {
+      await deleteCliente(id);
+      setClientesList((prev) => prev.filter(c => c.id !== id));
+    } catch (e) {
+      // TODO: toast de erro
+    }
   };
 
   return (
@@ -235,60 +233,67 @@ const Clientes = () => {
                   <TableHead>Acções</TableHead>
                 </TableRow>
               </TableHeader>
-              <TableBody>
-                {clientesList.map((cliente) => (
-                  <TableRow key={cliente.id}>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <Avatar>
-                          <AvatarImage src="" />
-                          <AvatarFallback className="bg-primary-100 text-primary-800">
-                            {cliente.nome.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-medium text-primary-800">{cliente.nome}</p>
+              {loading ? (
+                <div className="text-center py-8">A carregar clientes...</div>
+              ) : (
+                <TableBody>
+                  {clientesList.map((cliente) => (
+                    <TableRow key={cliente.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <Avatar>
+                            <AvatarImage src="" />
+                            <AvatarFallback className="bg-primary-100 text-primary-800">
+                              {cliente.nome.split(' ').map(n => n[0]).join('')}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-primary-800">{cliente.nome}</p>
+                          </div>
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        <div className="flex items-center text-sm">
-                          <Mail className="h-3 w-3 mr-2 text-gray-400" />
-                          {cliente.email}
+                      </TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          <div className="flex items-center text-sm">
+                            <Mail className="h-3 w-3 mr-2 text-gray-400" />
+                            {cliente.email}
+                          </div>
+                          <div className="flex items-center text-sm">
+                            <Phone className="h-3 w-3 mr-2 text-gray-400" />
+                            {cliente.telefone}
+                          </div>
                         </div>
-                        <div className="flex items-center text-sm">
-                          <Phone className="h-3 w-3 mr-2 text-gray-400" />
-                          {cliente.telefone}
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getTipoColor(cliente.tipo)}>
+                          {cliente.tipo}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <FileText className="h-4 w-4 mr-2 text-gray-400" />
+                          {cliente.processos}
                         </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getTipoColor(cliente.tipo)}>
-                        {cliente.tipo}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <FileText className="h-4 w-4 mr-2 text-gray-400" />
-                        {cliente.processos}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(cliente.status)}>
-                        {cliente.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{cliente.ultimo_contacto}</TableCell>
-                    <TableCell className="font-medium">{cliente.valor_total}</TableCell>
-                    <TableCell>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={getStatusColor(cliente.status)}>
+                          {cliente.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{cliente.ultimo_contacto}</TableCell>
+                      <TableCell className="font-medium">{cliente.valor_total}</TableCell>
+                      <TableCell>
+                        <Button variant="ghost" size="sm" onClick={() => setEditCliente(cliente)} title="Editar">
+                          <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M12.65 3.35a2.121 2.121 0 0 1 3 3L7.5 14.5H4v-3.5l8.65-7.65Z"/></svg>
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => handleDeleteCliente(cliente.id)} title="Remover">
+                          <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M6 6v6m4-6v6M3 6h10M5 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              )}
             </Table>
           </CardContent>
         </Card>
@@ -297,6 +302,12 @@ const Clientes = () => {
           open={showForm}
           onOpenChange={setShowForm}
           onSubmit={handleAddCliente}
+        />
+        <ClienteForm
+          open={!!editCliente}
+          onOpenChange={() => setEditCliente(null)}
+          onSubmit={handleEditCliente}
+          cliente={editCliente || undefined}
         />
       </div>
     </DashboardLayout>

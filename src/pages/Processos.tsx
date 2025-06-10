@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchProcessos } from "@/services/processos";
+import { fetchProcessos, addProcesso, updateProcesso, deleteProcesso } from "@/services/ProcessoService";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -16,6 +16,7 @@ import {
 import ProcessoDetalhes from "@/components/processos/ProcessoDetalhes";
 import AtividadesLog from "@/components/AtividadesLog";
 import ModelosJuridicos from "@/components/ModelosJuridicos";
+import ProcessoForm from '@/components/processos/ProcessoForm';
 
 const PAGE_SIZE = 5;
 
@@ -79,6 +80,8 @@ const Processos = () => {
   const [selectedProcesso, setSelectedProcesso] = useState<Processo | null>(
     null
   );
+  const [showForm, setShowForm] = useState(false);
+  const [editProcesso, setEditProcesso] = useState<Processo | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -108,6 +111,37 @@ const Processos = () => {
       .finally(() => setLoading(false));
   }, [page]);
 
+  const handleAddProcesso = async (data) => {
+    try {
+      const novo = await addProcesso(data);
+      setProcessos((prev) => [novo, ...prev]);
+      setShowForm(false);
+    } catch (e) {
+      toast.error("Erro ao adicionar processo");
+    }
+  };
+
+  const handleEditProcesso = async (data) => {
+    if (!editProcesso) return;
+    try {
+      const atualizado = await updateProcesso(editProcesso.id, data);
+      setProcessos((prev) => prev.map(p => p.id === atualizado.id ? atualizado : p));
+      setEditProcesso(null);
+    } catch (e) {
+      toast.error("Erro ao editar processo");
+    }
+  };
+
+  const handleDeleteProcesso = async (id: number) => {
+    if (!window.confirm("Tem certeza que deseja remover este processo?")) return;
+    try {
+      await deleteProcesso(id);
+      setProcessos((prev) => prev.filter(p => p.id !== id));
+    } catch (e) {
+      toast.error("Erro ao remover processo");
+    }
+  };
+
   const filteredProcessos = processos.filter((proc) => {
     const matchesSearch =
       proc.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -136,7 +170,8 @@ const Processos = () => {
               <h1 className="text-3xl font-bold text-primary-800">Processos</h1>
               <p className="text-gray-600">Gerir todos os processos jurídicos</p>
             </div>
-            <Button className="bg-primary-800 hover:bg-primary-700">
+            {/* Substituir botão de novo processo: */}
+            <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setShowForm(true)}>
               <Plus className="h-4 w-4 mr-2" />
               Novo Processo
             </Button>
@@ -208,6 +243,25 @@ const Processos = () => {
                     >
                       Ver Detalhes
                     </Button>
+                    {/* Adicionar botões de editar/remover nos cards de processo: */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setEditProcesso(proc)}
+                      title="Editar"
+                      className="ml-2"
+                    >
+                      <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M12.65 3.35a2.121 2.121 0 0 1 3 3L7.5 14.5H4v-3.5l8.65-7.65Z"/></svg>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDeleteProcesso(proc.id)}
+                      title="Remover"
+                      className="ml-1"
+                    >
+                      <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M6 6v6m4-6v6M3 6h10M5 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    </Button>
                   </div>
                 ))}
           </div>
@@ -254,6 +308,17 @@ const Processos = () => {
             />
           </div>
         </div>
+        <ProcessoForm
+          open={showForm}
+          onOpenChange={setShowForm}
+          onSubmit={handleAddProcesso}
+        />
+        <ProcessoForm
+          open={!!editProcesso}
+          onOpenChange={() => setEditProcesso(null)}
+          onSubmit={handleEditProcesso}
+          processo={editProcesso || undefined}
+        />
       </DashboardLayout>
     </ErrorBoundary>
   );

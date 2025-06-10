@@ -30,7 +30,7 @@ const Header = () => {
               alt="Legalflux Logo" 
               width={40} 
               height={40} 
-              className="h-10 w-auto logo-placeholder"
+              className="h-10 w-auto"
               onError={e => { (e.target as HTMLImageElement).src = '/logo.png'; }}
             />
           </Link>
