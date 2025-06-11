@@ -19,7 +19,7 @@ export function isHoliday(date: Date, holidays: Date[]): boolean {
  * Adds N business days to a date, skipping weekends and holidays.
  */
 export function addBusinessDays(start: Date, days: number, holidays: Date[] = []): Date {
-  let result = new Date(start);
+  const result = new Date(start);
   let added = 0;
   while (added < days) {
     result.setDate(result.getDate() + 1);
