@@ -1,246 +1,101 @@
-# LegalFlux Smart Portal 
-Uma plataforma moderna e eficiente para a gestão de fluxos jurídicos. Desenvolvida com Vite, React, TypeScript, Tailwind CSS e Supabase.
-
----
-
-## 🧭 Índice
-
-- [Visão Geral](#visão-geral)
-- [Funcionalidades](#funcionalidades)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Instalação Local](#instalação-local)
-- [Configuração de Ambiente](#configuração-de-ambiente)
-- [Publicação e Deploy](#publicação-e-deploy)
-- [Testes](#testes)
-- [Planeamento e Evolução](#planeamento-e-evolução)
-- [Recursos Úteis](#recursos-úteis)
-- [Segurança](#segurança)
-- [Contributo](#contributo)
-- [Licença](#licença)
-- [Apoio e Suporte](#apoio-e-suporte)
-- [Agradecimentos](#agradecimentos)
-
----
-
-## 👁 Visão Geral
-
-O **LegalFlux Smart Portal** é uma plataforma web desenvolvida para facilitar a gestão de processos jurídicos, com foco em escritórios de advocacia, juristas e assistentes legais. Através de uma interface intuitiva e moderna, permite a organização de documentos, autenticação segura e gestão de acessos com diferentes níveis de permissão.
-
----
-
-## ✨ Funcionalidades
-
-- 🔐 Autenticação segura através do Supabase Auth  
-- 📁 Armazenamento e gestão de documentos jurídicos  
-- 👥 Gestão de utilizadores com diferentes permissões: Administrador, Cliente, Assistente, Jurista, Escritório  
-- 📊 Painel de controlo com métricas (em desenvolvimento)  
-- 📬 Sistema de notificações e alertas  
-- 🔎 Melhorias na experiência do utilizador com paginação e indicadores de carregamento  
-
----
-
-## 🛠 Tecnologias Utilizadas
-
-**Frontend:**  
-- Vite  
-- React  
-- TypeScript  
-- Tailwind CSS  
-- shadcn/ui  
-
-**Backend e Infraestrutura:**  
-- Supabase (Auth, Storage, PostgreSQL)  
-- Vercel (Hospedagem e CI/CD)
-
-**Testes:**  
-- Jest  
-- Cypress  
-
----
-
-## 🚀 Instalação Local
-
-### Pré-requisitos
-
-- Node.js versão 18 ou superior  
-- npm versão 9 ou superior  
-- Conta Supabase (camada gratuita é suficiente)
-
-### Instruções
-
-```bash
-git clone https://github.com/hubrollbox/legalflux-smart-portal.git
-cd legalflux-smart-portal
-npm install
-Crie um ficheiro .env.local com base no ficheiro .env.example e insira as seguintes variáveis:
-
-env
-Copy
-Edit
-NEXT_PUBLIC_SUPABASE_URL=sua-url-do-supabase
-NEXT_PUBLIC_SUPABASE_ANON_KEY=sua-chave-anónima
-Inicie o servidor de desenvolvimento:
-
-bash
-Copy
-Edit
-npm run dev
-A aplicação estará acessível em http://localhost:3000
-
-⚙️ Configuração de Ambiente
-No Supabase:
-
-Ativar Row-Level Security (RLS) em todas as tabelas.
-
-Definir políticas de acesso seguras e adequadas a cada tabela.
-
-Configurar CORS para permitir apenas os domínios autorizados (ex.: https://legalflux.pt).
-
-Variáveis de Ambiente:
-
-Gerir as variáveis de ambiente através do painel da Vercel.
-
-Nunca expor a chave SUPABASE_SERVICE_ROLE_KEY no frontend.
-
-☁️ Publicação e Deploy
-Recomendado: Vercel
-Criar uma conta gratuita em vercel.com
-
-Ligar o repositório do GitHub à Vercel
-
-Configurar as variáveis de ambiente no painel da Vercel
-
-Ativar cabeçalhos de segurança como CSP e HSTS
-
-Garantir que o Supabase possui RLS ativo e corretamente configurado
-
-Alternativas compatíveis:
-Netlify
-
-Render
-
-Outras plataformas compatíveis com Vite
-
-🧪 Testes
-Testes Unitários (Jest):
-bash
-Copy
-Edit
-npm run test
-Testes End-to-End (Cypress):
-bash
-Copy
-Edit
-npm run cypress:open
-⚠️ Recomenda-se utilizar um projeto Supabase separado para testes, de forma a evitar alterações nos dados reais.
-
-🗺 Planeamento e Evolução
-✅ Sistema de autenticação e permissões
-
-✅ Interface inicial com painel de controlo
-
-☐ Assinatura digital de documentos
-
-☐ Integração com bases jurídicas externas
-
-☐ Exportação de relatórios em formato PDF
-
-☐ Notificações por push e e-mail
-
-☐ Alternância entre temas (claro / escuro)
-
-🔍 Recursos Úteis
-Documentação Vite
-
-Documentação React
-
-Documentação Supabase
-
-Tailwind CSS
-
-shadcn/ui
-
-Conventional Commits
-
-🔒 Segurança
-Tendo em conta a sensibilidade dos dados jurídicos, seguem-se as recomendações de segurança:
-
-Row-Level Security (RLS): ativar e definir políticas de acesso por utilizador.
-
-sql
-Copy
-Edit
-CREATE POLICY "Users can view their own documents"
-ON documents
-FOR SELECT
-USING (auth.uid() = user_id);
-Chaves de API:
-
-Utilizar apenas anon no frontend.
-
-A service_role deve ser usada exclusivamente em ambientes de servidor ou edge functions.
-
-CORS:
-
-Restringir o acesso apenas a domínios autorizados.
-
-Backups:
-
-Ativar backups automáticos no Supabase.
-
-Auditoria e Logs:
-
-Utilizar os logs do Supabase para monitorizar acessos e anomalias.
-
-Evitar comprometer .env.local:
-
-Assegurar que está listado no .gitignore.
-
-Verificação de Segurança:
-
-Utilizar ferramentas como GitGuardian para prevenir exposição de chaves API.
-
-🤝 Contributo
-Siga os passos abaixo para contribuir:
-
-bash
-Copy
-Edit
-git checkout -b feature/nome-da-feature
-git commit -m "feat: descrição da funcionalidade"
-git push origin feature/nome-da-feature
-Efetuar um fork do repositório
-
-Criar uma nova branch
-
-Submeter um Pull Request
-
-Padrões recomendados:
-
-Commits: Conventional Commits
-
-Estilo de código: Guia de Estilo JavaScript da Airbnb
-
-📄 Licença
-Distribuído sob a licença MIT. Consulte o ficheiro LICENSE para mais informações.
-
-💬 Apoio e Suporte
-Caso surjam dúvidas, sugestões ou problemas:
-
-Abrir uma issue neste repositório
-
-Ou contactar por e-mail: suporte@legalflux.com
-
-🌟 Agradecimentos
-O nosso agradecimento especial às comunidades e ferramentas que tornaram este projecto possível:
-
-Supabase
-
-Vite
-
-React
-
-Tailwind CSS
-
-shadcn/ui
-
+# 🚀 LegalFlux Smart Portal
+
+[![Licença MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18-green.svg)](https://nodejs.org/)
+[![Supabase](https://img.shields.io/badge/Supabase-integrated-3ECF8E.svg)](https://supabase.io/)
+
+![Dashboard LegalFlux](Devices_Set_LegalFlux.png) 
+*Painel de controle completo para gestão jurídica*
+
+## 📌 Índice
+
+- [Visão Geral](#-visão-geral)
+- [Destaques](#✨-destaques)
+- [Capturas de Tela](#📸-capturas-de-tela)
+- [Público-Alvo](#🎯-público-alvo)
+- [Planos](#📦-planos)
+- [Tecnologias](#⚙️-tecnologias)
+- [Instalação](#🚀-instalação)
+- [Contato](#📬-contato)
+
+## 🌐 Visão Geral
+
+Plataforma completa para advogados e escritórios que otimiza processos, centraliza informações e potencializa resultados.
+
+**Principais benefícios:**
+- Gestão unificada de casos jurídicos
+- Portal autônomo para clientes
+- Agenda integrada com lembretes automáticos
+- Geração de documentos legais
+
+## ✨ Destaques
+
+### 📋 Painel de Controle Inteligente
+- Visão geral de processos ativos (28+ casos simultâneos)
+- Alertas de prazos críticos
+- Estatísticas de produtividade
+
+### 📅 Gestão de Prazos
+![Mobile Preview](mockup_mobile_Legalflux.png)
+*Visualização mobile de prazos processuais*
+
+- Controle de prazos para os próximos dias
+- Notificações automáticas
+- Integração com calendários
+
+### 📑 Módulo de Insolvência
+- Geração automática de documentos (CIRE Art. 129º, 154º)
+- Gestão de credores e inventário
+- Checklist por fase processual
+
+## 📸 Capturas de Tela
+
+| Dashboard Principal | Visão Mobile |
+|---------------------|--------------|
+| ![Desktop View](Devices_Set_LegalFlux.png) | ![Mobile View](mockup_mobile_Legalflux.png) |
+
+**Funcionalidades visíveis:**
+- Listagem de processos ativos
+- Próximos prazos (2 dias)
+- Documentos recentes adicionados
+- Agenda de audiências
+
+## 🎯 Público-Alvo
+
+- **Advogados autônomos**
+  - Gestão de 20+ casos simultâneos
+  - Controle financeiro integrado
+
+- **Escritórios pequenos/médios**
+  - Até 3 assistentes (plano Profissional)
+  - Dashboard colaborativo
+
+- **Administradores de insolvência**
+  - Módulo especializado (add-on)
+  - Geração de documentos CIRE
+
+## 📦 Planos
+
+| Recurso               | Basic | Profissional | Enterprise |
+|-----------------------|-------|-------------|------------|
+| Processos ilimitados  | ✅    | ✅          | ✅         |
+| Armazenamento         | 100MB | 2GB         | 10GB+      |
+| Assistente jurídico   | ❌    | 3           | Ilimitado  |
+| Dashboard financeiro  | ❌    | Básico      | Completo   |
+| Suporte 24/7          | ❌    | ❌          | ✅         |
+
+## ⚙️ Tecnologias
+
+**Stack Principal:**
+- **Frontend**: Next.js + TailwindCSS
+- **Backend**: Supabase (PostgreSQL)
+- **Autenticação**: Magic Links
+- **Hospedagem**: Vercel Edge
+
+```mermaid
+graph TD
+  A[Clientes] --> B[Next.js]
+  B --> C[Supabase]
+  C --> D[(PostgreSQL)]
+  C --> E[Autenticação]
+  C --> F[Armazenamento]
