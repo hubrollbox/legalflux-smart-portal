@@ -62,8 +62,7 @@ export default function FinanceiroPage() {
   const handleEdit = (conta: ContaFinanceira) => setEditing(conta);
   const handleDelete = async (id: string) => {
     if (window.confirm('Excluir esta conta?')) {
-      // @ts-expect-error dynamic import for service, type not inferred
-      await import('@/services/FinanceiroService').then(s => s.FinanceiroService.remove(id));
+      await FinanceiroService.remove(id);
       setRefresh(r => r + 1);
     }
   };

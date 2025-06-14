@@ -1,3 +1,4 @@
+
 // FinanceiroService.ts
 // CRUD para contas a pagar/receber, faturas e pagamentos
 import { supabase } from '@/integrations/supabase/client';
@@ -14,6 +15,7 @@ export interface ContaFinanceira {
   clienteId?: string;
   criadoEm?: string;
   atualizadoEm?: string;
+  metodo_pagamento?: string;
 }
 
 const TABLE = 'transacoes';
@@ -33,13 +35,14 @@ export const FinanceiroService = {
       descricao: row.descricao,
       valor: row.valor,
       tipo: row.tipo,
-      status: row.status || 'pendente',
+      status: 'pendente', // Default status since it doesn't exist in DB
       dataVencimento: row.data_transacao || '',
-      dataPagamento: row.data_pagamento || '',
+      dataPagamento: '', // Default empty since it doesn't exist in DB
       processoId: row.caso_id || undefined,
       clienteId: row.cliente_id || undefined,
       criadoEm: row.created_at || undefined,
-      atualizadoEm: row.updated_at || undefined,
+      atualizadoEm: undefined, // Default undefined since it doesn't exist in DB
+      metodo_pagamento: row.metodo_pagamento || '',
     })) as ContaFinanceira[];
   },
   async get(id: string) {
@@ -51,13 +54,14 @@ export const FinanceiroService = {
       descricao: data.descricao,
       valor: data.valor,
       tipo: data.tipo,
-      status: data.status || 'pendente',
+      status: 'pendente', // Default status since it doesn't exist in DB
       dataVencimento: data.data_transacao || '',
-      dataPagamento: data.data_pagamento || '',
+      dataPagamento: '', // Default empty since it doesn't exist in DB
       processoId: data.caso_id || undefined,
       clienteId: data.cliente_id || undefined,
       criadoEm: data.created_at || undefined,
-      atualizadoEm: data.updated_at || undefined,
+      atualizadoEm: undefined, // Default undefined since it doesn't exist in DB
+      metodo_pagamento: data.metodo_pagamento || '',
     } as ContaFinanceira;
   },
   async create(conta: ContaFinanceira) {
@@ -66,11 +70,10 @@ export const FinanceiroService = {
       descricao: conta.descricao,
       valor: conta.valor,
       tipo: conta.tipo,
-      status: conta.status,
       data_transacao: conta.dataVencimento,
-      data_pagamento: conta.dataPagamento,
       caso_id: conta.processoId,
       cliente_id: conta.clienteId,
+      metodo_pagamento: conta.metodo_pagamento,
     };
     const { data, error } = await supabase.from(TABLE).insert([insertData]).select().single();
     if (error) throw error;
@@ -80,13 +83,14 @@ export const FinanceiroService = {
       descricao: data.descricao,
       valor: data.valor,
       tipo: data.tipo,
-      status: data.status || 'pendente',
+      status: 'pendente', // Default status
       dataVencimento: data.data_transacao || '',
-      dataPagamento: data.data_pagamento || '',
+      dataPagamento: '', // Default empty
       processoId: data.caso_id || undefined,
       clienteId: data.cliente_id || undefined,
       criadoEm: data.created_at || undefined,
-      atualizadoEm: data.updated_at || undefined,
+      atualizadoEm: undefined, // Default undefined
+      metodo_pagamento: data.metodo_pagamento || '',
     } as ContaFinanceira;
   },
   async update(id: string, conta: Partial<ContaFinanceira>) {
@@ -94,11 +98,10 @@ export const FinanceiroService = {
       descricao: conta.descricao,
       valor: conta.valor,
       tipo: conta.tipo,
-      status: conta.status,
       data_transacao: conta.dataVencimento,
-      data_pagamento: conta.dataPagamento,
       caso_id: conta.processoId,
       cliente_id: conta.clienteId,
+      metodo_pagamento: conta.metodo_pagamento,
     };
     const { data, error } = await supabase.from(TABLE).update(updateData).eq('id', id).select().single();
     if (error) throw error;
@@ -108,13 +111,14 @@ export const FinanceiroService = {
       descricao: data.descricao,
       valor: data.valor,
       tipo: data.tipo,
-      status: data.status || 'pendente',
+      status: 'pendente', // Default status
       dataVencimento: data.data_transacao || '',
-      dataPagamento: data.data_pagamento || '',
+      dataPagamento: '', // Default empty
       processoId: data.caso_id || undefined,
       clienteId: data.cliente_id || undefined,
       criadoEm: data.created_at || undefined,
-      atualizadoEm: data.updated_at || undefined,
+      atualizadoEm: undefined, // Default undefined
+      metodo_pagamento: data.metodo_pagamento || '',
     } as ContaFinanceira;
   },
   async remove(id: string) {

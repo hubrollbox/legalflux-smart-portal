@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { fetchProcessos, addProcesso, updateProcesso, deleteProcesso } from "@/services/ProcessoService";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -68,6 +69,23 @@ class ErrorBoundary extends React.Component<
   }
 }
 
+// Function to validate and map data to Processo interface
+const mapToProcesso = (raw: any): Processo => ({
+  id: Number(raw.id) || 0,
+  numero: raw.numero || `PROC-${Date.now()}`,
+  titulo: raw.titulo || '',
+  cliente: raw.cliente || '',
+  advogado: raw.advogado || '',
+  status: raw.status || 'pendente',
+  prazo: raw.prazo || '',
+  valor: raw.valor || '',
+  movimentos: raw.movimentos || [],
+});
+
+const isValidProcesso = (raw: any): boolean => {
+  return raw && (raw.numero || raw.titulo) && raw.status;
+};
+
 const Processos = () => {
   console.log("Rendering Processos page");
 
@@ -102,18 +120,10 @@ const Processos = () => {
     setLoading(true);
     fetchProcessos(page + 1, PAGE_SIZE)
       .then(({ data, total }) => {
-        // Extra validation for every item to be Processo-like:
-        const processosFormatados: Processo[] = Array.isArray(data) ? data.map((raw: any) => ({
-          id: raw.id?.toString() ?? '-',
-          numero: raw.numero ?? '-',
-          titulo: raw.titulo ?? '',
-          cliente: raw.cliente ?? '',
-          advogado: raw.advogado ?? '',
-          status: raw.status ?? 'pendente',
-          prazo: raw.prazo ?? '',
-          valor: raw.valor ?? '',
-          movimentos: raw.movimentos ?? [],
-        })) : [];
+        // Filter and map data to valid Processo objects
+        const processosFormatados: Processo[] = Array.isArray(data) 
+          ? data.filter(isValidProcesso).map(mapToProcesso)
+          : [];
         setProcessos(processosFormatados);
         setTotal(total);
       })
@@ -123,21 +133,27 @@ const Processos = () => {
       .finally(() => setLoading(false));
   }, [page]);
 
-  const handleAddProcesso = async (data) => {
+  const handleAddProcesso = async (data: any) => {
     try {
-      const novo = await addProcesso(data);
-      setProcessos((prev) => [novo, ...prev]);
+      const novoRaw = await addProcesso(data);
+      if (isValidProcesso(novoRaw)) {
+        const novo = mapToProcesso(novoRaw);
+        setProcessos((prev) => [novo, ...prev]);
+      }
       setShowForm(false);
     } catch (e) {
       toast.error("Erro ao adicionar processo");
     }
   };
 
-  const handleEditProcesso = async (data) => {
+  const handleEditProcesso = async (data: any) => {
     if (!editProcesso) return;
     try {
-      const atualizado = await updateProcesso(editProcesso.id, data);
-      setProcessos((prev) => prev.map(p => p.id === atualizado.id ? atualizado : p));
+      const atualizadoRaw = await updateProcesso(editProcesso.id, data);
+      if (isValidProcesso(atualizadoRaw)) {
+        const atualizado = mapToProcesso(atualizadoRaw);
+        setProcessos((prev) => prev.map(p => p.id === atualizado.id ? atualizado : p));
+      }
       setEditProcesso(null);
     } catch (e) {
       toast.error("Erro ao editar processo");

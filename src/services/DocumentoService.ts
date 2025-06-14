@@ -1,3 +1,4 @@
+
 // DocumentoService.ts
 // Serviço para upload, versionamento e busca de documentos jurídicos
 import { supabase } from '@/integrations/supabase/client';
@@ -27,13 +28,14 @@ export const DocumentoService = {
     const { data, error } = await supabase.storage.from('documentos').upload(filePath, file);
     if (error) throw error;
     // Salvar metadados no banco
-    const doc: Partial<Documento> = {
-      ...meta,
+    const doc: Omit<Documento, 'id'> = {
+      caso_id: meta.caso_id || '',
       nome: file.name,
       url: data?.path || '',
+      descricao: meta.descricao || null,
       criado_em: new Date().toISOString(),
     };
-    const { data: docData, error: docError } = await supabase.from(TABLE).insert([doc]).select().single();
+    const { data: docData, error: docError } = await supabase.from(TABLE).insert(doc).select().single();
     if (docError) throw docError;
     return docData as Documento;
   },
