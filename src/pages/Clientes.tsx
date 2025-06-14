@@ -65,6 +65,32 @@ const getTipoColor = (tipo: string) => {
   }
 };
 
+const isClienteValido = (raw: any): raw is Cliente =>
+  raw &&
+  typeof raw.nome === 'string' &&
+  typeof raw.email === 'string' &&
+  typeof raw.telefone === 'string' &&
+  typeof raw.tipo === 'string' &&
+  typeof raw.processos !== 'undefined' &&
+  typeof raw.status === 'string' &&
+  typeof raw.ultimo_contacto === 'string' &&
+  typeof raw.valor_total === 'string';
+
+const mapToCliente = (raw: any): Cliente => ({
+  id: raw.id?.toString() ?? '-',
+  nome: raw.nome ?? 'Sem nome',
+  email: raw.email ?? 'Sem email',
+  telefone: raw.telefone ?? 'Sem telefone',
+  tipo: raw.tipo ?? 'particular',
+  processos: raw.processos ?? 0,
+  status: raw.status ?? 'pendente',
+  ultimo_contacto: raw.ultimo_contacto ?? '',
+  valor_total: raw.valor_total ?? '€0',
+  nif: raw.nif ?? '',
+  morada: raw.morada ?? '',
+  notas: raw.notas ?? '',
+});
+
 const Clientes = () => {
   const [showForm, setShowForm] = useState(false);
   const [clientesList, setClientesList] = useState<Cliente[]>([]);
@@ -76,31 +102,15 @@ const Clientes = () => {
       setLoading(true);
       try {
         const data = await fetchClientes();
-        // Apenas aceita objetos que realmente têm "nome" e "email"
-        const clientesMapeados: Cliente[] =
-          Array.isArray(data)
-            ? data
-                .filter(
-                  (raw: any) =>
-                    typeof raw.nome === 'string' &&
-                    typeof raw.email === 'string'
-                )
-                .map((raw: any) => ({
-                  id: raw.id?.toString() ?? '-',
-                  nome: raw.nome ?? 'Sem nome',
-                  email: raw.email ?? 'Sem email',
-                  telefone: raw.telefone ?? 'Sem telefone',
-                  tipo: raw.tipo ?? 'particular',
-                  processos: raw.processos ?? 0,
-                  status: raw.status ?? 'pendente',
-                  ultimo_contacto: raw.ultimo_contacto ?? '',
-                  valor_total: raw.valor_total ?? '€0',
-                  nif: raw.nif ?? '',
-                  morada: raw.morada ?? '',
-                  notas: raw.notas ?? '',
-                }))
-            : [];
-        setClientesList(clientesMapeados);
+        const clientesCorrigidos: Cliente[] = Array.isArray(data)
+          ? data
+              .filter((raw: any) =>
+                typeof raw.nome === 'string' &&
+                typeof raw.email === 'string'
+              )
+              .map(mapToCliente)
+          : [];
+        setClientesList(clientesCorrigidos);
       } catch (e) {
         setClientesList([]);
       } finally {
@@ -125,23 +135,9 @@ const Clientes = () => {
         valor_total: '€0',
       });
 
-      // Garante que os campos obrigatórios existem antes de adicionar
       if (novo && typeof novo.nome === 'string' && typeof novo.email === 'string') {
         setClientesList((prev) => [
-          {
-            id: novo.id?.toString() ?? '-',
-            nome: novo.nome ?? 'Sem nome',
-            email: novo.email ?? 'Sem email',
-            telefone: novo.telefone ?? 'Sem telefone',
-            tipo: novo.tipo ?? 'particular',
-            processos: novo.processos ?? 0,
-            status: novo.status ?? 'pendente',
-            ultimo_contacto: novo.ultimo_contacto ?? '',
-            valor_total: novo.valor_total ?? '€0',
-            nif: novo.nif ?? '',
-            morada: novo.morada ?? '',
-            notas: novo.notas ?? '',
-          },
+          mapToCliente(novo),
           ...prev,
         ]);
       }
@@ -158,20 +154,7 @@ const Clientes = () => {
         setClientesList((prev) =>
           prev.map((c) =>
             c.id === atualizado.id
-              ? {
-                  id: atualizado.id?.toString() ?? '-',
-                  nome: atualizado.nome ?? 'Sem nome',
-                  email: atualizado.email ?? 'Sem email',
-                  telefone: atualizado.telefone ?? 'Sem telefone',
-                  tipo: atualizado.tipo ?? 'particular',
-                  processos: atualizado.processos ?? 0,
-                  status: atualizado.status ?? 'pendente',
-                  ultimo_contacto: atualizado.ultimo_contacto ?? '',
-                  valor_total: atualizado.valor_total ?? '€0',
-                  nif: atualizado.nif ?? '',
-                  morada: atualizado.morada ?? '',
-                  notas: atualizado.notas ?? '',
-                }
+              ? mapToCliente(atualizado)
               : c
           )
         );
