@@ -70,10 +70,10 @@ const Sidebar = () => {
 
   return (
     <SidebarProvider>
-      <ShadcnSidebar className="!w-[260px] max-w-[90vw] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 flex flex-col">
-        {/* Cabeçalho bem alinhado */}
-        <SidebarHeader className="relative px-6 pt-6 pb-3 flex flex-row items-center gap-3">
-          {/* Botão collapse/expand SÓ DESKTOP, alinhado à esquerda */}
+      <ShadcnSidebar className="!w-[260px] max-w-[90vw] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 flex flex-col items-stretch p-0">
+        {/* Cabeçalho alinhado sem espaço lateral */}
+        <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
+          {/* Botão collapse/expand desktop, extremo-esquerdo */}
           <div className="absolute left-3 top-3 hidden md:block">
             <SidebarTrigger />
           </div>
@@ -86,13 +86,13 @@ const Sidebar = () => {
             <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
             <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
           </div>
-          {/* Botão trigger mobile (extremo direito) */}
+          {/* Botão trigger mobile no extremo direito */}
           <div className="absolute right-3 top-3 md:hidden">
             <SidebarTrigger />
           </div>
         </SidebarHeader>
-        {/* Conteúdo de navegação */}
-        <SidebarContent className="flex-1 px-2 pt-1">
+        {/* Conteúdo de navegação SEM padding horizontal extra */}
+        <SidebarContent className="flex-1 px-0 pt-1">
           <SidebarGroup>
             <SidebarGroupLabel className="hidden" />
             <SidebarGroupContent>
@@ -100,7 +100,7 @@ const Sidebar = () => {
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        {/* Footer bem alinhado em desktop e mobile */}
+        {/* Footer alinhado, sem espaçamento extra */}
         <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
           <button
             onClick={handleRestartOnboarding}
