@@ -3,9 +3,21 @@ import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 import { useAuthStore } from "@/store/useAuthStore";
 
+// Nova função para avaliar permissões baseada no role atual
+const getHasPermission = (role: string | null) => (permission: string) => {
+  // Regras simples conforme AuthProvider antigo
+  if (role === "admin") return true;
+  if (role === "jurista" || role === "advogado" || role === "advogado_senior")
+    return permission !== "admin";
+  if (role === "assistente" || role === "cliente")
+    return permission === "view";
+  return false;
+};
+
 export const useAuth = () => {
-  // Hook que retorna estado e setters de auth
   const store = useAuthStore();
+  const hasPermission = getHasPermission(store.role);
+
   return {
     user: store.user,
     session: store.session,
@@ -15,10 +27,13 @@ export const useAuth = () => {
     setRole: store.setRole,
     setLoading: store.setLoading,
     clear: store.clear,
-    // Métodos abaixo espelham o contexto antigo ↓↓↓
+    hasPermission, // <--- agora disponível no hook
     signIn: async (email: string, password: string) => {
       try {
-        const { error, data } = await supabase.auth.signInWithPassword({ email, password });
+        const { error, data } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
         if (!error && data?.user) {
           store.setUser(data.user, data.session);
         }
@@ -46,6 +61,7 @@ export const useAuth = () => {
     signOut: async () => {
       await supabase.auth.signOut();
       store.clear();
-    }
+    },
   };
 };
+
