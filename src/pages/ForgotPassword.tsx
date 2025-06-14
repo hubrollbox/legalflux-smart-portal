@@ -1,30 +1,30 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { supabase } from '@/integrations/supabase/client';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-    // Simular envio de e-mail de redefinição
     try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`
       });
 
-      if (response.ok) {
-        setSubmitted(true);
-      } else {
-        alert('Erro ao enviar e-mail de redefinição.');
+      if (error) {
+        setError('Erro ao enviar instruções de recuperação. Confira o e-mail.');
+        return;
       }
-    } catch (error) {
-      console.error('Erro:', error);
-      alert('Erro ao processar a solicitação.');
+      setSubmitted(true);
+    } catch (err) {
+      setError('Erro ao processar a solicitação.');
     }
   };
 
@@ -45,6 +45,7 @@ const ForgotPassword = () => {
               required
               className="mb-4"
             />
+            {error && <p className="text-red-600 mb-2">{error}</p>}
             <Button type="submit" className="w-full bg-primary-800 hover:bg-primary-700">
               Enviar
             </Button>
