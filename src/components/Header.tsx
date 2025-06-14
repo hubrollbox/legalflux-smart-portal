@@ -14,19 +14,19 @@ const Header = () => {
   useScrollToTop();
   const { user, loading } = useAuth();
 
-  // Lista de itens públicos
+  // Lista de itens públicos (NÃO inclui integrações)
   const publicNavItems = [
     { to: '/contato', label: 'Contacto' },
-    { to: '/integracoes', label: 'Integrações' }, // <-- Adicionado ao menu superior
     { to: '/recursos', label: 'Recursos' },
     { to: '/seguranca', label: 'Segurança' },
     { to: '/sobre', label: 'Sobre' },
   ];
 
-  // Lista de itens privados (para autenticados)
+  // Lista de itens privados (para autenticados, inclui Integrações!)
   const privateNavItems = [
     { to: '/prazos', label: 'Prazos' },
     { to: '/agenda', label: 'Agenda' },
+    { to: '/minhas-integracoes', label: 'Integrações' }, // Agora só aqui!
   ];
 
   // Está autenticado?
@@ -98,14 +98,13 @@ const Header = () => {
           )}
           {userIsAuthenticated && (
             <>
-              {/* Apenas para autenticados */}
               <Button variant="ghost" asChild className="text-primary-600 hover:bg-primary-100">
                 <Link to="/dashboard">Painel</Link>
               </Button>
               <Button variant="ghost" asChild className="text-primary-600 hover:bg-primary-100">
                 <Link to="/definicoes">Conta</Link>
               </Button>
-              {/* Exemplo: botão de notificações só para autenticados */}
+              {/* Botão de notificações só para autenticados */}
               <Button variant="ghost" className="text-primary-600 hover:bg-primary-100 p-2">
                 <span className="sr-only">Notificações</span>
                 <svg width="24" height="24" fill="none" stroke="currentColor" className="h-5 w-5"><use href="#bell" /></svg>
