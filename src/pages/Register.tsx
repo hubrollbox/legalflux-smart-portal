@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -8,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Eye, EyeOff, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import type { Database } from '@/integrations/supabase/types';
+// removed direct database import for types
 
 const Register = () => {
   const [step, setStep] = useState(1);
@@ -57,12 +58,12 @@ const Register = () => {
     </div>
   );
 
-  // Step 2: Fields by user type
+  // Step 2: Registration form (with new behavior)
   const Step2 = (
     <form
       onSubmit={async e => {
         e.preventDefault();
-        // Validation (same as before, but step-by-step)
+
         if (!formData.nome || !formData.email || !formData.password || !formData.confirmPassword) {
           toast({ title: 'Erro', description: 'Preencha todos os campos obrigatórios.', variant: 'destructive' });
           return;
@@ -85,27 +86,71 @@ const Register = () => {
           return;
         }
         setLoading(true);
+
+        // 1. Register user in Supabase Auth
         try {
-          const userInsert: Database['public']['Tables']['users_extended']['Insert'] = {
+          // Email redirect for email confirmation
+          const redirectUrl = `${window.location.origin}/`;
+          const { data, error } = await supabase.auth.signUp({
+            email: formData.email,
+            password: formData.password,
+            options: {
+              emailRedirectTo: redirectUrl,
+              data: {
+                nome: formData.nome,
+                tipo: formData.tipo,
+                numero_profissional: formData.numero_profissional,
+                nif: formData.nif,
+                telefone: formData.telefone
+                // additional profile data (not sensitive)
+              }
+            }
+          });
+          if (error) {
+            throw error;
+          }
+
+          // 2. Insert profile into users_extended (with Auth user id)
+          const userId = data.user?.id;
+          if (!userId) throw new Error('ID de utilizador não encontrado. Contacte o suporte.');
+
+          // Prepare profile insert
+          const profileInsert = {
+            id: userId,
             email: formData.email,
             role: formData.tipo as 'cliente' | 'assistente' | 'advogado' | 'admin',
             status: 'pending',
-            nome: formData.nome,
-            telefone: formData.telefone,
-            nif: formData.nif,
-            numero_profissional: formData.numero_profissional,
-            morada: formData.morada,
-            metodo_pagamento: formData.metodo_pagamento as string,
+            nome: formData.nome || "",
+            telefone: formData.telefone || "",
+            nif: formData.nif || "",
+            numero_profissional: formData.numero_profissional || "",
+            morada: formData.morada || "",
+            metodo_pagamento: formData.metodo_pagamento || "",
             dados_faturacao: formData.tipo === 'empresa' ? formData.dados_empresa : {},
-            id: crypto.randomUUID()
+            // All columns present, for nullables use empty or null
+            // auto-generated fields handled by supabase
           };
-          const { error: insertError } = await supabase.from('users_extended').insert([userInsert]);
+
+          const { error: insertError } = await supabase.from('users_extended').insert([profileInsert]);
           if (insertError) throw insertError;
+
           setRegistered(true);
           setStep(3);
         } catch (error) {
-          const err = error as { message?: string };
-          toast({ title: 'Erro no registo', description: err.message || 'Ocorreu um erro durante o registo.', variant: 'destructive' });
+          const err = error as { message?: string; email?: string };
+          if (err && typeof err === 'object' && err.message?.includes('User already registered')) {
+            toast({
+              title: "E-mail já registado",
+              description: "Já existe uma conta associada a este e-mail. Por favor faça login.",
+              variant: "destructive"
+            });
+          } else {
+            toast({
+              title: 'Erro no registo',
+              description: err && typeof err === 'object' && err.message ? err.message : 'Ocorreu um erro durante o registo.',
+              variant: 'destructive'
+            });
+          }
         } finally {
           setLoading(false);
         }
@@ -201,3 +246,4 @@ const Register = () => {
 };
 
 export default Register;
+
