@@ -32,6 +32,8 @@ import CentralAjuda from "./pages/CentralAjuda";
 import Comunidade from "./pages/Comunidade";
 import NotFound from "./pages/NotFound";
 import LGPD from "./pages/LGPD";
+import Insolvencias from "./pages/Insolvencias";
+import InsolvenciaDetalhe from "./pages/InsolvenciaDetalhe";
 
 const queryClient = new QueryClient();
 
@@ -113,6 +115,16 @@ const App = () => (
             <Route path="/status-sistema" element={<StatusSistema />} />
             <Route path="/central-ajuda" element={<CentralAjuda />} />
             <Route path="/comunidade" element={<Comunidade />} />
+            <Route path="/insolvencias" element={
+              <ProtectedRoute>
+                <Insolvencias />
+              </ProtectedRoute>
+            } />
+            <Route path="/insolvencias/:id" element={
+              <ProtectedRoute>
+                <InsolvenciaDetalhe />
+              </ProtectedRoute>
+            } />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

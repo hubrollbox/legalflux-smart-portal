@@ -243,6 +243,38 @@ export type Database = {
         }
         Relationships: []
       }
+      bens_inventario: {
+        Row: {
+          descricao: string
+          estado: Database["public"]["Enums"]["estado_bem_insolvencia"] | null
+          id: string
+          insolvencia_id: string | null
+          valor_estimado: number | null
+        }
+        Insert: {
+          descricao: string
+          estado?: Database["public"]["Enums"]["estado_bem_insolvencia"] | null
+          id?: string
+          insolvencia_id?: string | null
+          valor_estimado?: number | null
+        }
+        Update: {
+          descricao?: string
+          estado?: Database["public"]["Enums"]["estado_bem_insolvencia"] | null
+          id?: string
+          insolvencia_id?: string | null
+          valor_estimado?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bens_inventario_insolvencia_id_fkey"
+            columns: ["insolvencia_id"]
+            isOneToOne: false
+            referencedRelation: "insolvencias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       casos: {
         Row: {
           advogado_id: string | null
@@ -322,6 +354,44 @@ export type Database = {
           },
         ]
       }
+      checklist_insolvencia: {
+        Row: {
+          etapa: string
+          id: string
+          insolvencia_id: string | null
+          prazo: string | null
+          status:
+            | Database["public"]["Enums"]["status_checklist_insolvencia"]
+            | null
+        }
+        Insert: {
+          etapa: string
+          id?: string
+          insolvencia_id?: string | null
+          prazo?: string | null
+          status?:
+            | Database["public"]["Enums"]["status_checklist_insolvencia"]
+            | null
+        }
+        Update: {
+          etapa?: string
+          id?: string
+          insolvencia_id?: string | null
+          prazo?: string | null
+          status?:
+            | Database["public"]["Enums"]["status_checklist_insolvencia"]
+            | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checklist_insolvencia_insolvencia_id_fkey"
+            columns: ["insolvencia_id"]
+            isOneToOne: false
+            referencedRelation: "insolvencias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clientes: {
         Row: {
           advogado_id: string | null
@@ -392,6 +462,105 @@ export type Database = {
           },
         ]
       }
+      creditos: {
+        Row: {
+          credor_id: string | null
+          data: string | null
+          documentos: Json | null
+          id: string
+          tipo_credito: string
+          valor: number
+        }
+        Insert: {
+          credor_id?: string | null
+          data?: string | null
+          documentos?: Json | null
+          id?: string
+          tipo_credito: string
+          valor: number
+        }
+        Update: {
+          credor_id?: string | null
+          data?: string | null
+          documentos?: Json | null
+          id?: string
+          tipo_credito?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creditos_credor_id_fkey"
+            columns: ["credor_id"]
+            isOneToOne: false
+            referencedRelation: "credores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credores: {
+        Row: {
+          email: string | null
+          id: string
+          insolvencia_id: string | null
+          nif: string | null
+          nome: string
+        }
+        Insert: {
+          email?: string | null
+          id?: string
+          insolvencia_id?: string | null
+          nif?: string | null
+          nome: string
+        }
+        Update: {
+          email?: string | null
+          id?: string
+          insolvencia_id?: string | null
+          nif?: string | null
+          nome?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credores_insolvencia_id_fkey"
+            columns: ["insolvencia_id"]
+            isOneToOne: false
+            referencedRelation: "insolvencias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dividas_massa: {
+        Row: {
+          categoria: string | null
+          descricao: string
+          id: string
+          insolvencia_id: string | null
+          valor: number | null
+        }
+        Insert: {
+          categoria?: string | null
+          descricao: string
+          id?: string
+          insolvencia_id?: string | null
+          valor?: number | null
+        }
+        Update: {
+          categoria?: string | null
+          descricao?: string
+          id?: string
+          insolvencia_id?: string | null
+          valor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dividas_massa_insolvencia_id_fkey"
+            columns: ["insolvencia_id"]
+            isOneToOne: false
+            referencedRelation: "insolvencias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documentos: {
         Row: {
           caso_id: string
@@ -437,6 +606,38 @@ export type Database = {
             columns: ["caso_id"]
             isOneToOne: false
             referencedRelation: "casos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documentos_insolvencia: {
+        Row: {
+          conteudo: string | null
+          data: string | null
+          id: string
+          insolvencia_id: string | null
+          tipo_documento: string
+        }
+        Insert: {
+          conteudo?: string | null
+          data?: string | null
+          id?: string
+          insolvencia_id?: string | null
+          tipo_documento: string
+        }
+        Update: {
+          conteudo?: string | null
+          data?: string | null
+          id?: string
+          insolvencia_id?: string | null
+          tipo_documento?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documentos_insolvencia_insolvencia_id_fkey"
+            columns: ["insolvencia_id"]
+            isOneToOne: false
+            referencedRelation: "insolvencias"
             referencedColumns: ["id"]
           },
         ]
@@ -516,6 +717,39 @@ export type Database = {
           },
         ]
       }
+      insolvencias: {
+        Row: {
+          created_at: string | null
+          data_abertura: string
+          devedor: string
+          id: string
+          juridico_id: string
+          numero_processo: string
+          tipo: string
+          tribunal: string
+        }
+        Insert: {
+          created_at?: string | null
+          data_abertura: string
+          devedor: string
+          id?: string
+          juridico_id: string
+          numero_processo: string
+          tipo: string
+          tribunal: string
+        }
+        Update: {
+          created_at?: string | null
+          data_abertura?: string
+          devedor?: string
+          id?: string
+          juridico_id?: string
+          numero_processo?: string
+          tipo?: string
+          tribunal?: string
+        }
+        Relationships: []
+      }
       mensagens: {
         Row: {
           arquivo_url: string | null
@@ -567,6 +801,38 @@ export type Database = {
             columns: ["remetente_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      negocios_curso: {
+        Row: {
+          descricao: string
+          documento: string | null
+          estado: string | null
+          id: string
+          insolvencia_id: string | null
+        }
+        Insert: {
+          descricao: string
+          documento?: string | null
+          estado?: string | null
+          id?: string
+          insolvencia_id?: string | null
+        }
+        Update: {
+          descricao?: string
+          documento?: string | null
+          estado?: string | null
+          id?: string
+          insolvencia_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "negocios_curso_insolvencia_id_fkey"
+            columns: ["insolvencia_id"]
+            isOneToOne: false
+            referencedRelation: "insolvencias"
             referencedColumns: ["id"]
           },
         ]
@@ -983,6 +1249,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      pode_gerir_insolvencia: {
+        Args: { _user_id: string; _insolvencia_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role:
@@ -991,6 +1261,12 @@ export type Database = {
         | "assistente"
         | "cliente"
         | "advogado_senior"
+      estado_bem_insolvencia:
+        | "livre"
+        | "penhorado"
+        | "alienado"
+        | "indisponível"
+        | "vendido"
       integration_status: "ativo" | "inativo" | "erro" | "pendente"
       integration_type:
         | "oauth"
@@ -1013,6 +1289,11 @@ export type Database = {
         | "mbway"
       plano_tipo: "gratis" | "basico" | "profissional" | "escritorio"
       status_caso: "activo" | "pendente" | "arquivado" | "concluido"
+      status_checklist_insolvencia:
+        | "pendente"
+        | "em_progresso"
+        | "concluido"
+        | "atrasado"
       status_tarefa: "pendente" | "em_progresso" | "concluida" | "atrasada"
       tipo_documento: "peticao" | "contrato" | "processo" | "recibo" | "outro"
       transaction_type: "receita" | "despesa" | "honorario" | "reembolso"
@@ -1146,6 +1427,13 @@ export const Constants = {
         "cliente",
         "advogado_senior",
       ],
+      estado_bem_insolvencia: [
+        "livre",
+        "penhorado",
+        "alienado",
+        "indisponível",
+        "vendido",
+      ],
       integration_status: ["ativo", "inativo", "erro", "pendente"],
       integration_type: [
         "oauth",
@@ -1170,6 +1458,12 @@ export const Constants = {
       ],
       plano_tipo: ["gratis", "basico", "profissional", "escritorio"],
       status_caso: ["activo", "pendente", "arquivado", "concluido"],
+      status_checklist_insolvencia: [
+        "pendente",
+        "em_progresso",
+        "concluido",
+        "atrasado",
+      ],
       status_tarefa: ["pendente", "em_progresso", "concluida", "atrasada"],
       tipo_documento: ["peticao", "contrato", "processo", "recibo", "outro"],
       transaction_type: ["receita", "despesa", "honorario", "reembolso"],
