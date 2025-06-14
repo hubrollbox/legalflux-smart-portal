@@ -1,4 +1,5 @@
-
+// NÃO USAR MAIS ESTE PROVIDER, VER DOCUMENTAÇÃO!
+// Pode remover toda a lógica de contexto. Zustand cuida do estado.
 import React, { useState, useEffect, type ReactNode } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { AuthContext, UserData, AuthContextType } from './AuthContext';
@@ -127,4 +128,3 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 };
-

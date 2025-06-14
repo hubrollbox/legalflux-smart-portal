@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   FileText, 
@@ -127,4 +126,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-

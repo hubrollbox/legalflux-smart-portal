@@ -1,7 +1,7 @@
-
 import { ReactNode } from 'react';
 import Sidebar from './Sidebar';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
+import { useAuth } from "@/contexts/useAuth";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -9,6 +9,7 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   useScrollToTop();
+  useAuth(); // Garantir load de sessão e persistência
 
   return (
     // Wrapper FLEX garante colagem e centralização.
@@ -26,4 +27,3 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 };
 
 export default DashboardLayout;
-
