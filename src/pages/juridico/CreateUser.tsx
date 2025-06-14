@@ -22,14 +22,11 @@ const CreateUser = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!formData.role) {
       alert('Por favor, selecione um tipo de utilizador.');
       return;
     }
-
     setLoading(true);
-
     try {
       const result = await createUser({
         nome: formData.nome,
@@ -37,9 +34,14 @@ const CreateUser = () => {
         telefone: formData.telefone,
         role: formData.role as ExtendedUser['role']
       });
-
       if (result) {
-        // Reset form
+        // Novo: inserir também o papel em user_roles
+        await import('@/integrations/supabase/client').then(async ({ supabase }) => {
+          await supabase.from("user_roles").insert([{
+            user_id: result.id,
+            role: formData.role
+          }]);
+        });
         setFormData({
           nome: '',
           email: '',

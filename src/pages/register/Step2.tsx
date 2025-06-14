@@ -86,6 +86,7 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           if (error) throw error;
           const userId = data.user?.id;
           if (!userId) throw new Error("ID de utilizador não encontrado. Contacte o suporte.");
+          // 1. Criação do perfil já existente
           const profileInsert = {
             id: userId,
             email: formData.email,
@@ -101,6 +102,12 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           };
           const { error: insertError } = await supabase.from("users_extended").insert([profileInsert]);
           if (insertError) throw insertError;
+          // 2. Criação do papel RBAC
+          const { error: roleError } = await supabase.from("user_roles").insert([{
+            user_id: userId,
+            role: "advogado"
+          }]);
+          if (roleError) throw roleError;
           setRegistered(true);
           onSuccess();
         } catch (error) {

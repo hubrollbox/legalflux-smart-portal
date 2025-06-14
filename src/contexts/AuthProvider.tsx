@@ -59,13 +59,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // RBAC: role extraído do user_metadata (Supabase) ou session
+  const role = user?.user_metadata?.role || session?.user?.user_metadata?.role || null;
+  // Utilitário para verificar permissões (pode crescer depois)
+  const hasPermission = (permission: string) => {
+    if (role === 'admin') return true;
+    if (role === 'advogado') return permission !== 'admin';
+    if (role === 'assistente') return permission === 'view';
+    if (role === 'cliente') return permission === 'view';
+    return false;
+  };
+
   const value: AuthContextType = {
     user,
     session,
     loading,
     signIn,
     signUp,
-    signOut
+    signOut,
+    role,
+    hasPermission,
   };
 
   return (
