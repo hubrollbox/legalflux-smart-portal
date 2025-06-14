@@ -27,7 +27,6 @@ import {
   SidebarMenuButton,
   SidebarTrigger
 } from '@/components/ui/sidebar';
-import logo from '@/../public/logo.png';
 
 // Menu com as principais secções
 const sidebarMenu = [
@@ -41,7 +40,7 @@ const sidebarMenu = [
   { icon: Settings, label: 'Definições', path: '/definicoes' }
 ];
 
-// SidebarNavigationMenu refatorado do SidebarMenu
+// Menu Navigation adaptado para manter consistência na sidebar
 const SidebarNavigationMenu = () => {
   const location = useLocation();
   return (
@@ -49,9 +48,9 @@ const SidebarNavigationMenu = () => {
       {sidebarMenu.map(item => (
         <SidebarMenuItem key={item.path}>
           <SidebarMenuButton asChild isActive={location.pathname === item.path}>
-            <Link to={item.path}>
-              <item.icon className="mr-2" />
-              <span>{item.label}</span>
+            <Link to={item.path} className="flex items-center w-full">
+              <item.icon className="mr-3 min-w-5" />
+              <span className="truncate">{item.label}</span>
             </Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
@@ -71,34 +70,38 @@ const Sidebar = () => {
 
   return (
     <SidebarProvider>
-      <ShadcnSidebar>
-        {/* Cabeçalho com logo e trigger desktop (collapse) */}
-        <SidebarHeader className="border-b border-gray-200 p-6 pb-4 flex flex-col items-center relative">
-          {/* Botão collapse/expand SÓ DESKTOP */}
-          <div className="absolute left-2 top-2 hidden md:block">
+      <ShadcnSidebar className="!w-[260px] max-w-[90vw] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 flex flex-col">
+        {/* Cabeçalho bem alinhado */}
+        <SidebarHeader className="relative px-6 pt-6 pb-3 flex flex-row items-center gap-3">
+          {/* Botão collapse/expand SÓ DESKTOP, alinhado à esquerda */}
+          <div className="absolute left-3 top-3 hidden md:block">
             <SidebarTrigger />
           </div>
           <img 
             src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
             alt="Legalflux Logo"
-            className="h-10 w-auto mb-2"
+            className="h-10 w-10 rounded-md"
           />
-          <h1 className="text-2xl font-bold text-primary-800">LegalFlux</h1>
-          <p className="text-sm text-gray-600 mt-1">Portal Jurídico</p>
-          {/* Botão trigger para mobile/colapso */}
-          <div className="absolute right-2 top-2 md:hidden">
+          <div className="ml-2 flex flex-col">
+            <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
+            <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
+          </div>
+          {/* Botão trigger mobile (extremo direito) */}
+          <div className="absolute right-3 top-3 md:hidden">
             <SidebarTrigger />
           </div>
         </SidebarHeader>
-        <SidebarContent>
+        {/* Conteúdo de navegação */}
+        <SidebarContent className="flex-1 px-2 pt-1">
           <SidebarGroup>
-            <SidebarGroupLabel className="text-xs mt-3 mb-1" />
+            <SidebarGroupLabel className="hidden" />
             <SidebarGroupContent>
               <SidebarNavigationMenu />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
-        <SidebarFooter className="pb-4 px-4 border-t border-gray-200 gap-2 flex flex-col">
+        {/* Footer bem alinhado em desktop e mobile */}
+        <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
           <button
             onClick={handleRestartOnboarding}
             className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
@@ -117,7 +120,7 @@ const Sidebar = () => {
           </button>
         </SidebarFooter>
       </ShadcnSidebar>
-      {/* Botão flutuante para abrir/collapse no mobile */}
+      {/* Botão flutuante mobile sempre visível */}
       <SidebarTrigger className="fixed bottom-4 left-4 z-50 md:hidden shadow-lg bg-white hover:bg-accent-100 border rounded-full px-3 py-2" />
     </SidebarProvider>
   );
