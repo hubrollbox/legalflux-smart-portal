@@ -1,9 +1,16 @@
 
 import React, { useState } from "react";
-import { useParams, Link, Outlet } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import CredoresSection from "@/components/insolvencia/CredoresSection";
+import CreditosSection from "@/components/insolvencia/CreditosSection";
+import BensInventarioSection from "@/components/insolvencia/BensInventarioSection";
+import DividasMassaSection from "@/components/insolvencia/DividasMassaSection";
+import NegociosCursoSection from "@/components/insolvencia/NegociosCursoSection";
+import DocumentosSection from "@/components/insolvencia/DocumentosSection";
+import ChecklistSection from "@/components/insolvencia/ChecklistSection";
 
 const fetchInsolvencia = async (id: string) => {
   const { data, error } = await supabase
@@ -70,25 +77,25 @@ const InsolvenciaDetalhe: React.FC = () => {
           </div>
         </TabsContent>
         <TabsContent value="credores">
-          <div>Componente Credores — a implementar.</div>
+          <CredoresSection insolvenciaId={insolvencia.id} />
         </TabsContent>
         <TabsContent value="creditos">
-          <div>Componente Créditos — a implementar.</div>
+          <CreditosSection insolvenciaId={insolvencia.id} />
         </TabsContent>
         <TabsContent value="bens">
-          <div>Componente Inventário de Bens — a implementar.</div>
+          <BensInventarioSection insolvenciaId={insolvencia.id} />
         </TabsContent>
         <TabsContent value="dividas">
-          <div>Componente Dívidas da Massa — a implementar.</div>
+          <DividasMassaSection insolvenciaId={insolvencia.id} />
         </TabsContent>
         <TabsContent value="negocios">
-          <div>Componente Negócios em Curso — a implementar.</div>
+          <NegociosCursoSection insolvenciaId={insolvencia.id} />
         </TabsContent>
         <TabsContent value="checklist">
-          <div>Componente Checklist Legal — a implementar.</div>
+          <ChecklistSection insolvenciaId={insolvencia.id} />
         </TabsContent>
         <TabsContent value="documentos">
-          <div>Componente Documentos Gerados — a implementar.</div>
+          <DocumentosSection insolvenciaId={insolvencia.id} />
         </TabsContent>
       </Tabs>
     </div>
