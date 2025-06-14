@@ -77,7 +77,7 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
               emailRedirectTo: redirectUrl,
               data: {
                 nome: formData.nome,
-                tipo: "advogado", // fixo
+                tipo: "jurista", // use RBAC enum value
                 numero_profissional: formData.numero_profissional,
                 telefone: formData.telefone,
               },
@@ -90,8 +90,8 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           const profileInsert = {
             id: userId,
             email: formData.email,
-            role: "advogado",
-            status: "pending", // Sempre pendente, precisa aprovação manual
+            role: "jurista", // use enum value from Supabase
+            status: "pending",
             nome: formData.nome || "",
             telefone: formData.telefone || "",
             nif: null,
@@ -102,11 +102,13 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           };
           const { error: insertError } = await supabase.from("users_extended").insert([profileInsert]);
           if (insertError) throw insertError;
-          // 2. Criação do papel RBAC
-          const { error: roleError } = await supabase.from("user_roles").insert([{
-            user_id: userId,
-            role: "advogado"
-          }]);
+          // 2. Criação do papel RBAC (role)
+          const { error: roleError } = await supabase.from("user_roles").insert([
+            {
+              user_id: userId,
+              role: "jurista", // use enum value
+            }
+          ]);
           if (roleError) throw roleError;
           setRegistered(true);
           onSuccess();

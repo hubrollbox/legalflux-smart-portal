@@ -16,14 +16,20 @@ const CreateUser = () => {
     nome: '',
     email: '',
     telefone: '',
-    role: '' as ExtendedUser['role'] | '',
+    role: '' as "" | "cliente" | "assistente",
     observacoes: ''
   });
 
+  // Allowed enum values according to your Supabase type
+  const RBAC_ROLE_MAP: { [key: string]: "cliente" | "assistente" } = {
+    cliente: "cliente",
+    assistente: "assistente",
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.role) {
-      alert('Por favor, selecione um tipo de utilizador.');
+    if (!formData.role || !(formData.role in RBAC_ROLE_MAP)) {
+      alert('Por favor, selecione um tipo de utilizador válido.');
       return;
     }
     setLoading(true);
@@ -35,12 +41,15 @@ const CreateUser = () => {
         role: formData.role as ExtendedUser['role']
       });
       if (result) {
-        // Novo: inserir também o papel em user_roles
+        // RBAC insert: only allow enum values
         await import('@/integrations/supabase/client').then(async ({ supabase }) => {
-          await supabase.from("user_roles").insert([{
-            user_id: result.id,
-            role: formData.role
-          }]);
+          await supabase.from("user_roles").insert([
+            {
+              user_id: result.id,
+              // role must match enum — do NOT use empty string!
+              role: RBAC_ROLE_MAP[formData.role]
+            }
+          ]);
         });
         setFormData({
           nome: '',
