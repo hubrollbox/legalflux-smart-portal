@@ -102,13 +102,9 @@ const Clientes = () => {
       setLoading(true);
       try {
         const data = await fetchClientes();
+        // Filtre com isClienteValido, evitando objetos inválidos
         const clientesCorrigidos: Cliente[] = Array.isArray(data)
-          ? data
-              .filter((raw: any) =>
-                typeof raw.nome === 'string' &&
-                typeof raw.email === 'string'
-              )
-              .map(mapToCliente)
+          ? data.filter(isClienteValido).map(mapToCliente)
           : [];
         setClientesList(clientesCorrigidos);
       } catch (e) {
@@ -135,7 +131,7 @@ const Clientes = () => {
         valor_total: '€0',
       });
 
-      if (novo && typeof novo.nome === 'string' && typeof novo.email === 'string') {
+      if (novo && isClienteValido(novo)) {
         setClientesList((prev) => [
           mapToCliente(novo),
           ...prev,
@@ -150,7 +146,7 @@ const Clientes = () => {
     if (!editCliente) return;
     try {
       const atualizado = await updateCliente(editCliente.id, data);
-      if (atualizado && typeof atualizado.nome === 'string' && typeof atualizado.email === 'string') {
+      if (atualizado && isClienteValido(atualizado)) {
         setClientesList((prev) =>
           prev.map((c) =>
             c.id === atualizado.id
