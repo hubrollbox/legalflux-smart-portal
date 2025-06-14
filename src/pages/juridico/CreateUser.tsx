@@ -16,7 +16,7 @@ const CreateUser = () => {
     nome: '',
     email: '',
     telefone: '',
-    role: '' as "" | "cliente" | "assistente",
+    role: '' as '' | 'cliente' | 'assistente',
     observacoes: ''
   });
 
@@ -38,7 +38,7 @@ const CreateUser = () => {
         nome: formData.nome,
         email: formData.email,
         telefone: formData.telefone,
-        role: formData.role as ExtendedUser['role']
+        role: formData.role as 'cliente' | 'assistente' // restrict here as well
       });
       if (result) {
         // RBAC insert: only allow enum values
@@ -55,7 +55,7 @@ const CreateUser = () => {
           nome: '',
           email: '',
           telefone: '',
-          role: '',
+          role: '',  // <--- Fix is here: use "" (never ExtendedUser's broader role)
           observacoes: ''
         });
         alert('Utilizador criado com sucesso! Um convite foi enviado por email.');
@@ -129,7 +129,7 @@ const CreateUser = () => {
                     <Label htmlFor="role">Tipo de Utilizador *</Label>
                     <Select 
                       value={formData.role} 
-                      onValueChange={(value) => setFormData({ ...formData, role: value as ExtendedUser['role'] })}
+                      onValueChange={(value) => setFormData({ ...formData, role: value as 'cliente' | 'assistente' })}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Selecione o tipo" />
