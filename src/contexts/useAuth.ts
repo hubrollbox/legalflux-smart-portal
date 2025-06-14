@@ -1,11 +1,11 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 import { useAuthStore } from "@/store/useAuthStore";
-import { useEffect } from "react";
+import { useSupabaseAuthListener } from "./hooks/useSupabaseAuthListener";
 
-// Nova função para avaliar permissões baseada no role atual
+// Função para verificar permissões baseada no papel atual
 const getHasPermission = (role: string | null) => (permission: string) => {
-  // Regras simples conforme AuthProvider antigo
   if (role === "admin") return true;
   if (role === "jurista" || role === "advogado" || role === "advogado_senior")
     return permission !== "admin";
@@ -16,30 +16,8 @@ const getHasPermission = (role: string | null) => (permission: string) => {
 
 export const useAuth = () => {
   const store = useAuthStore();
+  useSupabaseAuthListener();
   const hasPermission = getHasPermission(store.role);
-
-  // Inicializar sessão no mount
-  useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-
-    // Listener para eventos auth (login/logout etc)
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      store.setLoading(false);
-      store.setUser(session?.user ?? null, session ?? null);
-    });
-
-    unsubscribe = authListener?.subscription?.unsubscribe;
-
-    // Bootstrap para sincronizar sessão na primeira renderização
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      store.setUser(session?.user ?? null, session ?? null);
-      store.setLoading(false);
-    });
-
-    return () => {
-      if (typeof unsubscribe === "function") unsubscribe();
-    };
-  }, [store]);
 
   return {
     user: store.user,
@@ -50,7 +28,7 @@ export const useAuth = () => {
     setRole: store.setRole,
     setLoading: store.setLoading,
     clear: store.clear,
-    hasPermission, // <--- agora disponível no hook
+    hasPermission, // Disponível no hook
     signIn: async (email: string, password: string) => {
       try {
         const { error, data } = await supabase.auth.signInWithPassword({
