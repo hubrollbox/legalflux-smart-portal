@@ -11,13 +11,15 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   useScrollToTop();
 
   return (
-    // Usar w-full para garantir que o layout preenche todo o espaço e não há espaço entre sidebar e conteúdo
-    <div className="min-h-screen w-full flex flex-col md:flex-row bg-gray-50">
-      {/* Sidebar mantém-se à esquerda sem espaço extra */}
+    // Wrapper FLEX garante colagem e centralização.
+    <div className="w-full min-h-screen flex flex-row bg-gray-50">
+      {/* Sidebar SEM margem nem padding lateral */}
       <Sidebar />
-      {/* Utilizar grow para ocupar o resto, sem margin ou gap! */}
-      <main className="flex-1 min-w-0 overflow-auto p-2 md:p-6">
-        {children}
+      {/* Main perfeitamente colado sem gaps */}
+      <main className="flex-1 min-w-0 overflow-auto p-0 md:p-8 max-w-full">
+        <div className="w-full max-w-7xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );
