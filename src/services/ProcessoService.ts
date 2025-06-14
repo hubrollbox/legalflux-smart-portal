@@ -1,10 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
-import { ConflictService } from './ConflictService';
 
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_ANON_KEY!
-);
+import { supabase } from '@/integrations/supabase/client';
+import { ConflictService } from './ConflictService';
 
 export async function fetchProcessos(page = 1, limit = 5) {
   const from = (page - 1) * limit;
