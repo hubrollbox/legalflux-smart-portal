@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -113,44 +112,39 @@ const Contato = () => {
                     </a>
                   </div>
                 </div>
-                
                 <div className="flex items-start space-x-3">
                   <Phone className="h-5 w-5 text-primary-800 mt-1" />
                   <div>
                     <p className="font-medium">Telefone</p>
                     <a 
-                      href="tel:+351210000000" 
+                      href="tel:+351220145169" 
                       className="text-gray-600 hover:text-primary-800 transition-colors"
                     >
-                      +351 21 000 0000
+                      +351 22 0145 169
                     </a>
                   </div>
                 </div>
-                
                 <div className="flex items-start space-x-3">
                   <MapPin className="h-5 w-5 text-primary-800 mt-1" />
                   <div>
                     <p className="font-medium">Morada</p>
                     <p className="text-gray-600">
-                      Av. da Liberdade, 123<br />
-                      1250-096 Lisboa, Portugal
+                      Edifício Diplomata<br />
+                      4450-075 Matosinhos
                     </p>
                   </div>
                 </div>
-                
                 <div className="flex items-start space-x-3">
                   <Clock className="h-5 w-5 text-primary-800 mt-1" />
                   <div>
                     <p className="font-medium">Horário de Atendimento</p>
                     <p className="text-gray-600">
-                      Segunda a Sexta: 9h00 - 18h00<br />
-                      Sábado: 9h00 - 13h00
+                      Segunda a Sexta: 9h00 - 18h00
                     </p>
                   </div>
                 </div>
               </CardContent>
             </Card>
-
             <Card className="rounded-2xl border-0 shadow-lg">
               <CardHeader>
                 <CardTitle className="text-primary-800">Outros Recursos</CardTitle>
