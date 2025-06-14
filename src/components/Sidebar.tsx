@@ -1,4 +1,3 @@
-
 import { 
   Home, 
   FileText, 
@@ -40,7 +39,8 @@ const sidebarMenu = [
   { icon: Settings, label: 'Definições', path: '/definicoes' }
 ];
 
-const SidebarMenu = () => {
+// Renamed from SidebarMenu to SidebarNavigationMenu
+const SidebarNavigationMenu = () => {
   const location = useLocation();
   return (
     <SidebarMenu>
@@ -55,7 +55,7 @@ const SidebarMenu = () => {
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
-  )
+  );
 };
 
 const Sidebar = () => {
@@ -88,7 +88,8 @@ const Sidebar = () => {
           <SidebarGroup>
             <SidebarGroupLabel className="text-xs mt-3 mb-1" />
             <SidebarGroupContent>
-              <SidebarMenu />
+              {/* USE THE RENAMED MENU */}
+              <SidebarNavigationMenu />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
