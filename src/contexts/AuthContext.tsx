@@ -1,103 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '../integrations/supabase/client';
-import { AuthContext, UserData } from './AuthContext';
+import React, { createContext } from 'react';
+import type { User, Session } from '@supabase/supabase-js';
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth state changed:', event, session?.user?.email);
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  const signIn = async (email: string, password: string) => {
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-      return { error };
-    } catch (error) {
-      console.error('Error signing in:', error);
-      return { error };
-    }
+export interface UserData {
+  nome?: string;
+  telefone?: string;
+  tipo?: string;
+  nif?: string;
+  numero_profissional?: string;
+  morada?: string;
+  metodo_pagamento?: string;
+  dados_empresa?: {
+    nome_empresa?: string;
+    setor?: string;
   };
+  [key: string]: unknown;
+}
 
-  const signUp = async (email: string, password: string, userData?: UserData) => {
-    try {
-      const redirectUrl = `${window.location.origin}/`;
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: userData
-        }
-      });
-      return { error };
-    } catch (error) {
-      console.error('Error signing up:', error);
-      return { error };
-    }
-  };
+export interface AuthContextType {
+  user: User | null;
+  session: Session | null;
+  loading: boolean;
+  signIn: (email: string, password: string) => Promise<{ error: unknown }>;
+  signUp: (email: string, password: string, userData?: UserData) => Promise<{ error: unknown }>;
+  signOut: () => Promise<void>;
+  // RBAC: role e método de verificação de permissão
+  role?: string | null;
+  hasPermission?: (permission: string) => boolean;
+}
 
-  const signOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
-  // RBAC: extrai role do user_metadata (Supabase) ou session
-  const role = user?.user_metadata?.role || session?.user?.user_metadata?.role || null;
-
-  // RBAC: função utilitária para verificar permissões
-  const hasPermission = (permission: string) => {
-    // Exemplo simples: permissões por role
-    if (role === 'admin') return true;
-    if (role === 'advogado') return permission !== 'admin';
-    if (role === 'assistente') return permission === 'view';
-    if (role === 'cliente') return permission === 'view';
-    return false;
-  };
-
-  const value = {
-    user,
-    session,
-    loading,
-    signIn,
-    signUp,
-    signOut,
-    role,
-    hasPermission
-  };
-
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export default AuthProvider;
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);

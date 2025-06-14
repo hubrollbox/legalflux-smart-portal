@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, type ReactNode } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { AuthContext, UserData, AuthContextType } from './AuthContext';
@@ -7,22 +8,64 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState<string | null>(null);
+
+  // Helper para buscar o papel do user a partir do backend oficial
+  const fetchUserRole = async (userId: string | undefined) => {
+    if (!userId) {
+      setRole(null);
+      return;
+    }
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .single();
+    if (error || !data?.role) {
+      setRole(null);
+    } else {
+      setRole(data.role);
+    }
+  };
 
   useEffect(() => {
+    // Ouvinte de login/logout
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        // Atualiza role sempre que mudar a sessão/usuário
+        if (session?.user?.id) {
+          fetchUserRole(session.user.id);
+        } else {
+          setRole(null);
+        }
       }
     );
+    // Checar sessão persistida
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      if (session?.user?.id) {
+        fetchUserRole(session.user.id);
+      } else {
+        setRole(null);
+      }
     });
+
     return () => subscription.unsubscribe();
   }, []);
+
+  // Cada vez que o user muda, refaz o fetch do role
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserRole(user.id);
+    } else {
+      setRole(null);
+    }
+  }, [user?.id]);
 
   const signIn = async (email: string, password: string) => {
     try {
@@ -54,17 +97,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      setRole(null);
     } catch (error) {
       // handle error
     }
   };
 
-  // RBAC: role extraído do user_metadata (Supabase) ou session
-  const role = user?.user_metadata?.role || session?.user?.user_metadata?.role || null;
   // Utilitário para verificar permissões (pode crescer depois)
   const hasPermission = (permission: string) => {
     if (role === 'admin') return true;
-    if (role === 'advogado') return permission !== 'admin';
+    if (role === 'jurista' || role === 'advogado' || role === 'advogado_senior') return permission !== 'admin';
     if (role === 'assistente') return permission === 'view';
     if (role === 'cliente') return permission === 'view';
     return false;
@@ -85,3 +127,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
   );
 };
+
