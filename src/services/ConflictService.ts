@@ -1,4 +1,3 @@
-
 // ConflictService.ts
 // Serviço para gestão de conflitos de interesse
 import { supabase } from '@/integrations/supabase/client';
@@ -19,7 +18,6 @@ const TABLE = 'conflitos';
 export const ConflictService = {
   async list(filtro: Partial<Conflict> = {}) {
     // Força o tipo da tabela como any para evitar erro de tipagem do SDK
-    // @ts-expect-error: tabela não está no types gerado
     let query = (supabase.from as any)(TABLE).select('*');
     if (filtro.entity_id) query = query.eq('entity_id', filtro.entity_id);
     if (filtro.case_id) query = query.eq('case_id', filtro.case_id);
@@ -35,7 +33,6 @@ export const ConflictService = {
       : [];
   },
   async create(conflict: Omit<Conflict, 'id' | 'created_at' | 'updated_at'>) {
-    // @ts-expect-error: tabela não está no types gerado
     const { data, error } = await (supabase.from as any)(TABLE).insert([conflict]).select().single();
     if (error) throw error;
     if (data && typeof data.entity_id === 'string' && typeof data.case_id === 'string' && typeof data.reason === 'string') {
@@ -44,7 +41,6 @@ export const ConflictService = {
     throw new Error('Conflito inserido não possui campos mínimos.');
   },
   async resolve(id: string) {
-    // @ts-expect-error: tabela não está no types gerado
     const { data, error } = await (supabase.from as any)(TABLE)
       .update({ resolved: true, updated_at: new Date().toISOString() })
       .eq('id', id)
