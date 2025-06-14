@@ -1,3 +1,4 @@
+
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
@@ -40,7 +41,8 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,png,ico}']
+        globPatterns: ['**/*.{js,css,html,png,ico}'],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // Allow files up to 5MB to be precached
       }
     }),
   ].filter(Boolean),
