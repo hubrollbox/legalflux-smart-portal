@@ -1,3 +1,4 @@
+
 # 🚀 LegalFlux Smart Portal
 
 [![Licença MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -5,7 +6,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-integrated-3ECF8E.svg)](https://supabase.io/)
 
 ![Dashboard LegalFlux](Devices_Set_LegalFlux.png) 
-*Painel de controle completo para gestão jurídica*
+*Painel de controlo completo para gestão jurídica*
 
 ## 📌 Índice
 
@@ -20,33 +21,33 @@
 
 ## 🌐 Visão Geral
 
-Plataforma completa para advogados e escritórios que otimiza processos, centraliza informações e potencializa resultados.
+LegalFlux é uma plataforma inteligente para advogados e escritórios de advocacia que otimiza processos, centraliza informações e potencializa resultados.
 
 **Principais benefícios:**
-- Gestão unificada de casos jurídicos
-- Portal autônomo para clientes
-- Agenda integrada com lembretes automáticos
-- Geração de documentos legais
+- Gestão centralizada de casos jurídicos
+- Portal dedicado ao cliente
+- Agenda integrada com notificações automáticas
+- Geração automática de documentos legais
+- Módulo de insolvência para administradores especializados
 
 ## ✨ Destaques
 
-### 📋 Painel de Controle Inteligente
+### 📋 Painel de Controlo Inteligente
 - Visão geral de processos ativos (28+ casos simultâneos)
-- Alertas de prazos críticos
-- Estatísticas de produtividade
+- Alertas sobre prazos críticos
+- Estatísticas e relatórios de produtividade
 
 ### 📅 Gestão de Prazos
 ![Mobile Preview](mockup_mobile_Legalflux.png)
-*Visualização mobile de prazos processuais*
+*Visualização mobile dos prazos processuais*
 
-- Controle de prazos para os próximos dias
-- Notificações automáticas
-- Integração com calendários
+- Controle dos próximos prazos e eventos
+- Notificações automáticas por e-mail
+- Integração com Google Calendar, Zoom e outros
 
 ### 📑 Módulo de Insolvência
-- Geração automática de documentos (CIRE Art. 129º, 154º)
-- Gestão de credores e inventário
-- Checklist por fase processual
+- Geração automática dos principais documentos CIRE (Art. 129º, 154º)
+- Gestão avançada de credores, inventário e checklist por fase
 
 ## 📸 Capturas de Tela
 
@@ -54,48 +55,72 @@ Plataforma completa para advogados e escritórios que otimiza processos, central
 |---------------------|--------------|
 | ![Desktop View](Devices_Set_LegalFlux.png) | ![Mobile View](mockup_mobile_Legalflux.png) |
 
-**Funcionalidades visíveis:**
+**Funcionalidades destacadas:**
 - Listagem de processos ativos
-- Próximos prazos (2 dias)
-- Documentos recentes adicionados
+- Próximos prazos (2 dias à frente)
+- Documentos recentes
 - Agenda de audiências
 
 ## 🎯 Público-Alvo
 
-- **Advogados autônomos**
-  - Gestão de 20+ casos simultâneos
-  - Controle financeiro integrado
+- **Juristas Independentes e Advogados Autônomos**
+  - Gestão de múltiplos casos de forma individual
+  - Visão financeira integrada
 
-- **Escritórios pequenos/médios**
-  - Até 3 assistentes (plano Profissional)
-  - Dashboard colaborativo
+- **Escritórios de Advocacia de Pequeno/Médio Porte**
+  - Até 3 assistentes incluídos (plano Profissional)
+  - Fluxo colaborativo no dashboard
 
-- **Administradores de insolvência**
-  - Módulo especializado (add-on)
-  - Geração de documentos CIRE
+- **Administradores de Insolvência**
+  - Módulo especializado (Add-on Enterprise)
+  - Geração automatizada de relatórios legais
 
 ## 📦 Planos
 
-| Recurso               | Basic | Profissional | Enterprise |
-|-----------------------|-------|-------------|------------|
-| Processos ilimitados  | ✅    | ✅          | ✅         |
-| Armazenamento         | 100MB | 2GB         | 10GB+      |
-| Assistente jurídico   | ❌    | 3           | Ilimitado  |
-| Dashboard financeiro  | ❌    | Básico      | Completo   |
-| Suporte 24/7          | ❌    | ❌          | ✅         |
+| Recurso               | Basic   | Profissional | Enterprise |
+|-----------------------|---------|-------------|------------|
+| Processos ilimitados  | ✅      | ✅          | ✅         |
+| Armazenamento         | 100MB   | 2GB         | 10GB+      |
+| Assistente jurídico   | ❌      | 3           | Ilimitado  |
+| Dashboard financeiro  | ❌      | Básico      | Completo   |
+| Suporte prioritário   | ❌      | ❌          | ✅         |
 
 ## ⚙️ Tecnologias
 
 **Stack Principal:**
-- **Frontend**: Next.js + TailwindCSS
-- **Backend**: Supabase (PostgreSQL)
-- **Autenticação**: Magic Links
-- **Hospedagem**: Vercel Edge
+- **Frontend:** React, Vite, TailwindCSS, ShadcnUI
+- **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
+- **Autenticação:** Magic Links Supabase
+- **Hospedagem:** Vercel Edge
 
 ```mermaid
 graph TD
-  A[Clientes] --> B[Next.js]
+  A[Usuário] --> B[React + Vite]
   B --> C[Supabase]
   C --> D[(PostgreSQL)]
   C --> E[Autenticação]
   C --> F[Armazenamento]
+```
+
+## 🚀 Instalação e Execução Local
+
+Pré-requisitos: [Node.js >= 18](https://nodejs.org/), [Yarn ou npm], [Supabase CLI] (para edge functions, opcional).
+
+```bash
+# Instale as dependências
+npm install
+
+# Rode a aplicação em dev
+npm run dev
+```
+
+Opcional: para edge functions e integração local, consulte [documentação Supabase](https://supabase.com/docs/guides/functions).
+
+## 📬 Contato
+
+- [Site Oficial LegalFlux](https://legalflux.com)
+- Dúvidas ou sugestões: [suporte@legalflux.com](mailto:suporte@legalflux.com)
+
+---
+
+*LegalFlux — Plataforma moderna, segura e escalável para gestão jurídica.*
