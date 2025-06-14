@@ -1,24 +1,29 @@
 
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import React, { useState, useMemo } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { Credor, Credito } from "@/integrations/supabase/insolvencyTypes";
+import CreditoForm from "./CreditoForm";
+import { toast } from "sonner";
+import { Plus, Edit2, Trash } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-type CreditoComCredor = Credito & { credor: Pick<Credor, "nome"> | null };
+type CreditoComCredor = Credito & { credor: Pick<Credor, "id" | "nome"> | null };
 
-const fetchCreditos = async (insolvenciaId: string): Promise<CreditoComCredor[]> => {
-  // Primeiro, busca todos os credores do processo
-  const { data: credores, error: errorCred } = await supabase
+const fetchCredores = async (insolvenciaId: string): Promise<Credor[]> => {
+  const { data, error } = await supabase
     .from("credores")
     .select("id, nome")
     .eq("insolvencia_id", insolvenciaId);
+  if (error) throw error;
+  return data || [];
+};
 
-  if (errorCred) throw errorCred;
+const fetchCreditos = async (insolvenciaId: string): Promise<CreditoComCredor[]> => {
+  const credores = await fetchCredores(insolvenciaId);
   if (!credores || credores.length === 0) return [];
 
-  const credorIds = credores.map((c: any) => c.id);
-
-  // Busca créditos cujos credor_id pertencem aos credores do processo
+  const credorIds = credores.map((c) => c.id);
   const { data: creditos, error: errorCreditos } = await supabase
     .from("creditos")
     .select("*")
@@ -27,7 +32,6 @@ const fetchCreditos = async (insolvenciaId: string): Promise<CreditoComCredor[]>
   if (errorCreditos) throw errorCreditos;
   if (!creditos) return [];
 
-  // Junta dados de crédito e credor pelo credor_id
   return creditos.map((credito: Credito) => ({
     ...credito,
     credor: credores.find((c: Credor) => c.id === credito.credor_id) ?? null,
@@ -35,27 +39,92 @@ const fetchCreditos = async (insolvenciaId: string): Promise<CreditoComCredor[]>
 };
 
 const CreditosSection: React.FC<{ insolvenciaId: string }> = ({ insolvenciaId }) => {
-  const { data, isLoading, error } = useQuery({
+  const { data: creditos, isLoading, error } = useQuery({
     queryKey: ["creditos", insolvenciaId],
     queryFn: () => fetchCreditos(insolvenciaId),
     enabled: !!insolvenciaId,
   });
 
+  const { data: credores = [] } = useQuery({
+    queryKey: ["credores", insolvenciaId],
+    queryFn: () => fetchCredores(insolvenciaId),
+    enabled: !!insolvenciaId,
+  });
+
+  const queryClient = useQueryClient();
+
+  // Modal State
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editCredito, setEditCredito] = useState<CreditoComCredor | null>(null);
+
+  // CRUD mutations
+  const mutationUpsert = useMutation({
+    mutationFn: async (values: any) => {
+      if (editCredito) {
+        // Update
+        const { error } = await supabase
+          .from("creditos")
+          .update({
+            tipo_credito: values.tipo_credito,
+            valor: values.valor,
+            data: values.data,
+          })
+          .eq("id", editCredito.id);
+        if (error) throw error;
+      } else {
+        // Insert
+        const { error } = await supabase
+          .from("creditos")
+          .insert({
+            credor_id: values.credor_id,
+            tipo_credito: values.tipo_credito,
+            valor: values.valor,
+            data: values.data,
+          });
+        if (error) throw error;
+      }
+    },
+    onSuccess: () => {
+      toast.success("Crédito guardado!");
+      queryClient.invalidateQueries({ queryKey: ["creditos", insolvenciaId] });
+    },
+    onError: (e: any) => {
+      toast.error("Erro ao guardar: " + e.message);
+    }
+  });
+
+  const mutationDelete = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("creditos").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Crédito removido");
+      queryClient.invalidateQueries({ queryKey: ["creditos", insolvenciaId] });
+    },
+    onError: (e: any) => toast.error("Erro ao remover: " + e.message),
+  });
+
   return (
     <div>
-      <div className="font-semibold mb-2">Créditos associados:</div>
+      <div className="flex items-center justify-between mb-2">
+        <span className="font-semibold">Créditos associados:</span>
+        <Button size="sm" onClick={() => { setEditCredito(null); setModalOpen(true); }}>
+          <Plus size={16} /> Novo crédito
+        </Button>
+      </div>
       {isLoading && (
         <div className="text-muted-foreground">A carregar créditos...</div>
       )}
       {error && (
         <div className="text-destructive text-sm">Ocorreu um erro ao carregar os créditos.</div>
       )}
-      {!isLoading && !error && data && data.length === 0 && (
+      {!isLoading && !error && creditos && creditos.length === 0 && (
         <div className="text-muted-foreground italic">
           Nenhum crédito registado neste processo.
         </div>
       )}
-      {!isLoading && !error && data && data.length > 0 && (
+      {!isLoading && !error && !!creditos && creditos.length > 0 && (
         <div className="overflow-x-auto">
           <table className="w-full text-sm border rounded">
             <thead>
@@ -64,29 +133,46 @@ const CreditosSection: React.FC<{ insolvenciaId: string }> = ({ insolvenciaId })
                 <th className="px-3 py-2 text-left">Tipo de Crédito</th>
                 <th className="px-3 py-2 text-left">Valor</th>
                 <th className="px-3 py-2 text-left">Data</th>
-                <th className="px-3 py-2 text-left">Documento</th>
+                <th className="px-3 py-2 text-left"></th>
               </tr>
             </thead>
             <tbody>
-              {data.map((credito) => (
+              {creditos.map((credito) => (
                 <tr key={credito.id} className="border-b">
                   <td className="px-3 py-2">{credito.credor?.nome ?? <span className="text-muted-foreground italic">—</span>}</td>
                   <td className="px-3 py-2">{credito.tipo_credito}</td>
                   <td className="px-3 py-2">{Number(credito.valor).toLocaleString("pt-PT", { style: "currency", currency: "EUR" })}</td>
                   <td className="px-3 py-2">{credito.data ? new Date(credito.data).toLocaleDateString("pt-PT") : <span className="text-muted-foreground italic">—</span>}</td>
-                  <td className="px-3 py-2">
-                    {credito.documentos && Object.keys(credito.documentos).length > 0 ? (
-                      // Simplesmente lista o tipo, implementar download/link futuramente
-                      <span className="text-blue-700 underline cursor-pointer">Ver documento</span>
-                    ) : (
-                      <span className="text-muted-foreground italic">—</span>
-                    )}
+                  <td className="px-3 py-2 flex gap-2">
+                    <button
+                      title="Editar"
+                      onClick={() => { setEditCredito(credito); setModalOpen(true); }}
+                      className="text-sm p-1 rounded text-blue-600 hover:bg-blue-50"
+                    >
+                      <Edit2 size={16} />
+                    </button>
+                    <button
+                      title="Remover"
+                      onClick={() => mutationDelete.mutate(credito.id)}
+                      className="text-sm p-1 rounded text-red-600 hover:bg-red-50"
+                    >
+                      <Trash size={16} />
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+      )}
+      {modalOpen && (
+        <CreditoForm
+          open={modalOpen}
+          onClose={() => { setModalOpen(false); setEditCredito(null); }}
+          defaultValues={editCredito}
+          credores={credores}
+          onSave={async (data) => mutationUpsert.mutateAsync(data)}
+        />
       )}
     </div>
   );
