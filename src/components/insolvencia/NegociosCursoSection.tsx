@@ -1,4 +1,5 @@
-import React from "react";
+
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { NegocioCurso } from "@/integrations/supabase/insolvencyTypes";
@@ -8,6 +9,7 @@ import { Plus, Edit2, Trash, File } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NegocioCursoForm from "./NegocioCursoForm";
 
+// Fetch negócios em curso
 const fetchNegocios = async (insolvenciaId: string): Promise<NegocioCurso[]> => {
   const { data, error } = await supabase
     .from("negocios_curso")
@@ -18,15 +20,19 @@ const fetchNegocios = async (insolvenciaId: string): Promise<NegocioCurso[]> => 
   return data || [];
 };
 
+// Helper: upload documento & get public URL
 const uploadDocumento = async (file: File, negocioId: string) => {
   const ext = file.name.split(".").pop();
   const filePath = `negocios/${negocioId}-${Date.now()}.${ext}`;
   const { data, error } = await supabase.storage
-    .from("documentos") // Assumindo bucket 'documentos' já está público/criado!
+    .from("documentos")
     .upload(filePath, file);
   if (error) throw error;
-  // URL pública simplista (ajustar se precisar CDN): 
-  return `${supabase.storageUrl}/object/public/documentos/${filePath}`;
+  // Use getPublicUrl in the official way
+  const { data: publicUrlData } = supabase.storage
+    .from("documentos")
+    .getPublicUrl(filePath);
+  return publicUrlData?.publicUrl || "";
 };
 
 const NegociosCursoSection: React.FC<{ insolvenciaId: string }> = ({ insolvenciaId }) => {
@@ -178,3 +184,4 @@ const NegociosCursoSection: React.FC<{ insolvenciaId: string }> = ({ insolvencia
 };
 
 export default NegociosCursoSection;
+
