@@ -1,4 +1,6 @@
 
+// Encrypt and decrypt using Supabase edge function – no direct secrets in frontend!
+
 /**
  * All encryption/decryption must be handled via the edge function.
  * These helper functions route to the Supabase edge functions.
