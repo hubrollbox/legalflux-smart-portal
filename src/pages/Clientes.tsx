@@ -76,28 +76,31 @@ const Clientes = () => {
       setLoading(true);
       try {
         const data = await fetchClientes();
-        // Filtra apenas objetos válidos para Cliente (devem ter pelo menos nome e email)
+        // Apenas aceita objetos que realmente têm "nome" e "email"
         const clientesMapeados: Cliente[] = Array.isArray(data)
           ? data
-            .filter((raw: any) => typeof raw.nome === 'string' && typeof raw.email === 'string')
-            .map((raw: any) => ({
-              id: raw.id?.toString() ?? '-',
-              nome: raw.nome || 'Sem nome',
-              email: raw.email || 'Sem email',
-              telefone: raw.telefone || 'Sem telefone',
-              tipo: raw.tipo || 'particular',
-              processos: raw.processos ?? 0,
-              status: raw.status || 'pendente',
-              ultimo_contacto: raw.ultimo_contacto || '',
-              valor_total: raw.valor_total || '€0',
-              nif: raw.nif || '',
-              morada: raw.morada || '',
-              notas: raw.notas || '',
-            }))
+              .filter((raw: any) =>
+                typeof raw.nome === 'string' &&
+                typeof raw.email === 'string'
+              )
+              .map((raw: any) => ({
+                id: raw.id?.toString() ?? '-',
+                nome: raw.nome || 'Sem nome',
+                email: raw.email || 'Sem email',
+                telefone: raw.telefone || 'Sem telefone',
+                tipo: raw.tipo || 'particular',
+                processos: raw.processos ?? 0,
+                status: raw.status || 'pendente',
+                ultimo_contacto: raw.ultimo_contacto || '',
+                valor_total: raw.valor_total || '€0',
+                nif: raw.nif || '',
+                morada: raw.morada || '',
+                notas: raw.notas || '',
+              }))
           : [];
         setClientesList(clientesMapeados);
       } catch (e) {
-        setClientesList([]); // Evita erro de tipo
+        setClientesList([]);
       } finally {
         setLoading(false);
       }
@@ -114,7 +117,6 @@ const Clientes = () => {
         ultimo_contacto: new Date().toISOString().slice(0, 10),
         valor_total: '€0',
       });
-      // Só adiciona se realmente veio objeto válido
       if (novo && typeof novo.nome === 'string' && typeof novo.email === 'string') {
         setClientesList((prev) => [
           {
@@ -131,7 +133,7 @@ const Clientes = () => {
             morada: novo.morada || '',
             notas: novo.notas || '',
           },
-          ...prev
+          ...prev,
         ]);
       }
     } catch (e) {
@@ -143,24 +145,23 @@ const Clientes = () => {
     if (!editCliente) return;
     try {
       const atualizado = await updateCliente(editCliente.id, data);
-      // Só atualiza se objeto é válido
       if (atualizado && typeof atualizado.nome === 'string' && typeof atualizado.email === 'string') {
         setClientesList((prev) => prev.map(c =>
           c.id === atualizado.id
             ? {
-              id: atualizado.id?.toString() ?? '-',
-              nome: atualizado.nome,
-              email: atualizado.email,
-              telefone: atualizado.telefone || 'Sem telefone',
-              tipo: atualizado.tipo || 'particular',
-              processos: atualizado.processos ?? 0,
-              status: atualizado.status || 'pendente',
-              ultimo_contacto: atualizado.ultimo_contacto || '',
-              valor_total: atualizado.valor_total || '€0',
-              nif: atualizado.nif || '',
-              morada: atualizado.morada || '',
-              notas: atualizado.notas || '',
-            }
+                id: atualizado.id?.toString() ?? '-',
+                nome: atualizado.nome,
+                email: atualizado.email,
+                telefone: atualizado.telefone || 'Sem telefone',
+                tipo: atualizado.tipo || 'particular',
+                processos: atualizado.processos ?? 0,
+                status: atualizado.status || 'pendente',
+                ultimo_contacto: atualizado.ultimo_contacto || '',
+                valor_total: atualizado.valor_total || '€0',
+                nif: atualizado.nif || '',
+                morada: atualizado.morada || '',
+                notas: atualizado.notas || '',
+              }
             : c
         ));
         setEditCliente(null);
