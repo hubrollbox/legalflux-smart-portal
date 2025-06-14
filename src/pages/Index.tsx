@@ -39,7 +39,6 @@ const Index = () => {
         </div>
       </main>
       <Footer />
-      <img src="/logo-legalflux-192.png" alt="Legalflux Logo" width={200} height={100} loading="lazy" className="mx-auto my-8" />
       <section className="my-8 grid grid-cols-1 md:grid-cols-3 gap-6">
         <Button className="w-full" onClick={() => navigate('/processos/novo')}>Criar Novo Caso</Button>
         <Button className="w-full" onClick={() => navigate('/processos?filtro=prazos-urgentes')}>Ver Prazos Urgentes</Button>
