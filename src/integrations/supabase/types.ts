@@ -245,24 +245,30 @@ export type Database = {
       }
       bens_inventario: {
         Row: {
+          created_at: string | null
           descricao: string
           estado: Database["public"]["Enums"]["estado_bem_insolvencia"] | null
           id: string
           insolvencia_id: string | null
+          updated_at: string | null
           valor_estimado: number | null
         }
         Insert: {
+          created_at?: string | null
           descricao: string
           estado?: Database["public"]["Enums"]["estado_bem_insolvencia"] | null
           id?: string
           insolvencia_id?: string | null
+          updated_at?: string | null
           valor_estimado?: number | null
         }
         Update: {
+          created_at?: string | null
           descricao?: string
           estado?: Database["public"]["Enums"]["estado_bem_insolvencia"] | null
           id?: string
           insolvencia_id?: string | null
+          updated_at?: string | null
           valor_estimado?: number | null
         }
         Relationships: [
@@ -464,27 +470,33 @@ export type Database = {
       }
       creditos: {
         Row: {
+          created_at: string | null
           credor_id: string | null
           data: string | null
           documentos: Json | null
           id: string
           tipo_credito: string
+          updated_at: string | null
           valor: number
         }
         Insert: {
+          created_at?: string | null
           credor_id?: string | null
           data?: string | null
           documentos?: Json | null
           id?: string
           tipo_credito: string
+          updated_at?: string | null
           valor: number
         }
         Update: {
+          created_at?: string | null
           credor_id?: string | null
           data?: string | null
           documentos?: Json | null
           id?: string
           tipo_credito?: string
+          updated_at?: string | null
           valor?: number
         }
         Relationships: [
@@ -499,25 +511,31 @@ export type Database = {
       }
       credores: {
         Row: {
+          created_at: string | null
           email: string | null
           id: string
           insolvencia_id: string | null
           nif: string | null
           nome: string
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
           email?: string | null
           id?: string
           insolvencia_id?: string | null
           nif?: string | null
           nome: string
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           email?: string | null
           id?: string
           insolvencia_id?: string | null
           nif?: string | null
           nome?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
@@ -532,23 +550,29 @@ export type Database = {
       dividas_massa: {
         Row: {
           categoria: string | null
+          created_at: string | null
           descricao: string
           id: string
           insolvencia_id: string | null
+          updated_at: string | null
           valor: number | null
         }
         Insert: {
           categoria?: string | null
+          created_at?: string | null
           descricao: string
           id?: string
           insolvencia_id?: string | null
+          updated_at?: string | null
           valor?: number | null
         }
         Update: {
           categoria?: string | null
+          created_at?: string | null
           descricao?: string
           id?: string
           insolvencia_id?: string | null
+          updated_at?: string | null
           valor?: number | null
         }
         Relationships: [
@@ -750,6 +774,80 @@ export type Database = {
         }
         Relationships: []
       }
+      logs_operacoes_insolvencia: {
+        Row: {
+          data: string | null
+          detalhes: string | null
+          id: string
+          insolvencia_id: string | null
+          operacao: string | null
+          registro_id: string | null
+          tabela: string | null
+          user_id: string | null
+        }
+        Insert: {
+          data?: string | null
+          detalhes?: string | null
+          id?: string
+          insolvencia_id?: string | null
+          operacao?: string | null
+          registro_id?: string | null
+          tabela?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          data?: string | null
+          detalhes?: string | null
+          id?: string
+          insolvencia_id?: string | null
+          operacao?: string | null
+          registro_id?: string | null
+          tabela?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      logs_partilha_documentos_insolvencia: {
+        Row: {
+          data_envio: string | null
+          detalhe: string | null
+          documento_id: string | null
+          enviado_para: string | null
+          enviado_por: string | null
+          id: string
+          metodo: string
+          sucesso: boolean | null
+        }
+        Insert: {
+          data_envio?: string | null
+          detalhe?: string | null
+          documento_id?: string | null
+          enviado_para?: string | null
+          enviado_por?: string | null
+          id?: string
+          metodo?: string
+          sucesso?: boolean | null
+        }
+        Update: {
+          data_envio?: string | null
+          detalhe?: string | null
+          documento_id?: string | null
+          enviado_para?: string | null
+          enviado_por?: string | null
+          id?: string
+          metodo?: string
+          sucesso?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "logs_partilha_documentos_insolvencia_documento_id_fkey"
+            columns: ["documento_id"]
+            isOneToOne: false
+            referencedRelation: "documentos_insolvencia"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mensagens: {
         Row: {
           arquivo_url: string | null
@@ -807,25 +905,31 @@ export type Database = {
       }
       negocios_curso: {
         Row: {
+          created_at: string | null
           descricao: string
           documento: string | null
           estado: string | null
           id: string
           insolvencia_id: string | null
+          updated_at: string | null
         }
         Insert: {
+          created_at?: string | null
           descricao: string
           documento?: string | null
           estado?: string | null
           id?: string
           insolvencia_id?: string | null
+          updated_at?: string | null
         }
         Update: {
+          created_at?: string | null
           descricao?: string
           documento?: string | null
           estado?: string | null
           id?: string
           insolvencia_id?: string | null
+          updated_at?: string | null
         }
         Relationships: [
           {
