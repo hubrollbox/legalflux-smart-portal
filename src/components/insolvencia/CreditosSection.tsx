@@ -12,7 +12,7 @@ type CreditoComCredor = Credito & { credor: Pick<Credor, "id" | "nome"> | null }
 const fetchCredores = async (insolvenciaId: string): Promise<Credor[]> => {
   const { data, error } = await supabase
     .from("credores")
-    .select("id, nome")
+    .select("id, insolvencia_id, nome, nif, email") // select all required fields!
     .eq("insolvencia_id", insolvenciaId);
   if (error) throw error;
   return data || [];
@@ -44,20 +44,9 @@ const CreditosSection: React.FC<{ insolvenciaId: string }> = ({ insolvenciaId })
     enabled: !!insolvenciaId,
   });
 
-  // Ajustar a query para trazer insolvencia_id (será usado no form)
   const { data: credores = [] } = useQuery({
     queryKey: ["credores", insolvenciaId],
-    queryFn: async () => {
-      const credoresRaw = await fetchCredores(insolvenciaId);
-      // Certificar que cada credor tem os campos necessários
-      return credoresRaw.map((c) => ({
-        id: c.id,
-        nome: c.nome,
-        insolvencia_id: c.insolvencia_id ?? insolvenciaId,
-        nif: c.nif,
-        email: c.email,
-      }));
-    },
+    queryFn: () => fetchCredores(insolvenciaId),
     enabled: !!insolvenciaId,
   });
 
