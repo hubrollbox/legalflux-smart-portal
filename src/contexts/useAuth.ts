@@ -1,7 +1,7 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from "@supabase/supabase-js";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useEffect } from "react";
 
 // Nova função para avaliar permissões baseada no role atual
 const getHasPermission = (role: string | null) => (permission: string) => {
@@ -17,6 +17,29 @@ const getHasPermission = (role: string | null) => (permission: string) => {
 export const useAuth = () => {
   const store = useAuthStore();
   const hasPermission = getHasPermission(store.role);
+
+  // Inicializar sessão no mount
+  useEffect(() => {
+    let unsubscribe: (() => void) | undefined;
+
+    // Listener para eventos auth (login/logout etc)
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      store.setLoading(false);
+      store.setUser(session?.user ?? null, session ?? null);
+    });
+
+    unsubscribe = authListener?.subscription?.unsubscribe;
+
+    // Bootstrap para sincronizar sessão na primeira renderização
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      store.setUser(session?.user ?? null, session ?? null);
+      store.setLoading(false);
+    });
+
+    return () => {
+      if (typeof unsubscribe === "function") unsubscribe();
+    };
+  }, [store]);
 
   return {
     user: store.user,
@@ -64,4 +87,3 @@ export const useAuth = () => {
     },
   };
 };
-
