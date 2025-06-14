@@ -31,7 +31,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile';
 import SidebarFloatingTrigger from './SidebarFloatingTrigger';
 
-// Menu com as principais secções
+// Menu principal
 const sidebarMenu = [
   { icon: Home, label: 'Dashboard', path: '/dashboard' },
   { icon: FileText, label: 'Processos', path: '/processos' },
@@ -41,10 +41,10 @@ const sidebarMenu = [
   { icon: Euro, label: 'Financeiro', path: '/financeiro' },
   { icon: Bot, label: 'IA Assistant', path: '/ia-assistant' },
   { icon: Settings, label: 'Definições', path: '/definicoes' },
-  { icon: User, label: 'Meu Perfil', path: '/perfil' }, // <- nova entrada
+  { icon: User, label: 'Meu Perfil', path: '/perfil' },
 ];
 
-// Menu Navigation adaptado para manter consistência na sidebar
+// Menu de navegação com active state
 const SidebarNavigationMenu = () => {
   const location = useLocation();
   return (
@@ -67,7 +67,7 @@ const Sidebar = () => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
 
-  // Botão de repetir tutorial
+  // Repete tutorial
   const handleRestartOnboarding = () => {
     localStorage.removeItem('legalflux-onboarding-completed');
     window.location.reload();
@@ -75,12 +75,12 @@ const Sidebar = () => {
 
   return (
     <SidebarProvider>
-      {/* Desktop Sidebar: só mostra no desktop */}
-      <div className="hidden md:flex w-[260px] max-w-[90vw] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 flex-col p-0">
+      {/* Sidebar fixa apenas em DESKTOP */}
+      <div className="sidebar hidden md:flex flex-col w-[260px] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 p-0">
         <ShadcnSidebar className="flex flex-col flex-1 p-0">
-          {/* Cabeçalho */}
           <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
             <div className="absolute left-3 top-3 hidden md:block">
+              {/* Apenas botão de collapse opcional, pode ocultar */}
               <SidebarTrigger />
             </div>
             <img 
@@ -93,7 +93,6 @@ const Sidebar = () => {
               <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
             </div>
           </SidebarHeader>
-          {/* Navegação */}
           <SidebarContent className="flex-1 px-0 pt-1">
             <SidebarGroup>
               <SidebarGroupLabel className="hidden" />
@@ -102,7 +101,6 @@ const Sidebar = () => {
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
-          {/* Footer */}
           <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
             <button
               onClick={handleRestartOnboarding}
@@ -123,8 +121,8 @@ const Sidebar = () => {
           </SidebarFooter>
         </ShadcnSidebar>
       </div>
-      {/* Mobile Sidebar: só mostra em mobile */}
-      <div className="md:hidden">
+      {/* Sidebar para MOBILE - só sheet/slide, nada fixo */}
+      <div className="sidebar-mobile md:hidden">
         <ShadcnSidebar className="fixed inset-0 z-40 flex flex-col p-0 bg-sidebar text-sidebar-foreground min-h-screen w-[80vw] max-w-xs border-r border-gray-200">
           <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
             <img 
@@ -164,9 +162,9 @@ const Sidebar = () => {
             </button>
           </SidebarFooter>
         </ShadcnSidebar>
+        {/* Trigger flutuante só em mobile */}
+        <SidebarFloatingTrigger />
       </div>
-      {/* Trigger flutuante (apenas mobile) */}
-      <SidebarFloatingTrigger />
     </SidebarProvider>
   );
 };
