@@ -12,8 +12,8 @@ const Footer = () => {
             <div className="flex items-center space-x-3 mb-4">
               <div className="bg-white p-2 rounded-xl">
                 <img 
-                  src="/lovable-uploads/3c621e97-ebe6-4a63-be63-bcee1711ab40.png" 
-                  alt="Legalflux Logo" 
+                  src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+                  alt="Legalflux Logo"
                   className="h-6 w-6 object-contain"
                 />
               </div>

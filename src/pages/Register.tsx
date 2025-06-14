@@ -33,13 +33,13 @@ const Register = () => {
       <div className="w-full max-w-md flex flex-col items-center">
         <Link to="/">
           <img
-            src="/logo-legalflux-192.png"
+            src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
             alt="Legalflux Logo"
             width={64}
             height={64}
             className="mb-4"
             onError={(e) => {
-              (e.target as HTMLImageElement).src = "/logo.png";
+              (e.target as HTMLImageElement).src = "/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png";
             }}
           />
         </Link>

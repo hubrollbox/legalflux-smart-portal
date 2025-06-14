@@ -48,12 +48,12 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <Link to="/">
             <img 
-              src="/logo-legalflux-192.png" 
-              alt="Legalflux Logo" 
-              width={40} 
-              height={40} 
+              src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+              alt="Legalflux Logo"
+              width={40}
+              height={40}
               className="h-10 w-auto"
-              onError={e => { (e.target as HTMLImageElement).src = '/logo.png'; }}
+              onError={e => { (e.target as HTMLImageElement).src = '/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png'; }}
             />
           </Link>
         </div>
@@ -199,3 +199,4 @@ const Header = () => {
 };
 
 export default Header;
+
