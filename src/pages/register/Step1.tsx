@@ -9,6 +9,7 @@ interface Step1Props {
   onNext: () => void;
 }
 
+// Apenas jurisconsulto/jurista pode registar diretamente
 const Step1 = ({ value, onChange, onNext }: Step1Props) => (
   <div className="space-y-6">
     <div>
@@ -18,11 +19,13 @@ const Step1 = ({ value, onChange, onNext }: Step1Props) => (
           <SelectValue placeholder="Selecione o tipo" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="cliente">Cliente</SelectItem>
-          <SelectItem value="advogado">Advogado</SelectItem>
-          <SelectItem value="assistente">Assistente</SelectItem>
+          {/* Só pode registar Jurista (Advogado/Solicitador) */}
+          <SelectItem value="advogado">Jurista (Advogado/Solicitador)</SelectItem>
         </SelectContent>
       </Select>
+      <span className="block text-xs text-gray-500 mt-2">
+        Apenas Juristas podem registar. Clientes e Assistentes são adicionados pelo painel do Jurista.
+      </span>
     </div>
     <Button className="w-full bg-primary-800 hover:bg-primary-700" disabled={!value} onClick={onNext}>
       Próximo

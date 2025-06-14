@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,8 +46,9 @@ const validateStep2 = (formData: Step2FormData) => {
   if (formData.password !== formData.confirmPassword) {
     return "As senhas não correspondem.";
   }
+  // Só para advogados: número profissional é obrigatório
   if (formData.tipo === "advogado" && !formData.numero_profissional) {
-    return "Número profissional é obrigatório para advogados.";
+    return "Número profissional é obrigatório para juristas.";
   }
   return "";
 };
@@ -77,9 +77,8 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
               emailRedirectTo: redirectUrl,
               data: {
                 nome: formData.nome,
-                tipo: formData.tipo,
+                tipo: "advogado", // fixo
                 numero_profissional: formData.numero_profissional,
-                nif: formData.nif,
                 telefone: formData.telefone,
               },
             },
@@ -90,37 +89,29 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           const profileInsert = {
             id: userId,
             email: formData.email,
-            role: formData.tipo as "cliente" | "assistente" | "advogado" | "admin",
-            status: "pending",
+            role: "advogado",
+            status: "pending", // Sempre pendente, precisa aprovação manual
             nome: formData.nome || "",
             telefone: formData.telefone || "",
-            nif: formData.nif || "",
+            nif: null,
             numero_profissional: formData.numero_profissional || "",
-            morada: formData.morada || "",
-            metodo_pagamento: formData.metodo_pagamento || "",
-            dados_faturacao: formData.tipo === "empresa" ? formData.dados_empresa : {},
+            morada: "",
+            metodo_pagamento: "",
+            dados_faturacao: {},
           };
           const { error: insertError } = await supabase.from("users_extended").insert([profileInsert]);
           if (insertError) throw insertError;
           setRegistered(true);
           onSuccess();
         } catch (error) {
-          const err = error as { message?: string; email?: string };
-          if (err && typeof err === "object" && err.message?.includes("User already registered")) {
-            toast({
-              title: "E-mail já registado",
-              description: "Já existe uma conta associada a este e-mail. Por favor faça login.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Erro no registo",
-              description: err && typeof err === "object" && err.message
-                ? err.message
-                : "Ocorreu um erro durante o registo.",
-              variant: "destructive",
-            });
-          }
+          const err = error as { message?: string };
+          toast({
+            title: "Erro no registo",
+            description: err && typeof err === "object" && err.message
+              ? err.message
+              : "Ocorreu um erro durante o registo.",
+            variant: "destructive",
+          });
         } finally {
           setLoading(false);
         }
@@ -183,31 +174,26 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           />
         </div>
       </div>
-      {formData.tipo === "advogado" && (
-        <div>
-          <Label htmlFor="numero_profissional">Número Profissional *</Label>
-          <Input
-            id="numero_profissional"
-            type="text"
-            value={formData.numero_profissional}
-            onChange={(e) => onChange({ numero_profissional: e.target.value })}
-            placeholder="Ex: 12345-OA"
-            required
-          />
-        </div>
-      )}
-      {formData.tipo === "cliente" && (
-        <div>
-          <Label htmlFor="nif">NIF</Label>
-          <Input id="nif" type="text" value={formData.nif} onChange={(e) => onChange({ nif: e.target.value })} />
-        </div>
-      )}
+      <div>
+        <Label htmlFor="numero_profissional">Número Profissional *</Label>
+        <Input
+          id="numero_profissional"
+          type="text"
+          value={formData.numero_profissional}
+          onChange={(e) => onChange({ numero_profissional: e.target.value })}
+          placeholder="Ex: 12345-OA"
+          required
+        />
+      </div>
       <Button type="submit" className="w-full bg-primary-800 hover:bg-primary-700">
         {loading ? "Aguarde..." : "Criar Conta"}
       </Button>
       <Button type="button" variant="ghost" className="w-full" onClick={onBack}>
         Voltar
       </Button>
+      <div className="text-xs text-gray-500 mt-2">
+        Ao submeter, a conta aguardará aprovação. Clientes e Assistentes são criados pelo painel do Jurista.
+      </div>
     </form>
   );
 };

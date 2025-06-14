@@ -44,15 +44,15 @@ const Register = () => {
         </Link>
         <Card className="w-full rounded-2xl border-0 shadow-2xl">
           <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-bold text-primary-800">Criar Conta</CardTitle>
-            <p className="text-gray-600 text-base">Junte-se à plataforma jurídica mais avançada dos PALOP</p>
+            <CardTitle className="text-2xl font-bold text-primary-800">Criar Conta – Apenas Juristas</CardTitle>
+            <p className="text-gray-600 text-base">Junte-se à plataforma jurídica. Somente juristas podem registar-se de forma autónoma. Clientes e Assistentes são criados pelo painel do Jurista.</p>
           </CardHeader>
           <CardContent>
             {step === 1 && <Step1 value={formData.tipo} onChange={(tipo) => setFormData((d) => ({ ...d, tipo }))} onNext={() => setStep(2)} />}
             {step === 2 && (
               <Step2
                 formData={formData}
-                onChange={(data) => setFormData((prev) => ({ ...prev, ...data }))}
+                onChange={(data) => setFormData((prev) => ({ ...prev, ...data, tipo: "advogado" }))}
                 onBack={() => setStep(1)}
                 onSuccess={() => setStep(3)}
                 setRegistered={setRegistered}
