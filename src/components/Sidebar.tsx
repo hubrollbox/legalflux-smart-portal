@@ -1,3 +1,4 @@
+
 import { 
   Home, 
   FileText, 
@@ -28,6 +29,7 @@ import {
 } from '@/components/ui/sidebar';
 import logo from '@/../public/logo.png';
 
+// Menu com as principais secções
 const sidebarMenu = [
   { icon: Home, label: 'Dashboard', path: '/dashboard' },
   { icon: FileText, label: 'Processos', path: '/processos' },
@@ -39,7 +41,7 @@ const sidebarMenu = [
   { icon: Settings, label: 'Definições', path: '/definicoes' }
 ];
 
-// Renamed from SidebarMenu to SidebarNavigationMenu
+// SidebarNavigationMenu refatorado do SidebarMenu
 const SidebarNavigationMenu = () => {
   const location = useLocation();
   return (
@@ -70,8 +72,12 @@ const Sidebar = () => {
   return (
     <SidebarProvider>
       <ShadcnSidebar>
-        {/* Cabeçalho com logo */}
-        <SidebarHeader className="border-b border-gray-200 p-6 pb-4 flex flex-col items-center">
+        {/* Cabeçalho com logo e trigger desktop (collapse) */}
+        <SidebarHeader className="border-b border-gray-200 p-6 pb-4 flex flex-col items-center relative">
+          {/* Botão collapse/expand SÓ DESKTOP */}
+          <div className="absolute left-2 top-2 hidden md:block">
+            <SidebarTrigger />
+          </div>
           <img 
             src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
             alt="Legalflux Logo"
@@ -88,7 +94,6 @@ const Sidebar = () => {
           <SidebarGroup>
             <SidebarGroupLabel className="text-xs mt-3 mb-1" />
             <SidebarGroupContent>
-              {/* USE THE RENAMED MENU */}
               <SidebarNavigationMenu />
             </SidebarGroupContent>
           </SidebarGroup>
@@ -119,3 +124,4 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
+
