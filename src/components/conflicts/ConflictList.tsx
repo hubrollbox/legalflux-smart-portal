@@ -1,3 +1,4 @@
+
 // ConflictList.tsx
 import { useEffect, useState } from 'react';
 import { Conflict, ConflictService } from '@/services/ConflictService';
@@ -13,7 +14,9 @@ export default function ConflictList({ entityId, caseId }: ConflictListProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    ConflictService.list({ entity_id: entityId, case_id: caseId }).then(setConflicts).finally(() => setLoading(false));
+    ConflictService.list({ entity_id: entityId, case_id: caseId })
+      .then(res => setConflicts(res))
+      .finally(() => setLoading(false));
   }, [entityId, caseId]);
 
   const handleResolve = async (id: string) => {

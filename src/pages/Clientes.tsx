@@ -1,4 +1,3 @@
-
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -42,31 +41,31 @@ export interface Cliente {
   notas?: string;
 }
 
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'activo':
+      return 'bg-green-100 text-green-800';
+    case 'inactivo':
+      return 'bg-gray-100 text-gray-800';
+    case 'pendente':
+      return 'bg-yellow-100 text-yellow-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
+
+const getTipoColor = (tipo: string) => {
+  switch (tipo) {
+    case 'particular':
+      return 'bg-blue-100 text-blue-800';
+    case 'empresa':
+      return 'bg-purple-100 text-purple-800';
+    default:
+      return 'bg-gray-100 text-gray-800';
+  }
+};
+
 const Clientes = () => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'activo':
-        return 'bg-green-100 text-green-800';
-      case 'inactivo':
-        return 'bg-gray-100 text-gray-800';
-      case 'pendente':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getTipoColor = (tipo: string) => {
-    switch (tipo) {
-      case 'particular':
-        return 'bg-blue-100 text-blue-800';
-      case 'empresa':
-        return 'bg-purple-100 text-purple-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
-
   const [showForm, setShowForm] = useState(false);
   const [clientesList, setClientesList] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,25 +76,28 @@ const Clientes = () => {
       setLoading(true);
       try {
         const data = await fetchClientes();
-        // Mapeamento defensivo e preenchimento de campos faltantes
-        const clientesMapeados: Cliente[] = Array.isArray(data) ? data.map((raw: any) => ({
-          id: raw.id?.toString() ?? '-',
-          nome: raw.nome ?? 'Sem nome',
-          email: raw.email ?? 'Sem email',
-          telefone: raw.telefone ?? 'Sem telefone',
-          tipo: raw.tipo ?? 'particular',
-          processos: raw.processos ?? 0,
-          status: raw.status ?? 'pendente',
-          ultimo_contacto: raw.ultimo_contacto ?? '',
-          valor_total: raw.valor_total ?? '€0',
-          nif: raw.nif ?? '',
-          morada: raw.morada ?? '',
-          notas: raw.notas ?? '',
-        })) : [];
+        // Filtra apenas objetos válidos para Cliente (devem ter pelo menos nome e email)
+        const clientesMapeados: Cliente[] = Array.isArray(data)
+          ? data
+            .filter((raw: any) => typeof raw.nome === 'string' && typeof raw.email === 'string')
+            .map((raw: any) => ({
+              id: raw.id?.toString() ?? '-',
+              nome: raw.nome || 'Sem nome',
+              email: raw.email || 'Sem email',
+              telefone: raw.telefone || 'Sem telefone',
+              tipo: raw.tipo || 'particular',
+              processos: raw.processos ?? 0,
+              status: raw.status || 'pendente',
+              ultimo_contacto: raw.ultimo_contacto || '',
+              valor_total: raw.valor_total || '€0',
+              nif: raw.nif || '',
+              morada: raw.morada || '',
+              notas: raw.notas || '',
+            }))
+          : [];
         setClientesList(clientesMapeados);
       } catch (e) {
         setClientesList([]); // Evita erro de tipo
-        // TODO: toast de erro
       } finally {
         setLoading(false);
       }
@@ -112,23 +114,26 @@ const Clientes = () => {
         ultimo_contacto: new Date().toISOString().slice(0, 10),
         valor_total: '€0',
       });
-      setClientesList((prev) => [
-        {
-          id: novo.id?.toString() ?? '-',
-          nome: novo.nome ?? 'Sem nome',
-          email: novo.email ?? 'Sem email',
-          telefone: novo.telefone ?? 'Sem telefone',
-          tipo: novo.tipo ?? 'particular',
-          processos: novo.processos ?? 0,
-          status: novo.status ?? 'pendente',
-          ultimo_contacto: novo.ultimo_contacto ?? '',
-          valor_total: novo.valor_total ?? '€0',
-          nif: novo.nif ?? '',
-          morada: novo.morada ?? '',
-          notas: novo.notas ?? '',
-        },
-        ...prev
-      ]);
+      // Só adiciona se realmente veio objeto válido
+      if (novo && typeof novo.nome === 'string' && typeof novo.email === 'string') {
+        setClientesList((prev) => [
+          {
+            id: novo.id?.toString() ?? '-',
+            nome: novo.nome,
+            email: novo.email,
+            telefone: novo.telefone || 'Sem telefone',
+            tipo: novo.tipo || 'particular',
+            processos: novo.processos ?? 0,
+            status: novo.status || 'pendente',
+            ultimo_contacto: novo.ultimo_contacto || '',
+            valor_total: novo.valor_total || '€0',
+            nif: novo.nif || '',
+            morada: novo.morada || '',
+            notas: novo.notas || '',
+          },
+          ...prev
+        ]);
+      }
     } catch (e) {
       // TODO: toast de erro
     }
@@ -138,25 +143,28 @@ const Clientes = () => {
     if (!editCliente) return;
     try {
       const atualizado = await updateCliente(editCliente.id, data);
-      setClientesList((prev) => prev.map(c =>
-        c.id === atualizado.id
-          ? {
-            id: atualizado.id?.toString() ?? '-',
-            nome: atualizado.nome ?? 'Sem nome',
-            email: atualizado.email ?? 'Sem email',
-            telefone: atualizado.telefone ?? 'Sem telefone',
-            tipo: atualizado.tipo ?? 'particular',
-            processos: atualizado.processos ?? 0,
-            status: atualizado.status ?? 'pendente',
-            ultimo_contacto: atualizado.ultimo_contacto ?? '',
-            valor_total: atualizado.valor_total ?? '€0',
-            nif: atualizado.nif ?? '',
-            morada: atualizado.morada ?? '',
-            notas: atualizado.notas ?? '',
-          }
-          : c
-      ));
-      setEditCliente(null);
+      // Só atualiza se objeto é válido
+      if (atualizado && typeof atualizado.nome === 'string' && typeof atualizado.email === 'string') {
+        setClientesList((prev) => prev.map(c =>
+          c.id === atualizado.id
+            ? {
+              id: atualizado.id?.toString() ?? '-',
+              nome: atualizado.nome,
+              email: atualizado.email,
+              telefone: atualizado.telefone || 'Sem telefone',
+              tipo: atualizado.tipo || 'particular',
+              processos: atualizado.processos ?? 0,
+              status: atualizado.status || 'pendente',
+              ultimo_contacto: atualizado.ultimo_contacto || '',
+              valor_total: atualizado.valor_total || '€0',
+              nif: atualizado.nif || '',
+              morada: atualizado.morada || '',
+              notas: atualizado.notas || '',
+            }
+            : c
+        ));
+        setEditCliente(null);
+      }
     } catch (e) {
       // TODO: toast de erro
     }
