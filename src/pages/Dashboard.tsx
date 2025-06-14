@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import OnboardingTour from '@/components/OnboardingTour';
-import { Plus, FileText, Users, Euro, Clock } from 'lucide-react'; // Corrigido aqui
+import { Plus, FileText, Users, Euro, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import '../components/DashboardGrid.css';
 import DashboardChart from '@/components/DashboardChart';
@@ -115,8 +115,8 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      {/* O wrapper interno só para espaçamentos laterais em ecrãs largos */}
-      <div className="w-full max-w-full px-2 sm:px-4 lg:px-8 py-6 m-0">
+      {/* Wrapper fluido SÓ para limitar máximo, remover constraints agressivos */}
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
         <div className="mb-6">
           <SearchBar onSearch={() => {}} />
         </div>
