@@ -63,6 +63,106 @@ const SidebarNavigationMenu = () => {
   );
 };
 
+const SidebarDesktop = ({
+  handleRestartOnboarding,
+  signOut
+}: { handleRestartOnboarding: () => void; signOut: () => void }) => (
+  <div className="sidebar hidden md:flex flex-col w-[260px] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 p-0">
+    <ShadcnSidebar className="flex flex-col flex-1 p-0">
+      <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
+        <div className="absolute left-3 top-3 hidden md:block">
+          {/* Apenas botão de collapse opcional, pode ocultar */}
+          <SidebarTrigger />
+        </div>
+        <img 
+          src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+          alt="Legalflux Logo"
+          className="h-10 w-10 rounded-md"
+        />
+        <div className="ml-2 flex flex-col">
+          <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
+          <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
+        </div>
+      </SidebarHeader>
+      <SidebarContent className="flex-1 px-0 pt-1">
+        <SidebarGroup>
+          <SidebarGroupLabel className="hidden" />
+          <SidebarGroupContent>
+            <SidebarNavigationMenu />
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
+        <button
+          onClick={handleRestartOnboarding}
+          className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
+          type="button"
+        >
+          <Play className="h-4 w-4 mr-2" />
+          Repetir Tutorial
+        </button>
+        <button
+          onClick={signOut}
+          className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
+          type="button"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Sair
+        </button>
+      </SidebarFooter>
+    </ShadcnSidebar>
+  </div>
+);
+
+const SidebarMobile = ({
+  handleRestartOnboarding,
+  signOut
+}: { handleRestartOnboarding: () => void; signOut: () => void }) => (
+  <div className="sidebar-mobile block md:hidden">
+    <ShadcnSidebar className="fixed inset-0 z-40 flex flex-col p-0 bg-sidebar text-sidebar-foreground min-h-screen w-[80vw] max-w-xs border-r border-gray-200">
+      <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
+        <img 
+          src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+          alt="Legalflux Logo"
+          className="h-10 w-10 rounded-md"
+        />
+        <div className="ml-2 flex flex-col">
+          <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
+          <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
+        </div>
+      </SidebarHeader>
+      <SidebarContent className="flex-1 px-0 pt-1">
+        <SidebarGroup>
+          <SidebarGroupLabel className="hidden" />
+          <SidebarGroupContent>
+            <SidebarNavigationMenu />
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
+        <button
+          onClick={handleRestartOnboarding}
+          className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
+          type="button"
+        >
+          <Play className="h-4 w-4 mr-2" />
+          Repetir Tutorial
+        </button>
+        <button
+          onClick={signOut}
+          className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
+          type="button"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          Sair
+        </button>
+      </SidebarFooter>
+    </ShadcnSidebar>
+    {/* Trigger flutuante só em mobile */}
+    <SidebarFloatingTrigger />
+  </div>
+);
+
 const Sidebar = () => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
@@ -75,99 +175,12 @@ const Sidebar = () => {
 
   return (
     <SidebarProvider>
-      {/* Sidebar fixa apenas em DESKTOP */}
-      <div className="sidebar hidden md:flex flex-col w-[260px] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 p-0">
-        <ShadcnSidebar className="flex flex-col flex-1 p-0">
-          <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
-            <div className="absolute left-3 top-3 hidden md:block">
-              {/* Apenas botão de collapse opcional, pode ocultar */}
-              <SidebarTrigger />
-            </div>
-            <img 
-              src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-              alt="Legalflux Logo"
-              className="h-10 w-10 rounded-md"
-            />
-            <div className="ml-2 flex flex-col">
-              <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
-              <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
-            </div>
-          </SidebarHeader>
-          <SidebarContent className="flex-1 px-0 pt-1">
-            <SidebarGroup>
-              <SidebarGroupLabel className="hidden" />
-              <SidebarGroupContent>
-                <SidebarNavigationMenu />
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
-            <button
-              onClick={handleRestartOnboarding}
-              className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
-              type="button"
-            >
-              <Play className="h-4 w-4 mr-2" />
-              Repetir Tutorial
-            </button>
-            <button
-              onClick={signOut}
-              className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
-              type="button"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Sair
-            </button>
-          </SidebarFooter>
-        </ShadcnSidebar>
-      </div>
-      {/* Sidebar para MOBILE - só sheet/slide, nada fixo */}
-      <div className="sidebar-mobile md:hidden">
-        <ShadcnSidebar className="fixed inset-0 z-40 flex flex-col p-0 bg-sidebar text-sidebar-foreground min-h-screen w-[80vw] max-w-xs border-r border-gray-200">
-          <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
-            <img 
-              src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-              alt="Legalflux Logo"
-              className="h-10 w-10 rounded-md"
-            />
-            <div className="ml-2 flex flex-col">
-              <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
-              <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
-            </div>
-          </SidebarHeader>
-          <SidebarContent className="flex-1 px-0 pt-1">
-            <SidebarGroup>
-              <SidebarGroupLabel className="hidden" />
-              <SidebarGroupContent>
-                <SidebarNavigationMenu />
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
-            <button
-              onClick={handleRestartOnboarding}
-              className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
-              type="button"
-            >
-              <Play className="h-4 w-4 mr-2" />
-              Repetir Tutorial
-            </button>
-            <button
-              onClick={signOut}
-              className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
-              type="button"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Sair
-            </button>
-          </SidebarFooter>
-        </ShadcnSidebar>
-        {/* Trigger flutuante só em mobile */}
-        <SidebarFloatingTrigger />
-      </div>
+      {isMobile 
+        ? <SidebarMobile handleRestartOnboarding={handleRestartOnboarding} signOut={signOut} />
+        : <SidebarDesktop handleRestartOnboarding={handleRestartOnboarding} signOut={signOut} />
+      }
     </SidebarProvider>
   );
 };
 
 export default Sidebar;
-
