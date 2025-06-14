@@ -102,7 +102,19 @@ const Processos = () => {
     setLoading(true);
     fetchProcessos(page + 1, PAGE_SIZE)
       .then(({ data, total }) => {
-        setProcessos(data);
+        // Garantir que cada processo atende ao tipo Processo
+        const processosFormatados = (data || []).map((raw: any) => ({
+          id: raw.id?.toString() ?? '-',
+          numero: raw.numero ?? '-',
+          titulo: raw.titulo ?? '',
+          cliente: raw.cliente ?? '',
+          advogado: raw.advogado ?? '',
+          status: raw.status ?? 'pendente',
+          prazo: raw.prazo ?? '',
+          valor: raw.valor ?? '',
+          movimentos: raw.movimentos ?? [],
+        }));
+        setProcessos(processosFormatados);
         setTotal(total);
       })
       .catch((err) => {

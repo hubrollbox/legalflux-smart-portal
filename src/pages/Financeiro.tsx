@@ -80,8 +80,12 @@ export default function FinanceiroPage() {
     return 'bg-gray-100 text-gray-800';
   }
 
-  async function handleAddTransacao(data: Omit<ContaFinanceira, 'id'>) {
-    await FinanceiroService.create(data as ContaFinanceira);
+  async function handleAddTransacao(data: any) {
+    // Adaptar para interface de ContaFinanceira (campo dataVencimento é obrigatório)
+    await FinanceiroService.create({
+      ...data,
+      dataVencimento: data.dataVencimento || new Date().toISOString().slice(0, 10),
+    });
     setShowForm(false);
     setRefresh(r => r + 1);
   }
@@ -247,7 +251,7 @@ export default function FinanceiroPage() {
                         <p className="font-medium text-primary-800">{transacao.descricao}</p>
                       </div>
                     </TableCell>
-                    <TableCell>{transacao.cliente}</TableCell>
+                    <TableCell>{transacao.clienteId ?? ''}</TableCell>
                     <TableCell>
                       <span className={`capitalize ${getTipoColor(transacao.tipo)}`}>
                         {transacao.tipo}
@@ -263,8 +267,8 @@ export default function FinanceiroPage() {
                         {transacao.status}
                       </Badge>
                     </TableCell>
-                    <TableCell>{transacao.data}</TableCell>
-                    <TableCell>{transacao.metodo}</TableCell>
+                    <TableCell>{transacao.dataVencimento}</TableCell>
+                    <TableCell>{transacao.metodo_pagamento ?? ''}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

@@ -76,7 +76,7 @@ const Clientes = () => {
       setLoading(true);
       try {
         const data = await fetchClientes();
-        // Corrigir campos ausentes do backend (fallbacks)
+        // Polir os dados para garantir todos os campos
         const clientesMapeados: Cliente[] = (data || []).map((raw: any) => ({
           id: raw.id?.toString() ?? '-',
           nome: raw.nome ?? 'Sem nome',
@@ -93,6 +93,7 @@ const Clientes = () => {
         }));
         setClientesList(clientesMapeados);
       } catch (e) {
+        setClientesList([]); // Evita erro de tipo
         // TODO: toast de erro
       } finally {
         setLoading(false);
