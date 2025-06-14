@@ -8,7 +8,8 @@ import {
   Settings, 
   LogOut,
   Bot,
-  Play
+  Play,
+  User
 } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
@@ -36,7 +37,8 @@ const sidebarMenu = [
   { icon: MessageSquare, label: 'Chat', path: '/chat' },
   { icon: Euro, label: 'Financeiro', path: '/financeiro' },
   { icon: Bot, label: 'IA Assistant', path: '/ia-assistant' },
-  { icon: Settings, label: 'Definições', path: '/definicoes' }
+  { icon: Settings, label: 'Definições', path: '/definicoes' },
+  { icon: User, label: 'Meu Perfil', path: '/perfil' }, // <- nova entrada
 ];
 
 // Menu Navigation adaptado para manter consistência na sidebar
