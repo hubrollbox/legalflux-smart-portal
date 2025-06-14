@@ -109,6 +109,8 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isActive, onComplete, o
         targetElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
       } else {
         // Fallback: center the tooltip in the viewport
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
         top = scrollTop + viewportHeight / 2 - TOOLTIP_HEIGHT / 2;
         left = scrollLeft + viewportWidth / 2 - TOOLTIP_WIDTH / 2;
         // Guarantee it's inside visible area
