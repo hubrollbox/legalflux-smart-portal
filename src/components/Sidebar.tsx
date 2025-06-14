@@ -1,6 +1,4 @@
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { 
   Home, 
   FileText, 
@@ -11,94 +9,111 @@ import {
   Settings, 
   LogOut,
   Bot,
-  Play,
-  // Link as LinkIcon // Removido, não será mais exibido na sidebar
+  Play
 } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
+import {
+  Sidebar as ShadcnSidebar,
+  SidebarProvider,
+  SidebarContent,
+  SidebarHeader,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarTrigger
+} from '@/components/ui/sidebar';
 import logo from '@/../public/logo.png';
 
-const Sidebar = () => {
+const sidebarMenu = [
+  { icon: Home, label: 'Dashboard', path: '/dashboard' },
+  { icon: FileText, label: 'Processos', path: '/processos' },
+  { icon: Calendar, label: 'Calendário', path: '/calendario' },
+  { icon: Users, label: 'Clientes', path: '/clientes' },
+  { icon: MessageSquare, label: 'Chat', path: '/chat' },
+  { icon: Euro, label: 'Financeiro', path: '/financeiro' },
+  { icon: Bot, label: 'IA Assistant', path: '/ia-assistant' },
+  { icon: Settings, label: 'Definições', path: '/definicoes' }
+];
+
+const SidebarMenu = () => {
   const location = useLocation();
+  return (
+    <SidebarMenu>
+      {sidebarMenu.map(item => (
+        <SidebarMenuItem key={item.path}>
+          <SidebarMenuButton asChild isActive={location.pathname === item.path}>
+            <Link to={item.path}>
+              <item.icon className="mr-2" />
+              <span>{item.label}</span>
+            </Link>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      ))}
+    </SidebarMenu>
+  )
+};
+
+const Sidebar = () => {
   const { signOut } = useAuth();
 
+  // Botão de repetir tutorial
   const handleRestartOnboarding = () => {
     localStorage.removeItem('legalflux-onboarding-completed');
     window.location.reload();
   };
 
-  // Integrações removido daqui
-  const menuItems = [
-    { icon: Home, label: 'Dashboard', path: '/dashboard' },
-    { icon: FileText, label: 'Processos', path: '/processos' },
-    { icon: Calendar, label: 'Calendário', path: '/calendario' },
-    { icon: Users, label: 'Clientes', path: '/clientes' },
-    { icon: MessageSquare, label: 'Chat', path: '/chat' },
-    { icon: Euro, label: 'Financeiro', path: '/financeiro' },
-    { icon: Bot, label: 'IA Assistant', path: '/ia-assistant' },
-    // { icon: LinkIcon, label: 'Integrações', path: '/minhas-integracoes' }, // Removido
-    { icon: Settings, label: 'Definições', path: '/definicoes' }
-  ];
-
   return (
-    <aside className="bg-white p-2 md:p-4 min-h-[60px] md:min-h-screen w-full md:w-64 flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start border-r border-gray-200">
-      {/* Logo */}
-      <div className="p-6 border-b border-gray-200">
-        <img 
-          src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-          alt="Legalflux Logo"
-          className="h-10 w-auto mb-0 md:mb-4" 
-        />
-        <h1 className="text-2xl font-bold text-primary-800">LegalFlux</h1>
-        <p className="text-sm text-gray-600 mt-1">Portal Jurídico</p>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
-        {menuItems.map((item) => {
-          const isActive = location.pathname === item.path;
-          return (
-            <Link key={item.path} to={item.path}>
-              <Button
-                variant={isActive ? "default" : "ghost"}
-                className={`w-full justify-start ${
-                  isActive 
-                    ? 'bg-primary-800 text-white hover:bg-primary-700' 
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <item.icon className="h-4 w-4 mr-3" />
-                {item.label}
-              </Button>
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Tutorial */}
-      <div className="p-4 border-t border-gray-200">
-        <Button
-          variant="outline"
-          onClick={handleRestartOnboarding}
-          className="w-full justify-start text-accent-600 border-accent-200 hover:bg-accent-50"
-        >
-          <Play className="h-4 w-4 mr-3" />
-          Repetir Tutorial
-        </Button>
-      </div>
-
-      {/* Logout */}
-      <div className="p-4 border-t border-gray-200">
-        <Button
-          variant="ghost"
-          onClick={signOut}
-          className="w-full justify-start text-red-600 hover:bg-red-50"
-        >
-          <LogOut className="h-4 w-4 mr-3" />
-          Sair
-        </Button>
-      </div>
-    </aside>
+    <SidebarProvider>
+      <ShadcnSidebar>
+        {/* Cabeçalho com logo */}
+        <SidebarHeader className="border-b border-gray-200 p-6 pb-4 flex flex-col items-center">
+          <img 
+            src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+            alt="Legalflux Logo"
+            className="h-10 w-auto mb-2"
+          />
+          <h1 className="text-2xl font-bold text-primary-800">LegalFlux</h1>
+          <p className="text-sm text-gray-600 mt-1">Portal Jurídico</p>
+          {/* Botão trigger para mobile/colapso */}
+          <div className="absolute right-2 top-2 md:hidden">
+            <SidebarTrigger />
+          </div>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel className="text-xs mt-3 mb-1" />
+            <SidebarGroupContent>
+              <SidebarMenu />
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarFooter className="pb-4 px-4 border-t border-gray-200 gap-2 flex flex-col">
+          <button
+            onClick={handleRestartOnboarding}
+            className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
+            type="button"
+          >
+            <Play className="h-4 w-4 mr-2" />
+            Repetir Tutorial
+          </button>
+          <button
+            onClick={signOut}
+            className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
+            type="button"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Sair
+          </button>
+        </SidebarFooter>
+      </ShadcnSidebar>
+      {/* Botão flutuante para abrir/collapse no mobile */}
+      <SidebarTrigger className="fixed bottom-4 left-4 z-50 md:hidden shadow-lg bg-white hover:bg-accent-100 border rounded-full px-3 py-2" />
+    </SidebarProvider>
   );
 };
 
