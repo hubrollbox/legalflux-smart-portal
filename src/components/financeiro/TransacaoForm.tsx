@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,7 +7,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import type { Transacao } from '@/pages/Financeiro';
+
+// Tipagem local para Transacao
+export interface Transacao {
+  id?: string;
+  descricao: string;
+  valor: number;
+  tipo: 'receita' | 'despesa';
+  status: 'pago' | 'pendente' | 'atrasado';
+  cliente?: string;
+  metodo?: string;
+  data: string;
+}
 
 type TransacaoFormData = Omit<Transacao, 'id'>;
 
@@ -83,7 +95,7 @@ const TransacaoForm = ({ open, onOpenChange, onSubmit }: TransacaoFormProps) => 
                 </div>
                 <div>
                   <Label htmlFor="tipo">Tipo *</Label>
-                  <Select value={formData.tipo} onValueChange={(value) => setFormData({ ...formData, tipo: value })}>
+                  <Select value={formData.tipo} onValueChange={(value) => setFormData({ ...formData, tipo: value as "receita" | "despesa" })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o tipo" />
                     </SelectTrigger>
@@ -97,7 +109,7 @@ const TransacaoForm = ({ open, onOpenChange, onSubmit }: TransacaoFormProps) => 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="status">Status *</Label>
-                  <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+                  <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value as "pago" | "pendente" | "atrasado" })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o status" />
                     </SelectTrigger>
@@ -110,7 +122,7 @@ const TransacaoForm = ({ open, onOpenChange, onSubmit }: TransacaoFormProps) => 
                 </div>
                 <div>
                   <Label htmlFor="metodo">Método *</Label>
-                  <Select value={formData.metodo} onValueChange={(value) => setFormData({ ...formData, metodo: value })}>
+                  <Select value={formData.metodo || 'Transferência'} onValueChange={(value) => setFormData({ ...formData, metodo: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione o método" />
                     </SelectTrigger>

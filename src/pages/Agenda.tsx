@@ -104,8 +104,8 @@ export default function AgendaPage() {
         {eventos.map(ev => (
           <div key={ev.id} className="flex gap-2 items-center mb-1">
             <span>{ev.titulo}</span>
-            <Button size="xs" onClick={() => exportarGoogle(ev)}>Google Calendar</Button>
-            <Button size="xs" onClick={() => exportarICal(ev)}>iCal</Button>
+            <Button size="sm" onClick={() => exportarGoogle(ev)}>Google Calendar</Button>
+            <Button size="sm" onClick={() => exportarICal(ev)}>iCal</Button>
           </div>
         ))}
       </div>

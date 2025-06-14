@@ -27,7 +27,7 @@ import { useState, useEffect } from 'react';
 import { fetchClientes, addCliente, updateCliente, deleteCliente } from '@/services/ClienteService';
 
 export interface Cliente {
-  id: number;
+  id: string;
   nome: string;
   email: string;
   telefone: string;
@@ -76,7 +76,22 @@ const Clientes = () => {
       setLoading(true);
       try {
         const data = await fetchClientes();
-        setClientesList(data || []);
+        // Corrigir campos ausentes do backend (fallbacks)
+        const clientesMapeados: Cliente[] = (data || []).map((raw: any) => ({
+          id: raw.id?.toString() ?? '-',
+          nome: raw.nome ?? 'Sem nome',
+          email: raw.email ?? 'Sem email',
+          telefone: raw.telefone ?? 'Sem telefone',
+          tipo: raw.tipo ?? 'particular',
+          processos: raw.processos ?? 0,
+          status: raw.status ?? 'pendente',
+          ultimo_contacto: raw.ultimo_contacto ?? '',
+          valor_total: raw.valor_total ?? '€0',
+          nif: raw.nif ?? '',
+          morada: raw.morada ?? '',
+          notas: raw.notas ?? '',
+        }));
+        setClientesList(clientesMapeados);
       } catch (e) {
         // TODO: toast de erro
       } finally {
@@ -95,24 +110,57 @@ const Clientes = () => {
         ultimo_contacto: new Date().toISOString().slice(0, 10),
         valor_total: '€0',
       });
-      setClientesList((prev) => [novo, ...prev]);
+      setClientesList((prev) => [
+        {
+          id: novo.id?.toString() ?? '-',
+          nome: novo.nome ?? 'Sem nome',
+          email: novo.email ?? 'Sem email',
+          telefone: novo.telefone ?? 'Sem telefone',
+          tipo: novo.tipo ?? 'particular',
+          processos: novo.processos ?? 0,
+          status: novo.status ?? 'pendente',
+          ultimo_contacto: novo.ultimo_contacto ?? '',
+          valor_total: novo.valor_total ?? '€0',
+          nif: novo.nif ?? '',
+          morada: novo.morada ?? '',
+          notas: novo.notas ?? '',
+        },
+        ...prev
+      ]);
     } catch (e) {
       // TODO: toast de erro
     }
   };
 
-  const handleEditCliente = async (data) => {
+  const handleEditCliente = async (data: any) => {
     if (!editCliente) return;
     try {
       const atualizado = await updateCliente(editCliente.id, data);
-      setClientesList((prev) => prev.map(c => c.id === atualizado.id ? atualizado : c));
+      setClientesList((prev) => prev.map(c =>
+        c.id === atualizado.id
+          ? {
+            id: atualizado.id?.toString() ?? '-',
+            nome: atualizado.nome ?? 'Sem nome',
+            email: atualizado.email ?? 'Sem email',
+            telefone: atualizado.telefone ?? 'Sem telefone',
+            tipo: atualizado.tipo ?? 'particular',
+            processos: atualizado.processos ?? 0,
+            status: atualizado.status ?? 'pendente',
+            ultimo_contacto: atualizado.ultimo_contacto ?? '',
+            valor_total: atualizado.valor_total ?? '€0',
+            nif: atualizado.nif ?? '',
+            morada: atualizado.morada ?? '',
+            notas: atualizado.notas ?? '',
+          }
+          : c
+      ));
       setEditCliente(null);
     } catch (e) {
       // TODO: toast de erro
     }
   };
 
-  const handleDeleteCliente = async (id: number) => {
+  const handleDeleteCliente = async (id: string) => {
     if (!window.confirm('Tem certeza que deseja remover este cliente?')) return;
     try {
       await deleteCliente(id);
