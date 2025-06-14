@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -49,6 +48,8 @@ interface OnboardingTourProps {
   onSkip: () => void;
 }
 
+const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
+
 const OnboardingTour: React.FC<OnboardingTourProps> = ({ isActive, onComplete, onSkip }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [position, setPosition] = useState({ top: 0, left: 0 });
@@ -59,41 +60,62 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isActive, onComplete, o
     const updatePosition = () => {
       const step = onboardingSteps[currentStep];
       const targetElement = document.querySelector(step.targetSelector);
-      
+
+      // Default width/height of tooltip (aprox)
+      const TOOLTIP_WIDTH = 320;
+      const TOOLTIP_HEIGHT = 180;
+
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      let top, left;
+
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
-        
-        let top = rect.top + scrollTop;
-        let left = rect.left + scrollLeft;
 
         switch (step.position) {
           case 'bottom':
-            top += rect.height + 10;
-            left += rect.width / 2 - 150; // Center the tooltip
+            top = rect.top + scrollTop + rect.height + 10;
+            left = rect.left + scrollLeft + rect.width / 2 - TOOLTIP_WIDTH / 2;
             break;
           case 'top':
-            top -= 180;
-            left += rect.width / 2 - 150;
+            top = rect.top + scrollTop - TOOLTIP_HEIGHT - 10;
+            left = rect.left + scrollLeft + rect.width / 2 - TOOLTIP_WIDTH / 2;
             break;
           case 'right':
-            top += rect.height / 2 - 90;
-            left += rect.width + 10;
+            top = rect.top + scrollTop + rect.height / 2 - TOOLTIP_HEIGHT / 2;
+            left = rect.left + scrollLeft + rect.width + 10;
             break;
           case 'left':
-            top += rect.height / 2 - 90;
-            left -= 310;
+            top = rect.top + scrollTop + rect.height / 2 - TOOLTIP_HEIGHT / 2;
+            left = rect.left + scrollLeft - TOOLTIP_WIDTH - 10;
             break;
+          default:
+            top = rect.top + scrollTop;
+            left = rect.left + scrollLeft;
         }
 
+        // Guarantee tooltip stays inside viewport (10px padding)
+        top = clamp(top, 10, viewportHeight - TOOLTIP_HEIGHT - 10 + scrollTop);
+        left = clamp(left, 10, viewportWidth - TOOLTIP_WIDTH - 10 + scrollLeft);
+
         setPosition({ top, left });
-        
-        // Highlight the target element
+
+        // Highlight the target
         targetElement.classList.add('ring-2', 'ring-accent-500', 'ring-offset-2', 'rounded-lg');
-        
         // Scroll to element
-        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        targetElement.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      } else {
+        // Fallback: center the tooltip in the viewport
+        top = scrollTop + viewportHeight / 2 - TOOLTIP_HEIGHT / 2;
+        left = scrollLeft + viewportWidth / 2 - TOOLTIP_WIDTH / 2;
+        // Guarantee it's inside visible area
+        top = clamp(top, 10, viewportHeight - TOOLTIP_HEIGHT - 10 + scrollTop);
+        left = clamp(left, 10, viewportWidth - TOOLTIP_WIDTH - 10 + scrollLeft);
+
+        setPosition({ top, left });
       }
     };
 
@@ -102,13 +124,12 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isActive, onComplete, o
     window.addEventListener('scroll', updatePosition);
 
     return () => {
-      // Remove highlighting from all elements
+      // Remove highlighting from all tour elements
       document.querySelectorAll('[data-tour]').forEach(el => {
         el.classList.remove('ring-2', 'ring-accent-500', 'ring-offset-2', 'rounded-lg');
       });
       document.querySelector('.dashboard-header')?.classList.remove('ring-2', 'ring-accent-500', 'ring-offset-2', 'rounded-lg');
       document.querySelector('.sidebar')?.classList.remove('ring-2', 'ring-accent-500', 'ring-offset-2', 'rounded-lg');
-      
       window.removeEventListener('resize', updatePosition);
       window.removeEventListener('scroll', updatePosition);
     };
@@ -136,17 +157,16 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({ isActive, onComplete, o
 
   return (
     <>
-      {/* Overlay */}
       <div className="fixed inset-0 bg-black bg-opacity-50 z-40" />
-      
-      {/* Tooltip */}
+
       <Card 
         className="fixed z-50 w-80 border-0 shadow-2xl"
         style={{ 
           top: `${position.top}px`, 
           left: `${position.left}px`,
-          maxWidth: '300px'
+          maxWidth: '320px'
         }}
+        // Extra: garantir que está dentro do ecrã
       >
         <CardContent className="p-6">
           <div className="flex justify-between items-start mb-4">

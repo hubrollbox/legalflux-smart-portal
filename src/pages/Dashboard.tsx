@@ -115,8 +115,8 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      {/* Tira o container que limita largura e centrais */}
-      <div className="w-full px-2 sm:px-4 lg:px-8 py-6">
+      {/* O wrapper interno só para espaçamentos laterais em ecrãs largos */}
+      <div className="w-full max-w-full px-2 sm:px-4 lg:px-8 py-6 m-0">
         <div className="mb-6">
           <SearchBar onSearch={() => {}} />
         </div>
