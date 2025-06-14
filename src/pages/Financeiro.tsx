@@ -81,7 +81,7 @@ export default function FinanceiroPage() {
   }
 
   async function handleAddTransacao(data: any) {
-    // Adaptar para interface de ContaFinanceira (campo dataVencimento é obrigatório)
+    // Adaptação para interface de ContaFinanceira
     await FinanceiroService.create({
       ...data,
       dataVencimento: data.dataVencimento || new Date().toISOString().slice(0, 10),

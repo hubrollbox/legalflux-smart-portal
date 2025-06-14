@@ -1,3 +1,4 @@
+
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -76,8 +77,8 @@ const Clientes = () => {
       setLoading(true);
       try {
         const data = await fetchClientes();
-        // Polir os dados para garantir todos os campos
-        const clientesMapeados: Cliente[] = (data || []).map((raw: any) => ({
+        // Mapeamento defensivo e preenchimento de campos faltantes
+        const clientesMapeados: Cliente[] = Array.isArray(data) ? data.map((raw: any) => ({
           id: raw.id?.toString() ?? '-',
           nome: raw.nome ?? 'Sem nome',
           email: raw.email ?? 'Sem email',
@@ -90,7 +91,7 @@ const Clientes = () => {
           nif: raw.nif ?? '',
           morada: raw.morada ?? '',
           notas: raw.notas ?? '',
-        }));
+        })) : [];
         setClientesList(clientesMapeados);
       } catch (e) {
         setClientesList([]); // Evita erro de tipo

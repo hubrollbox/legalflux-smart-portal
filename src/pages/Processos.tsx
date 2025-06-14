@@ -102,8 +102,8 @@ const Processos = () => {
     setLoading(true);
     fetchProcessos(page + 1, PAGE_SIZE)
       .then(({ data, total }) => {
-        // Garantir que cada processo atende ao tipo Processo
-        const processosFormatados = (data || []).map((raw: any) => ({
+        // Extra validation for every item to be Processo-like:
+        const processosFormatados: Processo[] = Array.isArray(data) ? data.map((raw: any) => ({
           id: raw.id?.toString() ?? '-',
           numero: raw.numero ?? '-',
           titulo: raw.titulo ?? '',
@@ -113,7 +113,7 @@ const Processos = () => {
           prazo: raw.prazo ?? '',
           valor: raw.valor ?? '',
           movimentos: raw.movimentos ?? [],
-        }));
+        })) : [];
         setProcessos(processosFormatados);
         setTotal(total);
       })
