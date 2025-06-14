@@ -252,7 +252,7 @@ export const useIntegrations = () => {
       });
       return null;
     }
-    const { token_url, client_id, client_secret, redirect_uri } = integration.oauth_config || {};
+    const { token_url, client_id, client_secret, redirect_uri, ...extraConfig } = integration.oauth_config || {};
     if (!token_url || !client_id || !client_secret || !redirect_uri) {
       toast({
         title: "Erro",
@@ -262,23 +262,31 @@ export const useIntegrations = () => {
       return null;
     }
     try {
-      // Troca o código por tokens (exemplo usando fetch, ajuste conforme o provedor)
-      const response = await fetch(token_url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          grant_type: 'authorization_code',
-          code,
-          redirect_uri,
-          client_id,
-          client_secret
-        })
-      });
-      if (!response.ok) throw new Error('Falha ao obter tokens do provedor OAuth');
-      const tokens = await response.json();
-      // Salva a integração do usuário com os tokens recebidos
+      // Chamar Edge Function para efetuar token exchange seguro
+      const resp = await fetch(
+        "https://iibvdqcwycrcyskxvsgu.supabase.co/functions/v1/oauth_token_exchange",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token_url,
+            code,
+            client_id,
+            client_secret,
+            redirect_uri,
+            extra: { ...extraConfig }
+          }),
+        }
+      );
+      const tokens = await resp.json();
+      if (!resp.ok || tokens.error) {
+        toast({
+          title: "Erro",
+          description: tokens.error || "Não foi possível concluir a integração OAuth.",
+          variant: "destructive"
+        });
+        return null;
+      }
       await addIntegration({
         integration_type: integrationType,
         name: integration.name,
