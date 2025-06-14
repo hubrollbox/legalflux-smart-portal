@@ -17,16 +17,16 @@ const Header = () => {
   // Lista de itens públicos
   const publicNavItems = [
     { to: '/contato', label: 'Contacto' },
-    { to: '/integracoes', label: 'Integrações' },
+    { to: '/integracoes', label: 'Integrações' }, // <-- Adicionado ao menu superior
     { to: '/recursos', label: 'Recursos' },
     { to: '/seguranca', label: 'Segurança' },
-    { to: '/sobre', label: 'Sobre' }
+    { to: '/sobre', label: 'Sobre' },
   ];
 
-  // Lista de itens privados
+  // Lista de itens privados (para autenticados)
   const privateNavItems = [
     { to: '/prazos', label: 'Prazos' },
-    { to: '/agenda', label: 'Agenda' }
+    { to: '/agenda', label: 'Agenda' },
   ];
 
   // Está autenticado?
@@ -35,9 +35,10 @@ const Header = () => {
   return (
     <header className="bg-white p-2 md:p-4 flex flex-row items-center justify-between w-full border-b border-gray-200 shadow sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between py-4 px-6 w-full">
+        {/* Logo SEMPRE à esquerda */}
         <div className="flex items-center gap-4">
           <Link to="/">
-            <img 
+            <img
               src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
               alt="Legalflux Logo"
               width={40}
@@ -83,7 +84,7 @@ const Header = () => {
           ))}
         </nav>
 
-        {/* Botões lado direito - apenas login/registo (não há notificações para não autenticados) */}
+        {/* Botões lado direito */}
         <div className="hidden md:flex items-center space-x-4">
           {!userIsAuthenticated && (
             <>
@@ -97,14 +98,18 @@ const Header = () => {
           )}
           {userIsAuthenticated && (
             <>
-              {/* Aqui pode adicionar outros botões para utilizadores autenticados */}
+              {/* Apenas para autenticados */}
               <Button variant="ghost" asChild className="text-primary-600 hover:bg-primary-100">
                 <Link to="/dashboard">Painel</Link>
               </Button>
               <Button variant="ghost" asChild className="text-primary-600 hover:bg-primary-100">
                 <Link to="/definicoes">Conta</Link>
               </Button>
-              {/* Aqui poderia aparecer notificações, caso faça sentido, só para autenticados */}
+              {/* Exemplo: botão de notificações só para autenticados */}
+              <Button variant="ghost" className="text-primary-600 hover:bg-primary-100 p-2">
+                <span className="sr-only">Notificações</span>
+                <svg width="24" height="24" fill="none" stroke="currentColor" className="h-5 w-5"><use href="#bell" /></svg>
+              </Button>
             </>
           )}
         </div>
@@ -177,7 +182,11 @@ const Header = () => {
                   <Button variant="ghost" className="text-primary-600 hover:bg-primary-100 justify-start" asChild>
                     <Link to="/definicoes">Conta</Link>
                   </Button>
-                  {/* Aqui poderia aparecer notificações, caso faça sentido, só para autenticados */}
+                  {/* Notificações só para autenticados */}
+                  <Button variant="ghost" className="text-primary-600 hover:bg-primary-100 justify-start p-2">
+                    <span className="sr-only">Notificações</span>
+                    <svg width="24" height="24" fill="none" stroke="currentColor" className="h-5 w-5"><use href="#bell" /></svg>
+                  </Button>
                 </>
               )}
             </div>
@@ -189,3 +198,4 @@ const Header = () => {
 };
 
 export default Header;
+
