@@ -24,7 +24,7 @@ import type { UserIntegration } from '@/hooks/useIntegrations';
 import { useAuth } from '@/contexts/useAuth';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-const MinhasIntegracoes = () => {
+const MinhasIntegracoes = ({ embedInSettings }: { embedInSettings?: boolean }) => {
   const { user, role, hasPermission } = useAuth();
   const [showModal, setShowModal] = useState(false);
   const [editIntegration, setEditIntegration] = useState<UserIntegration | null>(null);
@@ -77,6 +77,137 @@ const MinhasIntegracoes = () => {
     return (
       <div className="p-8 text-center text-red-600 font-semibold">
         Acesso restrito: você não tem permissão para gerir integrações.
+      </div>
+    );
+  }
+
+  // Se estiver embutido em definições, não usar layout extra
+  if (embedInSettings) {
+    return (
+      <div className="p-0">
+        {/* Header removido, tabs removidos */}
+        <div className="pt-2 pb-8">
+          <h2 className="text-xl font-bold text-primary-800 flex items-center">
+            Integrações
+          </h2>
+          <p className="text-gray-600 mb-4">Gerir e configurar as suas integrações ativas</p>
+        </div>
+        <div>
+          {/* Só mostrar integrações ativas e disponíveis */}
+          <MyIntegrationsStats activeIntegrationsCount={userIntegrations.length} />
+
+          {/* Active Integrations */}
+          {userIntegrations.length === 0 ? (
+            <EmptyActiveIntegrations onAddIntegration={() => {}} />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {userIntegrations.map((integration) => (
+                <Card key={integration.id} className="rounded-2xl border-0 shadow-lg group transition-transform hover:scale-[1.01]">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-primary-800 text-lg truncate max-w-[180px]">{integration.name || integration.integration_type}</CardTitle>
+                      <Badge className={`text-xs ${getStatusColor(integration.status || 'ativo')}`}>{integration.status || 'ativo'}</Badge>
+                    </div>
+                    <p className="text-sm text-gray-500 capitalize truncate">{integration.integration_type}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {integration.last_sync && (
+                        <p className="text-xs text-gray-500">
+                          Última sincronização: {new Date(integration.last_sync).toLocaleString('pt-PT')}
+                        </p>
+                      )}
+                      <div className="flex flex-wrap gap-2">
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button size="sm" variant="outline" onClick={() => setEditIntegration(integration)} aria-label="Editar integração">
+                                <Settings className="h-4 w-4 mr-1" />Editar
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Editar integração</TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button size="sm" variant="outline" onClick={() => handleExportCredentials(integration)} aria-label="Exportar credenciais">
+                                <Download className="h-4 w-4 mr-1" />Exportar
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Exportar credenciais</TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button size="sm" variant="destructive" onClick={() => handleRemoveIntegration(integration.id, integration.name || integration.integration_type)} aria-label="Remover integração">
+                                <Trash2 className="h-4 w-4 mr-1" />Remover
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Remover integração</TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+          {/* Available Integrations */}
+          <div className="mt-8">
+            <h3 className="text-lg font-bold text-primary-800 mb-2">Adicionar Novas Integrações</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {availableIntegrations.map((integration) => (
+                <Card key={integration.id} className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-shadow">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="p-3 rounded-xl bg-primary-50">
+                        <Zap className="h-6 w-6 text-primary-800" />
+                      </div>
+                      <div>
+                        <CardTitle className="text-primary-800 text-lg">{integration.name}</CardTitle>
+                        <p className="text-sm text-gray-500">{integration.category}</p>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-2">{integration.description}</p>
+                  </CardHeader>
+                  
+                  <CardContent>
+                    <div className="flex space-x-2">
+                      <Button 
+                        size="sm" 
+                        className="flex-1 bg-primary-800 hover:bg-primary-700"
+                        onClick={handleAddIntegration}
+                      >
+                        <Plus className="h-4 w-4 mr-1" />
+                        Conectar
+                      </Button>
+                      {integration.documentation_url && (
+                        <Button variant="outline" size="sm" asChild>
+                          <a href={integration.documentation_url} target="_blank" rel="noopener noreferrer" title="Ver documentação da integração">
+                            <ExternalLink className="h-4 w-4" />
+                            <span className="sr-only">Ver documentação</span>
+                          </a>
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* Dialogs (modais) */}
+        <IntegrationModal
+          open={showModal}
+          onOpenChange={setShowModal}
+          availableIntegrations={availableIntegrations}
+        />
+
+        <IntegrationDialog
+          integration={editIntegration}
+          open={!!editIntegration}
+          onOpenChange={(open) => setEditIntegration(open ? editIntegration : null)}
+          onSave={updateIntegration}
+        />
       </div>
     );
   }

@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -11,7 +12,7 @@ import {
   LogOut,
   Bot,
   Play,
-  Link as LinkIcon
+  // Link as LinkIcon // Removido, não será mais exibido na sidebar
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
@@ -26,6 +27,7 @@ const Sidebar = () => {
     window.location.reload();
   };
 
+  // Integrações removido daqui
   const menuItems = [
     { icon: Home, label: 'Dashboard', path: '/dashboard' },
     { icon: FileText, label: 'Processos', path: '/processos' },
@@ -34,7 +36,7 @@ const Sidebar = () => {
     { icon: MessageSquare, label: 'Chat', path: '/chat' },
     { icon: Euro, label: 'Financeiro', path: '/financeiro' },
     { icon: Bot, label: 'IA Assistant', path: '/ia-assistant' },
-    { icon: LinkIcon, label: 'Integrações', path: '/minhas-integracoes' },
+    // { icon: LinkIcon, label: 'Integrações', path: '/minhas-integracoes' }, // Removido
     { icon: Settings, label: 'Definições', path: '/definicoes' }
   ];
 

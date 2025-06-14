@@ -17,6 +17,7 @@ import {
   Save
 } from 'lucide-react';
 import '../components/usage-bars.css';
+import MinhasIntegracoes from './MinhasIntegracoes';
 
 const Definicoes = () => {
   return (
@@ -37,6 +38,7 @@ const Definicoes = () => {
             <TabsTrigger value="seguranca">Segurança</TabsTrigger>
             <TabsTrigger value="plano">Plano</TabsTrigger>
             <TabsTrigger value="escritorio">Escritório</TabsTrigger>
+            <TabsTrigger value="integracoes">Integrações</TabsTrigger>
           </TabsList>
 
           {/* Profile Settings */}
@@ -343,6 +345,13 @@ const Definicoes = () => {
                 </Button>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Nova Tab de Integrações */}
+          <TabsContent value="integracoes">
+            <div>
+              <MinhasIntegracoes embedInSettings />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
