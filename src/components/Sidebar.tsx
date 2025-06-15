@@ -26,7 +26,8 @@ import {
   LogOut,
   User,
   Bot,
-  Link2
+  Link2,
+  FileText as FileTextIcon
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import React, { useEffect, useRef } from 'react';
@@ -40,7 +41,8 @@ const sidebarItems = [
   { to: '/chat', label: 'Chat', icon: MessageSquare },
   { to: '/financeiro', label: 'Financeiro', icon: Euro },
   { to: '/ia-assistant', label: 'IA', icon: Bot }, // IA ASSISTANT
-  { to: '/minhas-integracoes', label: 'Minhas Integrações', icon: Link2 }, // INTEGRAÇÕES
+  { to: '/minhas-integrações', label: 'Minhas Integrações', icon: Link2 }, // INTEGRAÇÕES
+  { to: '/subscricoes', label: 'Subscrições', icon: FileTextIcon }, // ADICIONADO aqui
   { to: '/definicoes', label: 'Definições', icon: Settings },
 ];
 

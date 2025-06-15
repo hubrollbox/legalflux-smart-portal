@@ -35,6 +35,7 @@ import LGPD from "./pages/LGPD";
 import Insolvencias from "./pages/Insolvencias";
 import InsolvenciaDetalhe from "./pages/InsolvenciaDetalhe";
 import Perfil from "./pages/Perfil";
+import SubscricoesPage from "./pages/Subscricoes";
 
 const queryClient = new QueryClient();
 
@@ -124,6 +125,11 @@ const App = () => (
             <Route path="/insolvencias/:id" element={
               <ProtectedRoute>
                 <InsolvenciaDetalhe />
+              </ProtectedRoute>
+            } />
+            <Route path="/subscricoes" element={
+              <ProtectedRoute>
+                <SubscricoesPage />
               </ProtectedRoute>
             } />
             <Route path="/perfil" element={
