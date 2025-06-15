@@ -1,3 +1,4 @@
+
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
@@ -27,7 +28,8 @@ import {
   User,
   Bot,
   Link2,
-  FileText as FileTextIcon
+  FileText as FileTextIcon,
+  ArrowLeft, // Importar icone Rever
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import React, { useEffect, useRef } from 'react';
@@ -55,7 +57,10 @@ const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
     <SidebarMenu>
       {sidebarItems.map((item) => (
         <SidebarMenuItem key={item.to}>
-          <SidebarMenuButton asChild isActive={location.pathname === item.to}>
+          <SidebarMenuButton
+            asChild
+            isActive={location.pathname === item.to}
+          >
             <Link to={item.to} onClick={onItemClick} className="flex items-center w-full">
               <item.icon className="mr-3 min-w-5" />
               <span className="truncate">{item.label}</span>
@@ -104,6 +109,11 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
     navigate('/login');
   };
 
+  // Novo: handler Rever global
+  const handleRever = () => {
+    navigate(-1);
+  };
+
   return (
     <SidebarProvider>
       {/* Efeito apenas desktop/tablet */}
@@ -117,11 +127,20 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
         {/* Sidebar desktop */}
         <div className="hidden md:block">
           <ShadSidebar>
-            <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
+            <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200 relative">
+              {/* Botão Rever (desktop) */}
+              <button
+                onClick={handleRever}
+                className="absolute left-2 top-2.5 p-1 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                title="Rever"
+                aria-label="Voltar atrás"
+              >
+                <ArrowLeft size={22} className="text-primary-800" />
+              </button>
               <img
                 src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
                 alt="Legalflux Logo"
-                className="h-10 w-10 rounded-md"
+                className="h-10 w-10 rounded-md ml-8"
               />
               <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
             </SidebarHeader>
@@ -155,11 +174,20 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
             <SidebarTrigger className="fixed z-50 top-3 left-3 bg-white rounded-full shadow p-2 border border-gray-200 md:hidden" />
             <div className="block md:hidden">
               <ShadSidebar>
-                <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
+                <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200 relative">
+                  {/* Botão Rever (mobile) */}
+                  <button
+                    onClick={handleRever}
+                    className="absolute left-2 top-2.5 p-1 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-400"
+                    title="Rever"
+                    aria-label="Voltar atrás"
+                  >
+                    <ArrowLeft size={22} className="text-primary-800" />
+                  </button>
                   <img
                     src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
                     alt="Legalflux Logo"
-                    className="h-10 w-10 rounded-md"
+                    className="h-10 w-10 rounded-md ml-8"
                   />
                   <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
                 </SidebarHeader>
@@ -190,3 +218,4 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export default Sidebar;
+
