@@ -1,5 +1,4 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
@@ -7,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
 import { useAddonSubscription } from "@/hooks/useAddonSubscription";
+import InsolvenciaForm from "@/components/insolvencia/InsolvenciaForm";
+import { toast } from "sonner";
 
 const fetchInsolvencias = async () => {
   const { data, error } = await supabase
@@ -25,7 +26,34 @@ const Insolvencias: React.FC = () => {
   });
 
   // Importante! Obter role do utilizador autenticado
-  const { role } = useAuth();
+  const { role, user } = useAuth();
+
+  // Novo estado para modal do formulário
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // Função para criar novo processo de insolvência
+  async function handleNovoInsolvencia(form: any) {
+    // Validação extra redundante
+    if (!form.numero_processo || !form.tribunal || !form.devedor || !form.data_abertura || !form.tipo) {
+      toast.error("Todos os campos obrigatórios devem estar preenchidos.");
+      return;
+    }
+    // Enviar para supabase
+    const { error } = await supabase.from("insolvencias").insert({
+      numero_processo: form.numero_processo,
+      tribunal: form.tribunal,
+      tipo: form.tipo,
+      devedor: form.devedor,
+      data_abertura: form.data_abertura,
+      juridico_id: user?.id
+    });
+    if (error) {
+      toast.error("Erro ao criar processo: " + error.message);
+    } else {
+      toast.success("Processo de insolvência criado com sucesso!");
+      setModalOpen(false);
+    }
+  }
 
   if (loadingAddon) {
     return (
@@ -59,14 +87,19 @@ const Insolvencias: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Processos de Insolvência</h1>
         {(role === "admin" || role === "jurista") && (
-          <Button asChild size="sm">
-            <Link to="/insolvencias/criar">
+          <Button asChild size="sm" onClick={() => setModalOpen(true)}>
+            <span className="flex items-center">
               <Plus size={16} />
               <span className="ml-1">Novo Processo</span>
-            </Link>
+            </span>
           </Button>
         )}
       </div>
+      <InsolvenciaForm
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onSave={handleNovoInsolvencia}
+      />
       {isLoading && <div className="text-muted-foreground">A carregar...</div>}
       {!isLoading && data && data.length === 0 && (
         <div className="border p-8 rounded text-muted-foreground text-center">
