@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
@@ -20,12 +21,18 @@ export default function SubscricoesTable() {
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
   async function terminarAssinatura(id: string) {
+    // Segurança extra: early return se não houver utilizador autenticado
+    if (!user?.id) {
+      console.warn("Tentativa de terminar assinatura sem utilizador autenticado. Abortar operação por segurança.");
+      toast({ title: "Erro de autenticação", description: "É necessário iniciar sessão para terminar subscrições.", variant: "destructive" });
+      return;
+    }
     setLoadingId(id);
     const { error } = await supabase
       .from("addons_assinaturas")
       .update({ ativo: false, data_finalizacao: new Date().toISOString() })
       .eq("id", id)
-      .eq("user_id", user?.id);
+      .eq("user_id", user.id); // check sempre presente
     setLoadingId(null);
     if (error) {
       toast({ title: "Erro", description: "Não foi possível terminar esta subscrição.", variant: "destructive" });
@@ -108,3 +115,4 @@ export default function SubscricoesTable() {
     </div>
   );
 }
+
