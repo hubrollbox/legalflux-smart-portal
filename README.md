@@ -33,7 +33,7 @@ LegalFlux é uma plataforma inteligente para advogados e escritórios de advocac
 ## ✨ Destaques
 
 ### 📋 Painel de Controlo Inteligente
-- Visão geral de processos ativos (28+ casos simultâneos)
+- Visão geral de processos ativos
 - Alertas sobre prazos críticos
 - Estatísticas e relatórios de produtividade
 
@@ -43,11 +43,11 @@ LegalFlux é uma plataforma inteligente para advogados e escritórios de advocac
 
 - Controle dos próximos prazos e eventos
 - Notificações automáticas por e-mail
-- Integração com Google Calendar, Zoom e outros
+- Integração com Google Calendar, Zoom e outros (via add-on)
 
 ### 📑 Módulo de Insolvência
-- Geração automática dos principais documentos CIRE (Art. 129º, 154º)
-- Gestão avançada de credores, inventário e checklist por fase
+- Geração automática dos principais documentos CIRE (Art. 129º, 154º, 153º)
+- Gestão de credores, inventário e checklist por fase
 
 ## 📸 Capturas de Tela
 
@@ -57,19 +57,19 @@ LegalFlux é uma plataforma inteligente para advogados e escritórios de advocac
 
 **Funcionalidades destacadas:**
 - Listagem de processos ativos
-- Próximos prazos (2 dias à frente)
+- Próximos prazos
 - Documentos recentes
 - Agenda de audiências
 
 ## 🎯 Público-Alvo
 
 - **Juristas Independentes e Advogados Autônomos**
-  - Gestão de múltiplos casos de forma individual
+  - Gestão individual de múltiplos casos
   - Visão financeira integrada
 
 - **Escritórios de Advocacia de Pequeno/Médio Porte**
   - Até 3 assistentes incluídos (plano Profissional)
-  - Fluxo colaborativo no dashboard
+  - Fluxo colaborativo
 
 - **Administradores de Insolvência**
   - Módulo especializado (Add-on Enterprise)
@@ -90,7 +90,7 @@ LegalFlux é uma plataforma inteligente para advogados e escritórios de advocac
 **Stack Principal:**
 - **Frontend:** React, Vite, TailwindCSS, ShadcnUI
 - **Backend:** Supabase (PostgreSQL, Auth, Storage, Edge Functions)
-- **Autenticação:** Magic Links Supabase
+- **Autenticação:** Supabase Auth (Magic Links/Socials)
 - **Hospedagem:** Vercel Edge
 
 ```mermaid
@@ -104,7 +104,7 @@ graph TD
 
 ## 🚀 Instalação e Execução Local
 
-Pré-requisitos: [Node.js >= 18](https://nodejs.org/), [Yarn ou npm], [Supabase CLI] (para edge functions, opcional).
+**Pré-requisitos:** [Node.js >= 18](https://nodejs.org/), [Yarn ou npm], [Supabase CLI] *(para edge functions, opcional)*.
 
 ```bash
 # Instale as dependências
@@ -114,7 +114,10 @@ npm install
 npm run dev
 ```
 
-Opcional: para edge functions e integração local, consulte [documentação Supabase](https://supabase.com/docs/guides/functions).
+Para desenvolvimento backend (Nest.js):  
+Veja `backend-nestjs/README.md`.
+
+**Edge functions (opcional):** confira a documentação do Supabase para configuração.
 
 ## 📬 Contato
 
