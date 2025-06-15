@@ -70,19 +70,22 @@ const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
 // Hook para auto-colapso da sidebar (>= 1200px desktops)
 function useAutoCollapseSidebar() {
   const { setOpen, isMobile } = useSidebar();
-  // Corrigido: Usar useEffect apenas para desktop "real"
+  // Só controlar auto-colapso em desktop E se não tiver sido clicado manualmente
   useEffect(() => {
-    if (isMobile) return; // nunca auto-collapse em mobile (o drawer trata)
+    if (isMobile) return;
     const handleResize = () => {
-      // Mantém sidebar aberta em md e acima, só recolhe realmente em lg+
+      // Manter sidebar aberta em md e acima, só recolher no lg+ se o utilizador não interagir.
       if (window.innerWidth < 1200) {
-        setOpen(false); // colapsar
+        setOpen(false);
       } else {
-        setOpen(true); // expandir
+        setOpen(true);
       }
     };
     window.addEventListener('resize', handleResize);
+
+    // Inicial: abre sidebar em desktop, fecha em mobile (mas deixa usuário controlar depois)
     handleResize();
+
     return () => window.removeEventListener('resize', handleResize);
   }, [setOpen, isMobile]);
 }
@@ -97,8 +100,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  // CORRIGIDO: Mostra o trigger em "md" ou maior SEMPRE que não for mobile (md>=768) — nunca ocultar trigger sem drawer.
-  // Isso previne ficar "encalhado" sem sidebar entre 768–1200px.
+  // Detetar manualmente: mostrar trigger sempre em md+ e NUNCA ocultar nem bloquear
   const showTrigger = !isMobile;
 
   const handleSignOut = () => {
@@ -108,17 +110,15 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 
   return (
     <SidebarProvider>
-      {/* Efeito de auto-colapso apenas em desktop/tablet */}
+      {/* Efeito apenas desktop/tablet */}
       {!isMobile && <SidebarAutoCollapseEffect />}
       <div className="min-h-screen w-full flex flex-row">
-        {/* SidebarTrigger como botão fixo (desktop/tablet: SEMPRE mostra se não for mobile!) */}
         {showTrigger && (
           <div className="flex flex-col justify-start z-50">
-            {/* Sem "hidden md:flex", agora é sempre "flex" acima do mobile */}
             <SidebarTrigger className="mt-4 ml-2 mb-2" />
           </div>
         )}
-        {/* Sidebar DESKTOP */}
+        {/* Sidebar desktop */}
         <div className="hidden md:block">
           <ShadSidebar>
             <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
@@ -153,7 +153,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
             </SidebarFooter>
           </ShadSidebar>
         </div>
-        {/* Sidebar MOBILE como drawer SIMPLIFICADA */}
+        {/* Sidebar mobile drawer */}
         {isMobile && (
           <>
             <SidebarTrigger className="fixed z-50 top-3 left-3 bg-white rounded-full shadow p-2 border border-gray-200 md:hidden" />
@@ -184,7 +184,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
             </div>
           </>
         )}
-        {/* Conteudo principal ocupa todo o resto, sem margem extra */}
+        {/* Conteúdo principal */}
         <div className="flex-1 flex flex-col min-w-0 max-w-full bg-gray-50">
           {children}
         </div>
