@@ -187,7 +187,7 @@ const Clientes = () => {
             <ClientesList
               clientes={clientesFiltrados}
               loading={loading}
-              onView={cliente => setEditCliente(cliente)}
+              onView={cliente => setEditCliente(mapToCliente(cliente))}
             />
           </CardContent>
         </Card>
