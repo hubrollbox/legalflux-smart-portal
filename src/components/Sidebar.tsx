@@ -1,3 +1,4 @@
+
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
@@ -13,10 +14,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Users, FileText, Calendar, MessageSquare, Euro, Settings, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Calendar, MessageSquare, Euro, Settings, LogOut, User, Menu } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const sidebarItems = [
   { to: '/dashboard', label: 'Painel', icon: LayoutDashboard },
@@ -47,24 +49,58 @@ const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
   );
 };
 
+// Hook para detetar breakpoints para colapsar a sidebar (lg < 1200px)
+function useAutoCollapseSidebar() {
+  const { setOpen, isMobile } = useSidebar();
+  const mqlRef = useRef<MediaQueryList | null>(null);
+  // True se o ecrã for LARGER or equal a lg (1200px)
+  useEffect(() => {
+    if (isMobile) return; // nunca auto-collapse em mobile (o drawer trata)
+    const handleResize = () => {
+      if (window.innerWidth < 1200) {
+        setOpen(false); // colapsar
+      } else {
+        setOpen(true); // expandir
+      }
+    };
+    // Setup inicial
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [setOpen, isMobile]);
+}
+
 const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+  // Novo: obtemos estado para mostrar menu recolher/expandir quando não é mobile
+  // O state do SidebarProvider controla se está expandido ou colapsado
+  // Vamos garantir o auto-collapse em desktops conforme a largura do ecrã
+  // Trigger (menu) apenas md+ e não mobile
+
+  let showTrigger = !isMobile; // só mostramos botao recolher em md+
+
+  // Hook para auto-collapse em desktop/tablet < 1200px
+  if (!isMobile) {
+    // Apenas em desktop/tablet
+    useAutoCollapseSidebar();
+  }
 
   const handleSignOut = () => {
     signOut();
     navigate('/login');
   };
 
-  // Garante que o Sidebar está sempre visível em md+ (tablet e desktop), e usa trigger só em mobile real
   return (
     <SidebarProvider>
       <div className="flex w-full min-h-screen">
-        {/* Botão de recolher/expandir - apenas md+ */}
-        <div className="hidden md:flex flex-col justify-start">
-          <SidebarTrigger className="mt-4 ml-2 mb-2" />
-        </div>
+        {/* Botão de recolher/expandir (apenas md+) */}
+        {showTrigger && (
+          <div className="hidden md:flex flex-col justify-start">
+            <SidebarTrigger className="mt-4 ml-2 mb-2" />
+          </div>
+        )}
         {/* Sidebar normal (aparece em md+, incluindo tablets e desktops) */}
         <div className="hidden md:block">
           <ShadSidebar>
@@ -143,3 +179,4 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export default Sidebar;
+
