@@ -1,4 +1,3 @@
-
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
@@ -12,9 +11,12 @@ const blurPlaceholder = generateBlurPlaceholder(100, 40);
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   useScrollToTop();
-  const { user, loading } = useAuth();
+  const { user, loading, role } = useAuth();
 
-  // Lista de itens públicos (NÃO inclui integrações)
+  // Simulação de addons disponíveis – em produção isto viria da API/user profile
+  // Exemplo (ajuste conforme necessário consoante o seu modelo de dados)
+  const userAddons: string[] = user?.addons ?? []; // Espera-se array: ['insolvencia', 'calendario', ...]
+
   const publicNavItems = [
     { to: '/contato', label: 'Contacto' },
     { to: '/recursos', label: 'Recursos' },
@@ -22,14 +24,20 @@ const Header = () => {
     { to: '/sobre', label: 'Sobre' },
   ];
 
-  // Lista de itens privados (para autenticados, inclui Integrações!)
-  const privateNavItems = [
-    { to: '/prazos', label: 'Prazos' },
-    { to: '/agenda', label: 'Agenda' },
-    { to: '/minhas-integracoes', label: 'Integrações' }, // Agora só aqui!
+  const privateNavItemsAll = [
+    { to: '/prazos', label: 'Prazos', addon: false },
+    { to: '/agenda', label: 'Agenda', addon: 'calendario' }, // Exemplo: precisa addon
+    { to: '/minhas-integracoes', label: 'Integrações', addon: false },
+    { to: '/insolvencias', label: 'Insolvências', addon: 'insolvencia' }, // Só mostra se tem addon
+    // ... Adicione só rotas existentes & existentes no código.
   ];
 
-  // Está autenticado?
+  // Só mostra addons cujas páginas existem e cujo addon está subscrito
+  const privateNavItems = privateNavItemsAll.filter(
+    item =>
+      !item.addon || (typeof item.addon === 'string' && userAddons.includes(item.addon))
+  );
+
   const userIsAuthenticated = !!user && !loading;
 
   return (
@@ -197,4 +205,3 @@ const Header = () => {
 };
 
 export default Header;
-

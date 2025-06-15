@@ -33,23 +33,25 @@ interface Step2Props {
   setRegistered: (r: boolean) => void;
 }
 
-const validateStep2 = (formData: Step2FormData) => {
-  if (!formData.nome || !formData.email || !formData.password || !formData.confirmPassword) {
+const validateStep2 = (data: Step2FormData) => {
+  if (!data.nome || !data.email || !data.password || !data.confirmPassword) {
     return "Preencha todos os campos obrigatórios.";
   }
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(formData.email)) {
+  if (!emailRegex.test(data.email)) {
     return "E-mail inválido.";
   }
-  if (formData.password.length < 8) {
+  if (data.password.length < 8) {
     return "A senha deve ter pelo menos 8 caracteres.";
   }
-  if (formData.password !== formData.confirmPassword) {
+  if (data.password !== data.confirmPassword) {
     return "As senhas não correspondem.";
   }
-  // Só para advogados: número profissional é obrigatório
-  if (formData.tipo === "advogado" && !formData.numero_profissional) {
+  if (data.tipo === "advogado" && !data.numero_profissional) {
     return "Número profissional é obrigatório para juristas.";
+  }
+  if (data.tipo === "empresa" && (!data.dados_empresa?.setor || !data.dados_empresa.setor.trim())) {
+    return "CAE (setor) é obrigatório para empresas.";
   }
   return "";
 };
@@ -78,36 +80,39 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
               emailRedirectTo: redirectUrl,
               data: {
                 nome: formData.nome,
-                tipo: "jurista", // use RBAC enum value
+                tipo: formData.tipo === "empresa" ? "empresa" : "jurista",
                 numero_profissional: formData.numero_profissional,
                 telefone: formData.telefone,
+                cae: formData.dados_empresa.setor, // CAE only if empresa
               },
             },
           });
           if (error) throw error;
           const userId = data.user?.id;
           if (!userId) throw new Error("ID de utilizador não encontrado. Contacte o suporte.");
-          // 1. Criação do perfil já existente
+          // 1. Criação do perfil
           const profileInsert = {
             id: userId,
             email: formData.email,
-            role: "jurista", // use enum value from Supabase
+            role: formData.tipo === "empresa" ? "empresa" : "jurista",
             status: "pending",
             nome: formData.nome || "",
             telefone: formData.telefone || "",
             nif: null,
-            numero_profissional: formData.numero_profissional || "",
+            numero_profissional: formData.tipo === "jurista" ? formData.numero_profissional : "",
             morada: "",
             metodo_pagamento: "",
-            dados_faturacao: {},
+            dados_faturacao: {
+              ...(formData.tipo === "empresa" ? { cae: formData.dados_empresa.setor } : {}),
+            },
           };
           const { error: insertError } = await supabase.from("users_extended").insert([profileInsert]);
           if (insertError) throw insertError;
-          // 2. Criação do papel RBAC (role)
+          // 2. Papel RBAC
           const { error: roleError } = await supabase.from("user_roles").insert([
             {
               user_id: userId,
-              role: "jurista", // use enum value
+              role: formData.tipo === "empresa" ? "empresa" : "jurista",
             }
           ]);
           if (roleError) throw roleError;
@@ -184,17 +189,37 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           />
         </div>
       </div>
-      <div>
-        <Label htmlFor="numero_profissional">Número Profissional *</Label>
-        <Input
-          id="numero_profissional"
-          type="text"
-          value={formData.numero_profissional}
-          onChange={(e) => onChange({ numero_profissional: e.target.value })}
-          placeholder="Ex: 12345-OA"
-          required
-        />
-      </div>
+      {/* Campo dinâmico: Ordem Profissional OU CAE */}
+      {formData.tipo === "empresa" ? (
+        <div>
+          <Label htmlFor="cae">CAE (Código de Atividade Económica) *</Label>
+          <Input
+            id="cae"
+            type="text"
+            value={formData.dados_empresa.setor}
+            onChange={(e) => onChange({
+              dados_empresa: {
+                ...formData.dados_empresa,
+                setor: e.target.value,
+              }
+            })}
+            placeholder="Ex: 69102"
+            required
+          />
+        </div>
+      ) : (
+        <div>
+          <Label htmlFor="numero_profissional">Número Profissional *</Label>
+          <Input
+            id="numero_profissional"
+            type="text"
+            value={formData.numero_profissional}
+            onChange={(e) => onChange({ numero_profissional: e.target.value })}
+            placeholder="Ex: 12345-OA"
+            required
+          />
+        </div>
+      )}
       <Button type="submit" className="w-full bg-primary-800 hover:bg-primary-700">
         {loading ? "Aguarde..." : "Criar Conta"}
       </Button>
