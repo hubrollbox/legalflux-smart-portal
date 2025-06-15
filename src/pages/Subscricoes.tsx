@@ -1,12 +1,81 @@
-
 import DashboardLayout from "@/components/DashboardLayout";
 import SubscricoesTable from "@/components/SubscricoesTable";
 import { useScrollToTop } from "@/hooks/useScrollToTop";
 import { FileText } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import AvailableAddonsSection from "@/components/AvailableAddonsSection";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Check } from "lucide-react";
 
 export default function SubscricoesPage() {
   useScrollToTop();
+
+  // Listagem dos três planos, igual ao arquivo Pricing.tsx
+  const plans = [
+    {
+      name: "Básico",
+      price: "€29",
+      period: "/mês",
+      description: "Ideal para advogados independentes",
+      features: [
+        "Até 10 processos",
+        "5GB de armazenamento",
+        "Chat directo com suporte",
+        "IA avançada para insights",
+        "Calendário de prazos",
+        "Upload de documentos",
+        "Relatórios básicos",
+        "15 dias de trial grátis"
+      ],
+      buttonText: "Escolher Básico",
+      buttonVariant: "default" as const,
+      popular: false
+    },
+    {
+      name: "Profissional",
+      price: "€79",
+      period: "/mês",
+      description: "Para advogados e consultórios pequenos",
+      features: [
+        "Processos ilimitados",
+        "25GB de armazenamento",
+        "Suporte prioritário",
+        "IA completa + automações",
+        "Gestão de clientes",
+        "Chat seguro com clientes",
+        "Relatórios avançados",
+        "Multi-utilizador (até 3)",
+        "Templates premium",
+        "15 dias de trial grátis"
+      ],
+      buttonText: "Escolher Profissional",
+      buttonVariant: "default" as const,
+      popular: true
+    },
+    {
+      name: "Escritório",
+      price: "€199",
+      period: "/mês",
+      description: "Para escritórios e empresas",
+      features: [
+        "Tudo do Profissional",
+        "100GB de armazenamento",
+        "Suporte dedicado",
+        "Utilizadores ilimitados",
+        "Dashboard administrativo",
+        "Permissões avançadas (RBAC)",
+        "Gestão de assistentes",
+        "API personalizada",
+        "Onboarding personalizado",
+        "Integração Stripe completa",
+        "15 dias de trial grátis"
+      ],
+      buttonText: "Falar com Vendas",
+      buttonVariant: "default" as const,
+      popular: false
+    }
+  ];
+
   return (
     <DashboardLayout>
       <div className="max-w-4xl mx-auto py-10 px-4">
@@ -35,6 +104,59 @@ export default function SubscricoesPage() {
             </Tooltip>
           </TooltipProvider>
         </div>
+        {/* Planos disponíveis para subscrição */}
+        <section className="mb-12">
+          <h2 className="text-xl md:text-2xl font-bold text-primary-800 mb-4">
+            Planos Legais Disponíveis
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {plans.map((plan, idx) => (
+              <Card 
+                key={plan.name}
+                className={`relative rounded-xl border-0 shadow-lg hover:shadow-xl transition-all duration-300 ${plan.popular ? "ring-2 ring-primary-800 scale-105" : ""}`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-primary-800 text-white px-4 py-2 rounded-full text-xs font-semibold">
+                      Mais Popular
+                    </span>
+                  </div>
+                )}
+                <CardHeader className="text-center p-6 pb-3">
+                  <h3 className="text-lg font-bold text-primary-800 mb-2">
+                    {plan.name}
+                  </h3>
+                  <div className="mb-2 flex items-end justify-center gap-1">
+                    <span className="text-3xl font-bold text-primary-800">{plan.price}</span>
+                    <span className="text-gray-500">{plan.period}</span>
+                  </div>
+                  <p className="text-gray-600 text-xs">{plan.description}</p>
+                </CardHeader>
+                <CardContent className="p-6 pt-2">
+                  <ul className="space-y-2 mb-6">
+                    {plan.features.map((feature, fIdx) => (
+                      <li key={fIdx} className="flex items-start">
+                        <Check className="h-4 w-4 text-accent-600 mr-2 flex-shrink-0 mt-0.5" />
+                        <span className="text-gray-600 text-xs">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    className="w-full rounded-md py-2 font-semibold bg-primary-800 hover:bg-primary-700 text-white text-sm transition disabled:opacity-60"
+                    disabled
+                    aria-disabled="true"
+                  >
+                    {plan.buttonText}
+                  </button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Add-ons disponíveis para subscrição */}
+        <AvailableAddonsSection />
+
         <p className="mb-6 text-gray-600">
           Gere facilmente as subscrições dos seus add-ons LegalFlux: consulte estado, datas de ativação e termine add-ons quando necessário.
         </p>
