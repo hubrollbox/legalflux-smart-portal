@@ -13,10 +13,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger
+  SidebarTrigger,
 } from '@/components/ui/sidebar';
-import { Menu, LayoutDashboard, Users, FileText, Calendar, MessageSquare, Euro, Settings, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, Users, FileText, Calendar, MessageSquare, Euro, Settings, LogOut, User } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import React from 'react';
 
 const sidebarItems = [
   { to: '/dashboard', label: 'Painel', icon: LayoutDashboard },
@@ -47,7 +48,7 @@ const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
   );
 };
 
-const Sidebar = () => {
+const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
@@ -57,9 +58,11 @@ const Sidebar = () => {
     navigate('/login');
   };
 
+  // O layout DEVE ser: SidebarProvider > .flex.w-full > Sidebar + Conteúdo
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen w-full">
+      <div className="flex w-full min-h-screen">
+        {/* Sidebar normal (desktop) */}
         <ShadSidebar>
           <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
             <img
@@ -88,12 +91,13 @@ const Sidebar = () => {
             </button>
           </SidebarFooter>
         </ShadSidebar>
-        {/* Mobile sidebar trigger */}
+        {/* Trigger só aparece no mobile (flutuante) */}
         {isMobile && (
           <SidebarTrigger className="fixed z-50 top-3 left-3 bg-white rounded-full shadow p-2 border border-gray-200" />
         )}
-        <div className="flex-1 flex flex-col min-w-0 max-w-full">
-          {/* Conteúdo real do dashboard será children nas páginas */}
+        {/* Conteúdo real */}
+        <div className="flex-1 flex flex-col min-w-0 max-w-full bg-gray-50">
+          {children}
         </div>
       </div>
     </SidebarProvider>
@@ -101,4 +105,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
