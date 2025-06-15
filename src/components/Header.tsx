@@ -13,9 +13,9 @@ const Header = () => {
   useScrollToTop();
   const { user, loading, role } = useAuth();
 
-  // Simulação de addons disponíveis – em produção isto viria da API/user profile
-  // Exemplo (ajuste conforme necessário consoante o seu modelo de dados)
-  const userAddons: string[] = user?.addons ?? []; // Espera-se array: ['insolvencia', 'calendario', ...]
+  // Obtém add-ons – neste exemplo, não há field "addons" no user, então previne erro TS.
+  // Pode expandir a lógica mais tarde se guardar add-ons noutro sítio.
+  const userAddons: string[] = []; // placeholder: sem extras, nenhum add-on
 
   const publicNavItems = [
     { to: '/contato', label: 'Contacto' },
@@ -32,10 +32,12 @@ const Header = () => {
     // ... Adicione só rotas existentes & existentes no código.
   ];
 
-  // Só mostra addons cujas páginas existem e cujo addon está subscrito
+  // Filtra apenas páginas existentes e cujo add-on está "subscrito" se aplicável
   const privateNavItems = privateNavItemsAll.filter(
     item =>
-      !item.addon || (typeof item.addon === 'string' && userAddons.includes(item.addon))
+      !item.addon // se não requer addon, mostra sempre
+      // ADDONS: apenas mostra se o addon está incluído no array (a lógica real deverá verificar subscrição num perfil, aqui vai sempre ocultar)
+      || (typeof item.addon === 'string' && userAddons.includes(item.addon))
   );
 
   const userIsAuthenticated = !!user && !loading;

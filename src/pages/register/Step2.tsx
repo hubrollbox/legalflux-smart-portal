@@ -94,7 +94,8 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           const profileInsert = {
             id: userId,
             email: formData.email,
-            role: formData.tipo === "empresa" ? "empresa" : "jurista",
+            // Corrige: só aceita "jurista" ou outros válidos no enum
+            role: "jurista", // empresa também será considerada jurista para efeitos de role na tabela
             status: "pending",
             nome: formData.nome || "",
             telefone: formData.telefone || "",
@@ -108,11 +109,11 @@ const Step2 = ({ formData, onChange, onBack, onSuccess, setRegistered }: Step2Pr
           };
           const { error: insertError } = await supabase.from("users_extended").insert([profileInsert]);
           if (insertError) throw insertError;
-          // 2. Papel RBAC
+          // 2. Papel RBAC – sempre inserir como role: "jurista" para ambos
           const { error: roleError } = await supabase.from("user_roles").insert([
             {
               user_id: userId,
-              role: formData.tipo === "empresa" ? "empresa" : "jurista",
+              role: "jurista", // role tem de ser um valor permitido pelo enum
             }
           ]);
           if (roleError) throw roleError;
