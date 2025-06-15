@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import type { Processo } from "@/services/ProcessoService";
 
@@ -67,7 +66,7 @@ const ProcessosList = ({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onDelete(proc.id)}
+                onClick={() => onDelete(typeof proc.id === "number" ? proc.id : parseInt(proc.id as string, 10))}
                 title="Remover"
                 className="ml-1"
               >
