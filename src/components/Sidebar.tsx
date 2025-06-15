@@ -16,10 +16,23 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, Users, FileText, Calendar, MessageSquare, Euro, Settings, LogOut, User, Menu } from 'lucide-react';
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  Calendar,
+  MessageSquare,
+  Euro,
+  Settings,
+  LogOut,
+  User,
+  Bot,
+  Link2
+} from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import React, { useEffect, useRef } from 'react';
 
+// MENU CORRIGIDO: ordem, rotas e ícones completos!
 const sidebarItems = [
   { to: '/dashboard', label: 'Painel', icon: LayoutDashboard },
   { to: '/processos', label: 'Processos', icon: FileText },
@@ -27,6 +40,8 @@ const sidebarItems = [
   { to: '/calendario', label: 'Calendário', icon: Calendar },
   { to: '/chat', label: 'Chat', icon: MessageSquare },
   { to: '/financeiro', label: 'Financeiro', icon: Euro },
+  { to: '/ia-assistant', label: 'IA', icon: Bot }, // <-- IA ASSISTANT
+  { to: '/minhas-integracoes', label: 'Minhas Integrações', icon: Link2 }, // <-- INTEGRAÇÕES
   { to: '/perfil', label: 'Minha Conta', icon: User },
   { to: '/definicoes', label: 'Definições', icon: Settings },
 ];
@@ -90,7 +105,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 
   return (
     <SidebarProvider>
-      {/* Use o hook de auto-collapse só aqui, já dentro do contexto correto */}
+      {/* Efeito de auto-colapso permanece idêntico */}
       {!isMobile && <SidebarAutoCollapseEffect />}
       <div className="flex w-full min-h-screen">
         {showTrigger && (
@@ -172,3 +187,4 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export default Sidebar;
+
