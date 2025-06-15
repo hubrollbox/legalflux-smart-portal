@@ -17,7 +17,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Cliente } from '@/pages/Clientes';
+import type { Cliente } from '@/components/clientes/ClientesContainer';
 
 type ClienteFormData = Omit<Cliente, 'id' | 'processos' | 'status' | 'ultimo_contacto' | 'valor_total'> & { enviar_email?: boolean };
 
