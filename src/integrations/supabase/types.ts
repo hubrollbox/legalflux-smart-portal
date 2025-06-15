@@ -9,6 +9,36 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      addons_assinaturas: {
+        Row: {
+          addon: string
+          ativo: boolean
+          data_ativacao: string | null
+          data_finalizacao: string | null
+          id: string
+          plano: string
+          user_id: string
+        }
+        Insert: {
+          addon: string
+          ativo?: boolean
+          data_ativacao?: string | null
+          data_finalizacao?: string | null
+          id?: string
+          plano: string
+          user_id: string
+        }
+        Update: {
+          addon?: string
+          ativo?: boolean
+          data_ativacao?: string | null
+          data_finalizacao?: string | null
+          id?: string
+          plano?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       advogados: {
         Row: {
           criado_em: string | null

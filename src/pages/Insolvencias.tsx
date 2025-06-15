@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -6,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useAuth } from "@/contexts/useAuth";
+import { useAddonSubscription } from "@/hooks/useAddonSubscription";
 
 const fetchInsolvencias = async () => {
   const { data, error } = await supabase
@@ -17,11 +17,38 @@ const fetchInsolvencias = async () => {
 };
 
 const Insolvencias: React.FC = () => {
-  const { role } = useAuth();
+  const { data: hasInsolvenciaAddon, isLoading: loadingAddon } = useAddonSubscription("insolvencia");
   const { data, isLoading } = useQuery({
     queryKey: ["insolvencias"],
     queryFn: fetchInsolvencias,
   });
+
+  if (loadingAddon) {
+    return (
+      <div className="p-4 max-w-2xl mx-auto text-center text-muted-foreground">
+        A verificar subscrição de add-on...
+      </div>
+    );
+  }
+
+  if (!hasInsolvenciaAddon) {
+    return (
+      <div className="p-8 max-w-xl mx-auto border rounded-xl text-center shadow mt-12">
+        <h2 className="text-2xl font-bold text-primary-900 mb-3">
+          Add-on “LegalFlux Insolvências” não ativo
+        </h2>
+        <p className="mb-4 text-gray-600">
+          Para aceder à gestão de processos de insolvência, é necessário ativar o add-on profissional/enterprise.
+        </p>
+        <a
+          href="/integracoes"
+          className="inline-block bg-accent-700 hover:bg-accent-800 text-white px-6 py-3 rounded-xl shadow font-semibold transition"
+        >
+          Ver planos &amp; Ativar Add-on
+        </a>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 max-w-5xl mx-auto">
