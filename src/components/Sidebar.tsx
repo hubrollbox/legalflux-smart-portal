@@ -58,42 +58,77 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
     navigate('/login');
   };
 
-  // O layout DEVE ser: SidebarProvider > .flex.w-full > Sidebar + Conteúdo
+  // Garante que o Sidebar está sempre visível em md+ (tablet e desktop), e usa trigger só em mobile real
   return (
     <SidebarProvider>
       <div className="flex w-full min-h-screen">
-        {/* Sidebar normal (desktop) */}
-        <ShadSidebar>
-          <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
-            <img
-              src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-              alt="Legalflux Logo"
-              className="h-10 w-10 rounded-md"
-            />
-            <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
-          </SidebarHeader>
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel className="hidden" />
-              <SidebarGroupContent>
-                <SidebarMenuList />
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-          <SidebarFooter className="pb-4 px-4 border-t border-gray-200 flex-col flex gap-2">
-            <button
-              onClick={handleSignOut}
-              className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
-              type="button"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Sair
-            </button>
-          </SidebarFooter>
-        </ShadSidebar>
-        {/* Trigger só aparece no mobile (flutuante) */}
+        {/* Sidebar normal (aparece em md+, incluindo tablets e desktops) */}
+        <div className="hidden md:block">
+          <ShadSidebar>
+            <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
+              <img
+                src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+                alt="Legalflux Logo"
+                className="h-10 w-10 rounded-md"
+              />
+              <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
+            </SidebarHeader>
+            <SidebarContent>
+              <SidebarGroup>
+                <SidebarGroupLabel className="hidden" />
+                <SidebarGroupContent>
+                  <SidebarMenuList />
+                </SidebarGroupContent>
+              </SidebarGroup>
+            </SidebarContent>
+            <SidebarFooter className="pb-4 px-4 border-t border-gray-200 flex-col flex gap-2">
+              <button
+                onClick={handleSignOut}
+                className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
+                type="button"
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sair
+              </button>
+            </SidebarFooter>
+          </ShadSidebar>
+        </div>
+        {/* Trigger só aparece em telas menores que md */}
         {isMobile && (
-          <SidebarTrigger className="fixed z-50 top-3 left-3 bg-white rounded-full shadow p-2 border border-gray-200" />
+          <SidebarTrigger className="fixed z-50 top-3 left-3 bg-white rounded-full shadow p-2 border border-gray-200 md:hidden" />
+        )}
+        {/* Sidebar tipo Drawer (shadcn) para mobile */}
+        {isMobile && (
+          <div className="block md:hidden">
+            <ShadSidebar>
+              <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
+                <img
+                  src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+                  alt="Legalflux Logo"
+                  className="h-10 w-10 rounded-md"
+                />
+                <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
+              </SidebarHeader>
+              <SidebarContent>
+                <SidebarGroup>
+                  <SidebarGroupLabel className="hidden" />
+                  <SidebarGroupContent>
+                    <SidebarMenuList onItemClick={() => {}} />
+                  </SidebarGroupContent>
+                </SidebarGroup>
+              </SidebarContent>
+              <SidebarFooter className="pb-4 px-4 border-t border-gray-200 flex-col flex gap-2">
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
+                  type="button"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sair
+                </button>
+              </SidebarFooter>
+            </ShadSidebar>
+          </div>
         )}
         {/* Conteúdo real */}
         <div className="flex-1 flex flex-col min-w-0 max-w-full bg-gray-50">
