@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { fetchProcessos, addProcesso, updateProcesso, deleteProcesso } from "@/services/ProcessoService";
 import DashboardLayout from "@/components/DashboardLayout";
@@ -18,6 +17,10 @@ import ProcessoDetalhes from "@/components/processos/ProcessoDetalhes";
 import AtividadesLog from "@/components/AtividadesLog";
 import ModelosJuridicos from "@/components/ModelosJuridicos";
 import ProcessoForm from '@/components/processos/ProcessoForm';
+import ProcessosHeader from "@/components/processos/ProcessosHeader";
+import ProcessosFilters from "@/components/processos/ProcessosFilters";
+import ProcessosList from "@/components/processos/ProcessosList";
+import ProcessosPagination from "@/components/processos/ProcessosPagination";
 
 const PAGE_SIZE = 5;
 
@@ -174,7 +177,7 @@ const Processos = () => {
     const matchesSearch =
       proc.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       proc.numero.includes(searchTerm);
-    const matchesStatus = filterStatus ? proc.status === filterStatus : true;
+    const matchesStatus = filterStatus && filterStatus !== "all" ? proc.status === filterStatus : true;
     return matchesSearch && matchesStatus;
   });
 
@@ -192,117 +195,29 @@ const Processos = () => {
     <ErrorBoundary>
       <DashboardLayout>
         <div className="p-6">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-primary-800">Processos</h1>
-              <p className="text-gray-600">Gerir todos os processos jurídicos</p>
-            </div>
-            {/* Substituir botão de novo processo: */}
-            <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setShowForm(true)}>
-              <Plus className="h-4 w-4 mr-2" />
-              Novo Processo
-            </Button>
-          </div>
-
-          {/* Filters and Search */}
-          <div className="flex flex-col md:flex-row gap-4 mb-6">
-            <Input
-              placeholder="Buscar por número ou título..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="flex-1"
-            />
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="flex-1 md:flex-none">
-                <SelectValue placeholder="Filtrar por status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos</SelectItem>
-                <SelectItem value="activo">Activo</SelectItem>
-                <SelectItem value="pendente">Pendente</SelectItem>
-                <SelectItem value="arquivado">Arquivado</SelectItem>
-                <SelectItem value="concluido">Concluído</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Process Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {loading
-              ? Array(PAGE_SIZE)
-                  .fill(0)
-                  .map((_, i) => (
-                    <div
-                      key={i}
-                      className="animate-pulse h-32 bg-gray-200 rounded-2xl"
-                    ></div>
-                  ))
-              : filteredProcessos.map((proc) => (
-                  <div
-                    key={proc.id}
-                    className="rounded-2xl border-0 shadow-lg p-4 bg-white"
-                  >
-                    <h3 className="text-lg font-bold text-primary-800">
-                      {proc.titulo || proc.numero}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Cliente: {proc.cliente || "N/A"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Advogado: {proc.advogado || "N/A"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Prazo: {proc.prazo || "N/A"}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      Valor: {proc.valor || "N/A"}
-                    </p>
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${getStatusColor(
-                        proc.status
-                      )}`}
-                    >
-                      {proc.status}
-                    </span>
-                    <Button
-                      className="mt-4 bg-primary-800 hover:bg-primary-700 w-full"
-                      onClick={() => setSelectedProcesso(proc)}
-                    >
-                      Ver Detalhes
-                    </Button>
-                    {/* Adicionar botões de editar/remover nos cards de processo: */}
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setEditProcesso(proc)}
-                      title="Editar"
-                      className="ml-2"
-                    >
-                      <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M12.65 3.35a2.121 2.121 0 0 1 3 3L7.5 14.5H4v-3.5l8.65-7.65Z"/></svg>
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteProcesso(proc.id)}
-                      title="Remover"
-                      className="ml-1"
-                    >
-                      <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M6 6v6m4-6v6M3 6h10M5 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                    </Button>
-                  </div>
-                ))}
-          </div>
-
-          {/* Process Details Dialog */}
+          <ProcessosHeader onNew={() => setShowForm(true)} />
+          <ProcessosFilters
+            searchTerm={searchTerm}
+            onSearchTerm={setSearchTerm}
+            filterStatus={filterStatus}
+            onFilterStatus={setFilterStatus}
+          />
+          <ProcessosList
+            processos={filteredProcessos}
+            loading={loading}
+            onView={proc => setSelectedProcesso(proc)}
+            onEdit={proc => setEditProcesso(proc)}
+            onDelete={handleDeleteProcesso}
+            getStatusColor={getStatusColor}
+            pageSize={PAGE_SIZE}
+          />
           {selectedProcesso && (
             <ProcessoDetalhes
               processo={selectedProcesso}
               open={!!selectedProcesso}
-              onOpenChange={(open) => !open && setSelectedProcesso(null)}
+              onOpenChange={open => !open && setSelectedProcesso(null)}
             />
           )}
-
           {/* Atividades Log e Modelos Jurídicos - Exemplo de uso dos novos componentes */}
           <div className="mt-8">
             <h2 className="text-2xl font-bold text-primary-800 mb-4">
@@ -316,25 +231,10 @@ const Processos = () => {
             </h2>
             <ModelosJuridicos modelos={modelos} />
           </div>
-
-          {/* Pagination */}
-          <div className="flex justify-center mt-4">
-            <ReactPaginate
-              previousLabel={"Anterior"}
-              nextLabel={"Próxima"}
-              breakLabel={"..."}
-              pageCount={Math.ceil(total / PAGE_SIZE)}
-              marginPagesDisplayed={1}
-              pageRangeDisplayed={2}
-              onPageChange={({ selected }) => setPage(selected)}
-              containerClassName={"flex gap-2"}
-              activeClassName={"font-bold underline"}
-              pageClassName={"px-2"}
-              previousClassName={"px-2"}
-              nextClassName={"px-2"}
-              breakClassName={"px-2"}
-            />
-          </div>
+          <ProcessosPagination
+            pageCount={Math.ceil(total / PAGE_SIZE)}
+            onPageChange={selected => setPage(selected)}
+          />
         </div>
         <ProcessoForm
           open={showForm}
