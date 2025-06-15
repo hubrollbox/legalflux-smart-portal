@@ -7,6 +7,7 @@ import { useScrollToTop } from '@/hooks/useScrollToTop';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import InsolvenciaAddonHighlight from '@/components/InsolvenciaAddonHighlight';
 
 const Index = () => {
   useScrollToTop();
@@ -34,6 +35,8 @@ const Index = () => {
       <main>
         <Hero />
         <Features />
+        {/* Add-on Insolvências destacado */}
+        <InsolvenciaAddonHighlight />
         <div id="planos">
           <Pricing />
         </div>
