@@ -94,11 +94,19 @@ const IntegrationCard = ({ integration }: IntegrationCardProps) => {
             </Link>
           </Button>
           {integration.status === 'disponivel' ? (
-            <Button size="sm" className="flex-1 bg-primary-800 hover:bg-primary-700" asChild>
-              <Link to="/login">
-                Começar
-              </Link>
-            </Button>
+            isInsolvenciaAddon ? (
+              <Button size="sm" className="flex-1 bg-primary-800 hover:bg-primary-700" asChild>
+                <Link to="/minhas-integracoes">
+                  Começar
+                </Link>
+              </Button>
+            ) : (
+              <Button size="sm" className="flex-1 bg-primary-800 hover:bg-primary-700" asChild>
+                <Link to="/login">
+                  Começar
+                </Link>
+              </Button>
+            )
           ) : (
             <Button size="sm" variant="outline" disabled className="flex-1">
               Em Breve
