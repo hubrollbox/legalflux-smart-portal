@@ -1,4 +1,3 @@
-
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
@@ -109,11 +108,6 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
     navigate('/login');
   };
 
-  // Novo: handler Rever global
-  const handleRever = () => {
-    navigate(-1);
-  };
-
   return (
     <SidebarProvider>
       {/* Efeito apenas desktop/tablet */}
@@ -128,15 +122,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
         <div className="hidden md:block">
           <ShadSidebar>
             <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200 relative">
-              {/* Botão Rever (desktop) */}
-              <button
-                onClick={handleRever}
-                className="absolute left-2 top-2.5 p-1 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                title="Rever"
-                aria-label="Voltar atrás"
-              >
-                <ArrowLeft size={22} className="text-primary-800" />
-              </button>
+              {/* Logo, sem botão Rever */}
               <img
                 src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
                 alt="Legalflux Logo"
@@ -175,15 +161,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
             <div className="block md:hidden">
               <ShadSidebar>
                 <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200 relative">
-                  {/* Botão Rever (mobile) */}
-                  <button
-                    onClick={handleRever}
-                    className="absolute left-2 top-2.5 p-1 rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-400"
-                    title="Rever"
-                    aria-label="Voltar atrás"
-                  >
-                    <ArrowLeft size={22} className="text-primary-800" />
-                  </button>
+                  {/* Logo mobile, sem botão Rever */}
                   <img
                     src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
                     alt="Legalflux Logo"
@@ -218,4 +196,3 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export default Sidebar;
-
