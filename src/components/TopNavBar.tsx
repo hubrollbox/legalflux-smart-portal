@@ -15,7 +15,7 @@ const TopNavBar = ({ blurPlaceholder }: TopNavBarProps) => {
   const publicNavItems = [
     { to: '/contato', label: 'Contacto' },
     { to: '/recursos', label: 'Recursos' },
-    { to: '/integracoes', label: 'Integrações' }, // Agora visível SEMPRE
+    // Removido: { to: '/integracoes', label: 'Integrações' }, // Não deve aparecer no menu superior
     { to: '/seguranca', label: 'Segurança' },
     { to: '/sobre', label: 'Sobre' },
   ];
