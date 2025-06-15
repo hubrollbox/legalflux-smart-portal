@@ -1,4 +1,3 @@
-
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
@@ -32,6 +31,8 @@ import {
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import React, { useEffect, useRef } from 'react';
+import SidebarQuickActions from './SidebarQuickActions';
+import UniversalSearchBar from './UniversalSearchBar';
 
 // MENU CORRIGIDO: ordem, rotas e ícones completos!
 const sidebarItems = [
@@ -116,7 +117,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
             <SidebarTrigger className="mt-4 ml-2 mb-2" />
           </div>
         )}
-        {/* Sidebar DESKTOP (shadcn) */}
+        {/* Sidebar DESKTOP */}
         <div className="hidden md:block">
           <ShadSidebar>
             <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
@@ -127,6 +128,10 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
               />
               <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
             </SidebarHeader>
+            {/* Universal search bar (desktop) */}
+            <div className="px-4 py-3">
+              <UniversalSearchBar />
+            </div>
             <SidebarContent>
               <SidebarGroup>
                 <SidebarGroupLabel className="hidden" />
@@ -161,6 +166,11 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
                   />
                   <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
                 </SidebarHeader>
+                {/* Quick actions & search (MOBILE-only) */}
+                <SidebarQuickActions onItemClick={() => {}} />
+                <div className="px-4 pb-2">
+                  <UniversalSearchBar />
+                </div>
                 <SidebarContent>
                   <SidebarGroup>
                     <SidebarGroupLabel className="hidden" />
@@ -193,4 +203,3 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export default Sidebar;
-
