@@ -1,21 +1,8 @@
 
-import { 
-  Home, 
-  FileText, 
-  Calendar, 
-  Users, 
-  MessageSquare, 
-  Euro, 
-  Settings, 
-  LogOut,
-  Bot,
-  Play,
-  User
-} from 'lucide-react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
-  Sidebar as ShadcnSidebar,
+  Sidebar as ShadSidebar,
   SidebarProvider,
   SidebarContent,
   SidebarHeader,
@@ -24,35 +11,32 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent,
   SidebarMenu,
-  SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuItem,
   SidebarTrigger
 } from '@/components/ui/sidebar';
+import { Menu, LayoutDashboard, Users, FileText, Calendar, MessageSquare, Euro, Settings, LogOut, User } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import SidebarFloatingTrigger from './SidebarFloatingTrigger';
 
-// Menu principal
-const sidebarMenu = [
-  { icon: Home, label: 'Dashboard', path: '/dashboard' },
-  { icon: FileText, label: 'Processos', path: '/processos' },
-  { icon: Calendar, label: 'Calendário', path: '/calendario' },
-  { icon: Users, label: 'Clientes', path: '/clientes' },
-  { icon: MessageSquare, label: 'Chat', path: '/chat' },
-  { icon: Euro, label: 'Financeiro', path: '/financeiro' },
-  { icon: Bot, label: 'IA Assistant', path: '/ia-assistant' },
-  { icon: Settings, label: 'Definições', path: '/definicoes' },
-  { icon: User, label: 'Meu Perfil', path: '/perfil' },
+const sidebarItems = [
+  { to: '/dashboard', label: 'Painel', icon: LayoutDashboard },
+  { to: '/processos', label: 'Processos', icon: FileText },
+  { to: '/clientes', label: 'Clientes', icon: Users },
+  { to: '/calendario', label: 'Calendário', icon: Calendar },
+  { to: '/chat', label: 'Chat', icon: MessageSquare },
+  { to: '/financeiro', label: 'Financeiro', icon: Euro },
+  { to: '/perfil', label: 'Minha Conta', icon: User },
+  { to: '/definicoes', label: 'Definições', icon: Settings },
 ];
 
-// Menu de navegação com active state
-const SidebarNavigationMenu = () => {
+const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
   const location = useLocation();
   return (
     <SidebarMenu>
-      {sidebarMenu.map(item => (
-        <SidebarMenuItem key={item.path}>
-          <SidebarMenuButton asChild isActive={location.pathname === item.path}>
-            <Link to={item.path} className="flex items-center w-full">
+      {sidebarItems.map((item) => (
+        <SidebarMenuItem key={item.to}>
+          <SidebarMenuButton asChild isActive={location.pathname === item.to}>
+            <Link to={item.to} onClick={onItemClick} className="flex items-center w-full">
               <item.icon className="mr-3 min-w-5" />
               <span className="truncate">{item.label}</span>
             </Link>
@@ -63,124 +47,58 @@ const SidebarNavigationMenu = () => {
   );
 };
 
-const SidebarDesktop = ({
-  handleRestartOnboarding,
-  signOut
-}: { handleRestartOnboarding: () => void; signOut: () => void }) => (
-  <div className="sidebar hidden md:flex flex-col w-[260px] min-h-screen bg-sidebar text-sidebar-foreground border-r border-gray-200 p-0">
-    <ShadcnSidebar className="flex flex-col flex-1 p-0">
-      <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
-        <div className="absolute left-3 top-3 hidden md:block">
-          {/* Apenas botão de collapse opcional, pode ocultar */}
-          <SidebarTrigger />
-        </div>
-        <img 
-          src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-          alt="Legalflux Logo"
-          className="h-10 w-10 rounded-md"
-        />
-        <div className="ml-2 flex flex-col">
-          <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
-          <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
-        </div>
-      </SidebarHeader>
-      <SidebarContent className="flex-1 px-0 pt-1">
-        <SidebarGroup>
-          <SidebarGroupLabel className="hidden" />
-          <SidebarGroupContent>
-            <SidebarNavigationMenu />
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
-        <button
-          onClick={handleRestartOnboarding}
-          className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
-          type="button"
-        >
-          <Play className="h-4 w-4 mr-2" />
-          Repetir Tutorial
-        </button>
-        <button
-          onClick={signOut}
-          className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
-          type="button"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sair
-        </button>
-      </SidebarFooter>
-    </ShadcnSidebar>
-  </div>
-);
-
-const SidebarMobile = ({
-  handleRestartOnboarding,
-  signOut
-}: { handleRestartOnboarding: () => void; signOut: () => void }) => (
-  <div className="sidebar-mobile block md:hidden">
-    <ShadcnSidebar className="fixed inset-0 z-40 flex flex-col p-0 bg-sidebar text-sidebar-foreground min-h-screen w-[80vw] max-w-xs border-r border-gray-200">
-      <SidebarHeader className="relative px-4 pt-6 pb-3 flex flex-row items-center gap-3 min-h-[68px]">
-        <img 
-          src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-          alt="Legalflux Logo"
-          className="h-10 w-10 rounded-md"
-        />
-        <div className="ml-2 flex flex-col">
-          <h1 className="text-lg font-bold text-primary-800 leading-none">LegalFlux</h1>
-          <p className="text-[13px] text-gray-600 leading-tight tracking-tight">Portal Jurídico</p>
-        </div>
-      </SidebarHeader>
-      <SidebarContent className="flex-1 px-0 pt-1">
-        <SidebarGroup>
-          <SidebarGroupLabel className="hidden" />
-          <SidebarGroupContent>
-            <SidebarNavigationMenu />
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter className="pb-4 pt-2 px-4 border-t border-gray-200 flex-col flex gap-2">
-        <button
-          onClick={handleRestartOnboarding}
-          className="flex items-center w-full px-2 py-2 rounded-md border border-accent-200 text-accent-700 hover:bg-accent-50 transition"
-          type="button"
-        >
-          <Play className="h-4 w-4 mr-2" />
-          Repetir Tutorial
-        </button>
-        <button
-          onClick={signOut}
-          className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
-          type="button"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          Sair
-        </button>
-      </SidebarFooter>
-    </ShadcnSidebar>
-    {/* Trigger flutuante só em mobile */}
-    <SidebarFloatingTrigger />
-  </div>
-);
-
 const Sidebar = () => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
-  // Repete tutorial
-  const handleRestartOnboarding = () => {
-    localStorage.removeItem('legalflux-onboarding-completed');
-    window.location.reload();
+  const handleSignOut = () => {
+    signOut();
+    navigate('/login');
   };
 
   return (
     <SidebarProvider>
-      {isMobile 
-        ? <SidebarMobile handleRestartOnboarding={handleRestartOnboarding} signOut={signOut} />
-        : <SidebarDesktop handleRestartOnboarding={handleRestartOnboarding} signOut={signOut} />
-      }
+      <div className="flex min-h-screen w-full">
+        <ShadSidebar>
+          <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200">
+            <img
+              src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
+              alt="Legalflux Logo"
+              className="h-10 w-10 rounded-md"
+            />
+            <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
+          </SidebarHeader>
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel className="hidden" />
+              <SidebarGroupContent>
+                <SidebarMenuList />
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+          <SidebarFooter className="pb-4 px-4 border-t border-gray-200 flex-col flex gap-2">
+            <button
+              onClick={handleSignOut}
+              className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
+              type="button"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Sair
+            </button>
+          </SidebarFooter>
+        </ShadSidebar>
+        {/* Mobile sidebar trigger */}
+        {isMobile && (
+          <SidebarTrigger className="fixed z-50 top-3 left-3 bg-white rounded-full shadow p-2 border border-gray-200" />
+        )}
+        <div className="flex-1 flex flex-col min-w-0 max-w-full">
+          {/* Conteúdo real do dashboard será children nas páginas */}
+        </div>
+      </div>
     </SidebarProvider>
   );
 };
 
 export default Sidebar;
+
