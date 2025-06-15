@@ -32,6 +32,10 @@ import {
 } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import React, { useEffect, useRef } from 'react';
+import SidebarLogo from './SidebarLogo';
+import SidebarSignOutButton from './SidebarSignOutButton';
+import SidebarMenuList from './SidebarMenuList';
+import SidebarAutoCollapseEffect from './SidebarAutoCollapseEffect';
 import SidebarQuickActions from './SidebarQuickActions';
 import UniversalSearchBar from './UniversalSearchBar';
 import SidebarDrawerMenu from "./SidebarDrawerMenu";
@@ -122,15 +126,9 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
         <div className="hidden md:block">
           <ShadSidebar>
             <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200 relative">
-              {/* Logo, sem botão Rever */}
-              <img
-                src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-                alt="Legalflux Logo"
-                className="h-10 w-10 rounded-md ml-8"
-              />
+              <SidebarLogo />
               <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
             </SidebarHeader>
-            {/* Universal search bar (desktop) */}
             <div className="px-4 py-3">
               <UniversalSearchBar />
             </div>
@@ -143,14 +141,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
               </SidebarGroup>
             </SidebarContent>
             <SidebarFooter className="pb-4 px-4 border-t border-gray-200 flex-col flex gap-2">
-              <button
-                onClick={handleSignOut}
-                className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
-                type="button"
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sair
-              </button>
+              <SidebarSignOutButton />
             </SidebarFooter>
           </ShadSidebar>
         </div>
@@ -161,26 +152,12 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
             <div className="block md:hidden">
               <ShadSidebar>
                 <SidebarHeader className="flex flex-row items-center gap-3 min-h-[68px] p-4 border-b border-gray-200 relative">
-                  {/* Logo mobile, sem botão Rever */}
-                  <img
-                    src="/lovable-uploads/e64d9504-cd29-4461-8732-1fa9de63eda5.png"
-                    alt="Legalflux Logo"
-                    className="h-10 w-10 rounded-md ml-8"
-                  />
+                  <SidebarLogo />
                   <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
                 </SidebarHeader>
-                {/* NOVO: DrawerMenu enxuto mobile */}
                 <SidebarDrawerMenu onLinkClick={() => {}} />
-                {/* Sign out sempre no rodapé */}
                 <SidebarFooter className="pb-4 px-4 border-t border-gray-200 flex-col flex gap-2">
-                  <button
-                    onClick={handleSignOut}
-                    className="flex items-center w-full px-2 py-2 rounded-md text-red-600 hover:bg-red-50 transition"
-                    type="button"
-                  >
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sair
-                  </button>
+                  <SidebarSignOutButton />
                 </SidebarFooter>
               </ShadSidebar>
             </div>
