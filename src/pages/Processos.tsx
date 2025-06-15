@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import ProcessosHeader from "@/components/processos/ProcessosHeader";
@@ -6,6 +5,7 @@ import ProcessosMainFilters from "@/components/processos/ProcessosMainFilters";
 import ProcessosList from "@/components/processos/ProcessosList";
 import ProcessosModalForm from "@/components/processos/ProcessosModalForm";
 import { ProcessoService } from "@/services/ProcessoService";
+import SimplePagination from "@/components/ui/SimplePagination";
 
 const PAGE_SIZE = 6;
 
@@ -76,7 +76,12 @@ const Processos = () => {
           getStatusColor={getStatusColor}
           pageSize={PAGE_SIZE}
         />
-        {/* Paginação futura */}
+        <SimplePagination
+          page={page}
+          pageSize={PAGE_SIZE}
+          total={data.total}
+          onPageChange={setPage}
+        />
       </div>
       <ProcessosModalForm
         open={modalOpen || !!editProc}
@@ -85,7 +90,6 @@ const Processos = () => {
           if (!open) setEditProc(null);
         }}
         onSubmit={async (proc) => {
-          // Add or update
           if (!editProc) {
             await ProcessoService.addProcesso(proc);
           } else {
