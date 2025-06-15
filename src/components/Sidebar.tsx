@@ -1,4 +1,3 @@
-
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
@@ -62,6 +61,10 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   return (
     <SidebarProvider>
       <div className="flex w-full min-h-screen">
+        {/* Botão de recolher/expandir - apenas md+ */}
+        <div className="hidden md:flex flex-col justify-start">
+          <SidebarTrigger className="mt-4 ml-2 mb-2" />
+        </div>
         {/* Sidebar normal (aparece em md+, incluindo tablets e desktops) */}
         <div className="hidden md:block">
           <ShadSidebar>
