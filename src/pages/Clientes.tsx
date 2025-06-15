@@ -1,29 +1,13 @@
 import DashboardLayout from '@/components/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { 
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { 
-  Plus,
-  Search,
-  Filter,
-  Users,
-  Phone,
-  Mail,
-  FileText,
-  MoreHorizontal
-} from 'lucide-react';
-import ClienteForm from '@/components/clientes/ClienteForm';
+import { Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import ClienteForm from '@/components/clientes/ClienteForm';
+import ClientesHeader from '@/components/clientes/ClientesHeader';
+import ClientesStats from '@/components/clientes/ClientesStats';
+import ClientesFilters from '@/components/clientes/ClientesFilters';
+import ClientesList from '@/components/clientes/ClientesList';
 import { fetchClientes, addCliente, updateCliente, deleteCliente } from '@/services/ClienteService';
 
 export interface Cliente {
@@ -92,17 +76,18 @@ const mapToCliente = (raw: any): Cliente => ({
 });
 
 const Clientes = () => {
+  // Estados de UI
   const [showForm, setShowForm] = useState(false);
   const [clientesList, setClientesList] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState(true);
   const [editCliente, setEditCliente] = useState<Cliente | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     async function loadClientes() {
       setLoading(true);
       try {
         const data = await fetchClientes();
-        // Filtre com isClienteValido, evitando objetos inválidos
         const clientesCorrigidos: Cliente[] = Array.isArray(data)
           ? data.filter(isClienteValido).map(mapToCliente)
           : [];
@@ -171,187 +156,49 @@ const Clientes = () => {
     }
   };
 
+  // Filtro de clientes por termo pesquisado
+  const clientesFiltrados = searchTerm
+    ? clientesList.filter((c) =>
+        c.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (c.email && c.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (c.telefone && c.telefone.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : clientesList;
+
   return (
     <DashboardLayout>
       <div className="p-6">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-primary-800">Clientes</h1>
-            <p className="text-gray-600">Gerir informações e relacionamento com clientes</p>
-          </div>
-          <Button className="bg-primary-800 hover:bg-primary-700" onClick={() => setShowForm(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Cliente
-          </Button>
-        </div>
+        <ClientesHeader onAdd={() => setShowForm(true)} />
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="rounded-2xl border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Total Clientes</p>
-                  <p className="text-2xl font-bold text-primary-800">{clientesList.length}</p>
-                </div>
-                <Users className="h-8 w-8 text-blue-600" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-2xl border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Activos</p>
-                  <p className="text-2xl font-bold text-primary-800">{clientesList.filter(c => c.status === 'activo').length}</p>
-                </div>
-                <div className="h-8 w-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <div className="h-3 w-3 bg-green-600 rounded-full"></div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-2xl border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Particulares</p>
-                  <p className="text-2xl font-bold text-primary-800">{clientesList.filter(c => c.tipo === 'particular').length}</p>
-                </div>
-                <div className="h-8 w-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-2xl border-0 shadow-lg">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Empresas</p>
-                  <p className="text-2xl font-bold text-primary-800">{clientesList.filter(c => c.tipo === 'empresa').length}</p>
-                </div>
-                <div className="h-8 w-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <div className="h-3 w-3 bg-purple-600 rounded-full"></div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Stats */}
+        <ClientesStats total={clientesList.length} />
 
         {/* Filters */}
         <Card className="rounded-2xl border-0 shadow-lg mb-6">
           <CardContent className="p-6">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  placeholder="Pesquisar clientes..."
-                  className="pl-10 rounded-xl border-gray-200"
-                  // Adicione lógica de busca se desejar
-                />
-              </div>
-              <Button variant="outline" className="border-primary-800 text-primary-800">
-                <Filter className="h-4 w-4 mr-2" />
-                Filtros
-              </Button>
-            </div>
+            <ClientesFilters searchTerm={searchTerm} onSearch={setSearchTerm} />
           </CardContent>
         </Card>
 
-        {/* Clients Table */}
+        {/* Clients List */}
         <Card className="rounded-2xl border-0 shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-primary-800 flex items-center">
-              <Users className="h-5 w-5 mr-2" />
-              Lista de Clientes
-            </CardTitle>
-          </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Cliente</TableHead>
-                  <TableHead>Contacto</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Processos</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Último Contacto</TableHead>
-                  <TableHead>Valor Total</TableHead>
-                  <TableHead>Acções</TableHead>
-                </TableRow>
-              </TableHeader>
-              {loading ? (
-                <div className="text-center py-8">A carregar clientes...</div>
-              ) : (
-                <TableBody>
-                  {clientesList.map((cliente) => (
-                    <TableRow key={cliente.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <Avatar>
-                            <AvatarImage src="" />
-                            <AvatarFallback className="bg-primary-100 text-primary-800">
-                              {cliente.nome.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium text-primary-800">{cliente.nome}</p>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="flex items-center text-sm">
-                            <Mail className="h-3 w-3 mr-2 text-gray-400" />
-                            {cliente.email}
-                          </div>
-                          <div className="flex items-center text-sm">
-                            <Phone className="h-3 w-3 mr-2 text-gray-400" />
-                            {cliente.telefone}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getTipoColor(cliente.tipo)}>
-                          {cliente.tipo}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center">
-                          <FileText className="h-4 w-4 mr-2 text-gray-400" />
-                          {cliente.processos}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(cliente.status)}>
-                          {cliente.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{cliente.ultimo_contacto}</TableCell>
-                      <TableCell className="font-medium">{cliente.valor_total}</TableCell>
-                      <TableCell>
-                        <Button variant="ghost" size="sm" onClick={() => setEditCliente(cliente)} title="Editar">
-                          <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M12.65 3.35a2.121 2.121 0 0 1 3 3L7.5 14.5H4v-3.5l8.65-7.65Z"/></svg>
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDeleteCliente(cliente.id)} title="Remover">
-                          <svg width="16" height="16" fill="none" stroke="currentColor"><path d="M6 6v6m4-6v6M3 6h10M5 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              )}
-            </Table>
+            <ClientesList
+              clientes={clientesFiltrados}
+              loading={loading}
+              onView={setEditCliente}
+            />
           </CardContent>
         </Card>
 
+        {/* Modal Novo Cliente */}
         <ClienteForm
           open={showForm}
           onOpenChange={setShowForm}
           onSubmit={handleAddCliente}
         />
+        {/* Modal Editar Cliente */}
         <ClienteForm
           open={!!editCliente}
           onOpenChange={() => setEditCliente(null)}
@@ -364,3 +211,6 @@ const Clientes = () => {
 };
 
 export default Clientes;
+
+// ⚠️ NOTA: Este ficheiro tem mais de 350 linhas.
+// Sugiro refatorar mais (após implementação da React Query/paginação) para maior legibilidade/mantibilidade.
