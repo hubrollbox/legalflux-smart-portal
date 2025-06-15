@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +23,9 @@ const Insolvencias: React.FC = () => {
     queryKey: ["insolvencias"],
     queryFn: fetchInsolvencias,
   });
+
+  // Importante! Obter role do utilizador autenticado
+  const { role } = useAuth();
 
   if (loadingAddon) {
     return (
