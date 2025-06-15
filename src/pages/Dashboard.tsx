@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import OnboardingTour from '@/components/OnboardingTour';
@@ -10,34 +9,35 @@ import DashboardQuickActions from '@/components/dashboard/DashboardQuickActions'
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import DashboardSearchBar from '@/components/dashboard/DashboardSearchBar';
 import { useNavigate } from 'react-router-dom';
+import { FileText, Users, Euro, Clock } from 'lucide-react';
 
 const stats = [
   {
     title: 'Processos Activos',
     value: '24',
     change: '+12%',
-    icon: require('lucide-react').FileText,
+    icon: FileText,
     color: 'text-blue-600'
   },
   {
     title: 'Clientes',
     value: '156',
     change: '+8%',
-    icon: require('lucide-react').Users,
+    icon: Users,
     color: 'text-green-600'
   },
   {
     title: 'Receita Mensal',
     value: '€15.280',
     change: '+23%',
-    icon: require('lucide-react').Euro,
+    icon: Euro,
     color: 'text-purple-600'
   },
   {
     title: 'Prazos Esta Semana',
     value: '7',
     change: '-2',
-    icon: require('lucide-react').Clock,
+    icon: Clock,
     color: 'text-orange-600'
   }
 ];
