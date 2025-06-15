@@ -40,66 +40,7 @@ import SidebarQuickActions from './SidebarQuickActions';
 import UniversalSearchBar from './UniversalSearchBar';
 import SidebarDrawerMenu from "./SidebarDrawerMenu";
 
-// MENU CORRIGIDO: ordem, rotas e ícones completos!
-const sidebarItems = [
-  { to: '/dashboard', label: 'Painel', icon: LayoutDashboard },
-  { to: '/processos', label: 'Processos', icon: FileText },
-  { to: '/clientes', label: 'Clientes', icon: Users },
-  { to: '/calendario', label: 'Calendário', icon: Calendar },
-  { to: '/chat', label: 'Chat', icon: MessageSquare },
-  { to: '/financeiro', label: 'Financeiro', icon: Euro },
-  { to: '/ia-assistant', label: 'IA', icon: Bot }, // IA ASSISTANT
-  { to: '/minhas-integrações', label: 'Minhas Integrações', icon: Link2 }, // INTEGRAÇÕES
-  { to: '/subscricoes', label: 'Subscrições', icon: FileTextIcon }, // ADICIONADO aqui
-  { to: '/definicoes', label: 'Definições', icon: Settings },
-];
-
-const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
-  const location = useLocation();
-  return (
-    <SidebarMenu>
-      {sidebarItems.map((item) => (
-        <SidebarMenuItem key={item.to}>
-          <SidebarMenuButton
-            asChild
-            isActive={location.pathname === item.to}
-          >
-            <Link to={item.to} onClick={onItemClick} className="flex items-center w-full">
-              <item.icon className="mr-3 min-w-5" />
-              <span className="truncate">{item.label}</span>
-            </Link>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      ))}
-    </SidebarMenu>
-  );
-};
-
-// Hook para auto-colapso da sidebar (>= 1200px desktops)
-function useAutoCollapseSidebar() {
-  const { setOpen, isMobile, userToggledSidebar } = useSidebar();
-  useEffect(() => {
-    if (isMobile) return;
-    if (userToggledSidebar) return; // NUNCA auto-colapsa depois do user clicar
-    const handleResize = () => {
-      if (window.innerWidth < 1200) {
-        setOpen(false);
-      } else {
-        setOpen(true);
-      }
-    };
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, [setOpen, isMobile, userToggledSidebar]);
-}
-
-// Componente apenas para garantir o efeito é aplicado só dentro do Provider
-function SidebarAutoCollapseEffect() {
-  useAutoCollapseSidebar();
-  return null;
-}
-
+// Main Sidebar component:
 const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
