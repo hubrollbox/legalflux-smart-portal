@@ -46,8 +46,11 @@ const IntegrationCard = ({ integration }: IntegrationCardProps) => {
 
   const StatusIcon = getStatusIcon(integration.status);
 
+  // Destacar preço do Add-on de Insolvência
+  const isInsolvenciaAddon = integration.name === 'LegalFlux Insolvências';
+
   return (
-    <Card className="rounded-2xl border-0 shadow-lg hover:shadow-xl transition-shadow">
+    <Card className={`rounded-2xl border-0 shadow-lg hover:shadow-xl transition-shadow ${isInsolvenciaAddon ? 'ring-2 ring-accent-700' : ''}`}>
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex items-center space-x-3">
@@ -65,10 +68,14 @@ const IntegrationCard = ({ integration }: IntegrationCardProps) => {
           </Badge>
         </div>
       </CardHeader>
-      
       <CardContent>
         <p className="text-gray-600 mb-4">{integration.description}</p>
-        
+        {/* Preço do add-on de Insolvência */}
+        {isInsolvenciaAddon && (
+          <div className="mb-2 text-xl font-bold text-accent-700 flex items-center gap-2">
+            25 € <span className="text-base font-normal text-gray-700">/mês</span>
+          </div>
+        )}
         <div className="space-y-2 mb-4">
           <p className="text-sm font-medium text-gray-700">Funcionalidades:</p>
           <ul className="text-sm text-gray-600 space-y-1">
@@ -80,7 +87,6 @@ const IntegrationCard = ({ integration }: IntegrationCardProps) => {
             ))}
           </ul>
         </div>
-        
         <div className="flex space-x-2">
           <Button variant="outline" size="sm" asChild className="flex-1">
             <Link to={integration.documentationUrl}>
@@ -105,3 +111,4 @@ const IntegrationCard = ({ integration }: IntegrationCardProps) => {
 };
 
 export default IntegrationCard;
+

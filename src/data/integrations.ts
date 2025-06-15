@@ -1,4 +1,3 @@
-
 import { 
   Database, FileText, Globe, Shield, Mail, Cloud, Calendar, 
   Users, Building, MessageSquare, Video, CreditCard, BookOpen, 
@@ -343,6 +342,24 @@ export const integracoesDisponiveis: Integration[] = [
     icon: Settings,
     features: ['Automações simples', 'Dispositivos IoT', 'Ações programadas'],
     documentationUrl: '/documentacao#ifttt'
+  },
+  
+  // --- Add-on Insolvência destacado ---
+  {
+    id: 900,
+    name: 'LegalFlux Insolvências',
+    description: 'Gestão de massas falidas, credores, inventários, checklist legal e geração de documentos CIRE.',
+    category: 'Add-ons',
+    status: 'disponivel',
+    icon: FileText,
+    features: [
+      'Gestão de processos de insolvência',
+      'Checklist legal automático (CIRE)',
+      'Inventário de bens e dívidas da massa',
+      'Exportação e geração de PDFs oficiais',
+      'Somente subscritores Profissional/Enterprise',
+    ],
+    documentationUrl: '/documentacao#insolvencia'
   }
 ];
 
@@ -358,5 +375,6 @@ export const categorias = [
   'Móvel',
   'Financeiro',
   'CRM',
-  'Automação'
+  'Automação',
+  'Add-ons'
 ];
