@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import type { Processo } from "@/pages/Processos";
+import type { Processo } from "@/services/ProcessoService";
 
 interface ProcessosListProps {
   processos: Processo[];

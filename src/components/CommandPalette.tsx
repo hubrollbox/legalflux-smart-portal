@@ -2,27 +2,27 @@
 import * as React from "react";
 import { CommandDialog, CommandInput, CommandList, CommandItem, CommandGroup, CommandEmpty } from "@/components/ui/command";
 import { useNavigate } from "react-router-dom";
-import { list, user, fileText, search } from "lucide-react";
+import { List, User, FileText, Search } from "lucide-react";
 
 const quickActions = [
   {
     label: "Novo Processo",
-    icon: fileText,
+    icon: FileText,
     to: "/processos",
   },
   {
     label: "Novo Cliente",
-    icon: user,
+    icon: User,
     to: "/clientes",
   },
   {
     label: "Ir para Calendário",
-    icon: list,
+    icon: List,
     to: "/calendario",
   },
   {
     label: "Pesquisa Global",
-    icon: search,
+    icon: Search,
     to: "/",
   },
 ];
@@ -66,3 +66,4 @@ const CommandPalette = () => {
 };
 
 export default CommandPalette;
+

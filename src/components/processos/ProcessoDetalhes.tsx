@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,7 +15,7 @@ import {
   Paperclip,
   MessageSquare
 } from 'lucide-react';
-import type { Processo } from '@/pages/Processos';
+import type { Processo } from '@/services/ProcessoService';
 import { useNavigate } from 'react-router-dom';
 
 interface ProcessoDetalhesProps {
