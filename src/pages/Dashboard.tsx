@@ -2,44 +2,42 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import OnboardingTour from '@/components/OnboardingTour';
-import { Plus, FileText, Users, Euro, Clock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import '../components/DashboardGrid.css';
 import DashboardChart from '@/components/DashboardChart';
-import SearchBar from '@/components/SearchBar';
 import DashboardStats from '@/components/dashboard/DashboardStats';
 import DashboardRecentCases from '@/components/dashboard/DashboardRecentCases';
 import DashboardUpcomingEvents from '@/components/dashboard/DashboardUpcomingEvents';
 import DashboardQuickActions from '@/components/dashboard/DashboardQuickActions';
+import DashboardHeader from '@/components/dashboard/DashboardHeader';
+import DashboardSearchBar from '@/components/dashboard/DashboardSearchBar';
+import { useNavigate } from 'react-router-dom';
 
-// Mantidas as listas in-file para simplicidade
 const stats = [
   {
     title: 'Processos Activos',
     value: '24',
     change: '+12%',
-    icon: FileText,
+    icon: require('lucide-react').FileText,
     color: 'text-blue-600'
   },
   {
     title: 'Clientes',
     value: '156',
     change: '+8%',
-    icon: Users,
+    icon: require('lucide-react').Users,
     color: 'text-green-600'
   },
   {
     title: 'Receita Mensal',
     value: '€15.280',
     change: '+23%',
-    icon: Euro,
+    icon: require('lucide-react').Euro,
     color: 'text-purple-600'
   },
   {
     title: 'Prazos Esta Semana',
     value: '7',
     change: '-2',
-    icon: Clock,
+    icon: require('lucide-react').Clock,
     color: 'text-orange-600'
   }
 ];
@@ -115,26 +113,9 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      {/* Wrapper fluido SÓ para limitar máximo, remover constraints agressivos */}
       <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
-        <div className="mb-6">
-          <SearchBar onSearch={() => {}} />
-        </div>
-        <div className="flex justify-between items-center mb-8 dashboard-header">
-          <div>
-            <h1 className="text-3xl font-bold text-primary-800">Dashboard</h1>
-            <p className="text-gray-600">Bem-vindo de volta! Aqui está o resumo dos seus processos.</p>
-          </div>
-          <button
-            data-tour="new-process"
-            className="bg-primary-800 hover:bg-primary-700 text-white px-4 py-2 rounded inline-flex items-center"
-            title="Criar um novo processo jurídico"
-            onClick={() => navigate('/processos')}
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Novo Processo
-          </button>
-        </div>
+        <DashboardSearchBar />
+        <DashboardHeader onNewProcess={() => navigate('/processos')} />
         <DashboardStats stats={stats} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <DashboardRecentCases cases={recentCases} onSeeAll={() => navigate('/processos')} />
