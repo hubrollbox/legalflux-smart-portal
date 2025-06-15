@@ -25,7 +25,12 @@ export default function SubscricoesPage() {
                 </span>
               </TooltipTrigger>
               <TooltipContent>
-                Veja e altere o estado das suas assinaturas de add-ons LegalFlux. Clique em terminar para cancelar uma subscrição ativa.
+                Veja e altere o estado das suas assinaturas de add-ons LegalFlux.
+                <div className="mt-2 text-xs text-gray-600">
+                  A tabela é acessível por <b>Tab</b> e as ações podem ser feitas via teclado.<br/>
+                  Se houver muitos resultados, ative a paginação para melhor desempenho.
+                </div>
+                Clique em terminar para cancelar uma subscrição ativa.
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -34,6 +39,12 @@ export default function SubscricoesPage() {
           Gere facilmente as subscrições dos seus add-ons LegalFlux: consulte estado, datas de ativação e termine add-ons quando necessário.
         </p>
         <SubscricoesTable />
+        {/* Widget dashboard customizável - Placeholder */}
+        <div className="mt-10 mb-4 flex flex-col gap-4 border rounded-lg bg-accent-50 p-5 shadow transition hover:shadow-lg" tabIndex={0} aria-label="Configuração de widgets da dashboard">
+          <span className="block text-lg font-semibold text-primary-800">Dashboard Personalizável <span className="text-xs text-gray-400">(beta)</span></span>
+          <span className="text-neutral-700 text-sm">Em breve: Organize sua dashboard escolhendo seus próprios widgets de informação e ative/desative blocos como Resumo Financeiro, Próximos Prazos, Tarefas, Estatísticas, etc.</span>
+          <button className="w-fit px-4 py-2 mt-2 rounded bg-accent-700 text-white text-sm hover:bg-accent-800 focus:outline focus:ring-2 focus:ring-accent-500" disabled tabIndex={0}>Configurar widgets (em breve)</button>
+        </div>
       </div>
     </DashboardLayout>
   );

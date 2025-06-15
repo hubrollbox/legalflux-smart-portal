@@ -43,36 +43,45 @@ export default function SubscricoesTable() {
   }
   if (!data?.length) {
     return (
-      <div className="p-8 text-center text-neutral-700 border rounded-xl shadow-sm max-w-xl mx-auto bg-white">
+      <div className="p-8 text-center text-neutral-700 border rounded-xl shadow-sm max-w-xl mx-auto bg-white" tabIndex={0}>
         <p>Não existem add-ons/subscrições em curso nesta conta.</p>
         <a
           href="/integracoes"
           className="inline-block mt-4 text-accent-700 font-bold hover:underline"
           target="_blank"
           rel="noopener noreferrer"
+          tabIndex={0}
+          aria-label="Ir para integrações (novo separador)"
         >
           Ative o seu primeiro add-on
-          <svg xmlns="http://www.w3.org/2000/svg" className="inline ml-1" width={14} height={14} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" className="inline ml-1" width={14} height={14} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden><path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
       </div>
     );
   }
+  // Checagem de paginação/lazy
+  const showPaginationNotice = data.length > 15;
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-sm border rounded-xl shadow bg-white">
+    <div className="overflow-x-auto" tabIndex={0} aria-label="Tabela de subscrições. Use tab para navegar células.">
+      {showPaginationNotice && (
+        <div className="mb-2 text-xs text-orange-600" role="alert">
+          ⚠️ Muitas subscrições encontradas. Considere implementar paginação/lazy loading.
+        </div>
+      )}
+      <table className="min-w-full text-sm border rounded-xl shadow bg-white" tabIndex={0}>
         <thead>
           <tr>
-            <th className="font-medium px-4 py-2 text-left text-gray-900">Add-on</th>
-            <th className="font-medium px-4 py-2 text-left text-gray-900">Plano</th>
-            <th className="font-medium px-4 py-2 text-left text-gray-900">Data Ativação</th>
-            <th className="font-medium px-4 py-2 text-left text-gray-900">Data Fim</th>
-            <th className="font-medium px-4 py-2">Estado</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900" tabIndex={0}>Add-on</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900" tabIndex={0}>Plano</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900" tabIndex={0}>Data Ativação</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900" tabIndex={0}>Data Fim</th>
+            <th className="font-medium px-4 py-2" tabIndex={0}>Estado</th>
             <th className="font-medium px-4 py-2"></th>
           </tr>
         </thead>
         <tbody>
-          {data.map((a: any) => (
-            <tr key={a.id} className="border-b">
+          {data.map((a: any, rowIdx: number) => (
+            <tr key={a.id} className="border-b" tabIndex={0} aria-label={`Linha ${rowIdx + 1}: ${a.addon}, plano ${a.plano ?? '-'}, estado ${a.ativo ? 'ativo' : 'inativo'}`}>
               <td className="px-4 py-2">{a.addon}</td>
               <td className="px-4 py-2 capitalize">{a.plano ?? "-"}</td>
               <td className="px-4 py-2">{a.data_ativacao ? new Date(a.data_ativacao).toLocaleDateString() : "-"}</td>
@@ -85,6 +94,8 @@ export default function SubscricoesTable() {
                     variant="destructive"
                     disabled={loadingId === a.id}
                     onClick={() => terminarAssinatura(a.id)}
+                    tabIndex={0}
+                    aria-label={`Terminar subscrição de ${a.addon}`}
                   >
                     {loadingId === a.id ? "A terminar..." : "Terminar"}
                   </Button>
