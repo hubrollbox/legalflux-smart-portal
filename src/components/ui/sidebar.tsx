@@ -32,6 +32,8 @@ type SidebarContext = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  userToggledSidebar: boolean
+  setUserToggledSidebar: (v: boolean) => void
 }
 
 const SidebarContext = React.createContext<SidebarContext | null>(null)
@@ -87,8 +89,12 @@ const SidebarProvider = React.forwardRef<
       [setOpenProp, open]
     )
 
+    // Novo: flag para saber se o utilizador já clicou manualmente (evita auto-resize forçar o estado)
+    const [userToggledSidebar, setUserToggledSidebar] = React.useState(false)
+
     // Helper to toggle the sidebar.
     const toggleSidebar = React.useCallback(() => {
+      setUserToggledSidebar(true)
       return isMobile
         ? setOpenMobile((open) => !open)
         : setOpen((open) => !open)
@@ -102,6 +108,7 @@ const SidebarProvider = React.forwardRef<
           (event.metaKey || event.ctrlKey)
         ) {
           event.preventDefault()
+          setUserToggledSidebar(true)
           toggleSidebar()
         }
       }
@@ -123,8 +130,10 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        userToggledSidebar,
+        setUserToggledSidebar,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, userToggledSidebar]
     )
 
     return (

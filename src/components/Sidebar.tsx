@@ -69,12 +69,11 @@ const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
 
 // Hook para auto-colapso da sidebar (>= 1200px desktops)
 function useAutoCollapseSidebar() {
-  const { setOpen, isMobile } = useSidebar();
-  // Só controlar auto-colapso em desktop E se não tiver sido clicado manualmente
+  const { setOpen, isMobile, userToggledSidebar } = useSidebar();
   useEffect(() => {
     if (isMobile) return;
+    if (userToggledSidebar) return; // NUNCA auto-colapsa depois do user clicar
     const handleResize = () => {
-      // Manter sidebar aberta em md e acima, só recolher no lg+ se o utilizador não interagir.
       if (window.innerWidth < 1200) {
         setOpen(false);
       } else {
@@ -82,12 +81,9 @@ function useAutoCollapseSidebar() {
       }
     };
     window.addEventListener('resize', handleResize);
-
-    // Inicial: abre sidebar em desktop, fecha em mobile (mas deixa usuário controlar depois)
     handleResize();
-
     return () => window.removeEventListener('resize', handleResize);
-  }, [setOpen, isMobile]);
+  }, [setOpen, isMobile, userToggledSidebar]);
 }
 
 // Componente apenas para garantir o efeito é aplicado só dentro do Provider
