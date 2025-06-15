@@ -33,6 +33,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import React, { useEffect, useRef } from 'react';
 import SidebarQuickActions from './SidebarQuickActions';
 import UniversalSearchBar from './UniversalSearchBar';
+import SidebarDrawerMenu from "./SidebarDrawerMenu";
 
 // MENU CORRIGIDO: ordem, rotas e ícones completos!
 const sidebarItems = [
@@ -152,7 +153,7 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
             </SidebarFooter>
           </ShadSidebar>
         </div>
-        {/* Sidebar MOBILE como drawer */}
+        {/* Sidebar MOBILE como drawer SIMPLIFICADA */}
         {isMobile && (
           <>
             <SidebarTrigger className="fixed z-50 top-3 left-3 bg-white rounded-full shadow p-2 border border-gray-200 md:hidden" />
@@ -166,19 +167,9 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
                   />
                   <span className="ml-2 text-lg font-bold text-primary-800">LegalFlux</span>
                 </SidebarHeader>
-                {/* Quick actions & search (MOBILE-only) */}
-                <SidebarQuickActions onItemClick={() => {}} />
-                <div className="px-4 pb-2">
-                  <UniversalSearchBar />
-                </div>
-                <SidebarContent>
-                  <SidebarGroup>
-                    <SidebarGroupLabel className="hidden" />
-                    <SidebarGroupContent>
-                      <SidebarMenuList onItemClick={() => {}} />
-                    </SidebarGroupContent>
-                  </SidebarGroup>
-                </SidebarContent>
+                {/* NOVO: DrawerMenu enxuto mobile */}
+                <SidebarDrawerMenu onLinkClick={() => {}} />
+                {/* Sign out sempre no rodapé */}
                 <SidebarFooter className="pb-4 px-4 border-t border-gray-200 flex-col flex gap-2">
                   <button
                     onClick={handleSignOut}
