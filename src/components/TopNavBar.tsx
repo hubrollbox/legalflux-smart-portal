@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -16,6 +15,7 @@ const TopNavBar = ({ blurPlaceholder }: TopNavBarProps) => {
   const publicNavItems = [
     { to: '/contato', label: 'Contacto' },
     { to: '/recursos', label: 'Recursos' },
+    { to: '/integracoes', label: 'Integrações' }, // Agora visível SEMPRE
     { to: '/seguranca', label: 'Segurança' },
     { to: '/sobre', label: 'Sobre' },
   ];
@@ -24,7 +24,7 @@ const TopNavBar = ({ blurPlaceholder }: TopNavBarProps) => {
   const privateNavItemsAll = [
     // { to: '/prazos', label: 'Prazos', addon: false },
     { to: '/agenda', label: 'Agenda', addon: 'calendario' },
-    { to: '/minhas-integracoes', label: 'Integrações', addon: false },
+    // Removido: { to: '/minhas-integracoes', label: 'Integrações', addon: false },
     { to: '/insolvencias', label: 'Insolvências', addon: 'insolvencia' }
     // ... outras rotas possíveis
   ];
@@ -187,4 +187,3 @@ const TopNavBar = ({ blurPlaceholder }: TopNavBarProps) => {
 };
 
 export default TopNavBar;
-
