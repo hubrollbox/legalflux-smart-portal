@@ -1,4 +1,3 @@
-
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
@@ -40,9 +39,8 @@ const sidebarItems = [
   { to: '/calendario', label: 'Calendário', icon: Calendar },
   { to: '/chat', label: 'Chat', icon: MessageSquare },
   { to: '/financeiro', label: 'Financeiro', icon: Euro },
-  { to: '/ia-assistant', label: 'IA', icon: Bot }, // <-- IA ASSISTANT
-  { to: '/minhas-integracoes', label: 'Minhas Integrações', icon: Link2 }, // <-- INTEGRAÇÕES
-  { to: '/perfil', label: 'Minha Conta', icon: User },
+  { to: '/ia-assistant', label: 'IA', icon: Bot }, // IA ASSISTANT
+  { to: '/minhas-integracoes', label: 'Minhas Integrações', icon: Link2 }, // INTEGRAÇÕES
   { to: '/definicoes', label: 'Definições', icon: Settings },
 ];
 

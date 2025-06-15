@@ -17,6 +17,7 @@ const Header = () => {
   // Pode expandir a lógica mais tarde se guardar add-ons noutro sítio.
   const userAddons: string[] = []; // placeholder: sem extras, nenhum add-on
 
+  // -- Mantém a definição destes arrays --
   const publicNavItems = [
     { to: '/contato', label: 'Contacto' },
     { to: '/recursos', label: 'Recursos' },
@@ -24,11 +25,12 @@ const Header = () => {
     { to: '/sobre', label: 'Sobre' },
   ];
 
+  // Removido o item "Prazos" deste array
   const privateNavItemsAll = [
-    { to: '/prazos', label: 'Prazos', addon: false },
+    // { to: '/prazos', label: 'Prazos', addon: false },  // <-- REMOVIDO
     { to: '/agenda', label: 'Agenda', addon: 'calendario' }, // Exemplo: precisa addon
     { to: '/minhas-integracoes', label: 'Integrações', addon: false },
-    { to: '/insolvencias', label: 'Insolvências', addon: 'insolvencia' }, // Só mostra se tem addon
+    { to: '/insolvencias', label: 'Insolvências', addon: 'insolvencia' },
     // ... Adicione só rotas existentes & existentes no código.
   ];
 
