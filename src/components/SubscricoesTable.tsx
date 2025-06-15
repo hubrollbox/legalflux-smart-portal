@@ -1,4 +1,3 @@
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
@@ -44,21 +43,29 @@ export default function SubscricoesTable() {
   }
   if (!data?.length) {
     return (
-      <div className="p-8 text-center text-muted-foreground border rounded-xl shadow-sm max-w-xl mx-auto">
+      <div className="p-8 text-center text-neutral-700 border rounded-xl shadow-sm max-w-xl mx-auto bg-white">
         <p>Não existem add-ons/subscrições em curso nesta conta.</p>
-        <a href="/integracoes" className="inline-block mt-4 text-accent-700 font-bold hover:underline">Ative o seu primeiro add-on</a>
+        <a
+          href="/integracoes"
+          className="inline-block mt-4 text-accent-700 font-bold hover:underline"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Ative o seu primeiro add-on
+          <svg xmlns="http://www.w3.org/2000/svg" className="inline ml-1" width={14} height={14} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M18 13v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
       </div>
     );
   }
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full text-sm border rounded-xl shadow">
+      <table className="min-w-full text-sm border rounded-xl shadow bg-white">
         <thead>
           <tr>
-            <th className="font-medium px-4 py-2 text-left">Add-on</th>
-            <th className="font-medium px-4 py-2 text-left">Plano</th>
-            <th className="font-medium px-4 py-2 text-left">Data Ativação</th>
-            <th className="font-medium px-4 py-2 text-left">Data Fim</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900">Add-on</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900">Plano</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900">Data Ativação</th>
+            <th className="font-medium px-4 py-2 text-left text-gray-900">Data Fim</th>
             <th className="font-medium px-4 py-2">Estado</th>
             <th className="font-medium px-4 py-2"></th>
           </tr>

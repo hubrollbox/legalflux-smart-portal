@@ -1,24 +1,37 @@
-
-import { ReactNode } from 'react';
-import Sidebar from './Sidebar';
-import { useScrollToTop } from '@/hooks/useScrollToTop';
+import React from "react";
+import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/contexts/useAuth";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import MobileBottomBar from "./MobileBottomBar";
 
 interface DashboardLayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
-  useScrollToTop();
-  useAuth(); // Garantir load de sessão e persistência
+const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
 
-  // Removida a div flex redundante, o Sidebar já faz o layout geral
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate('/login');
+    }
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <Sidebar>
-      <main className="flex-1 flex flex-col min-w-0 max-w-full bg-gray-50 p-0">
-        {children}
-      </main>
-    </Sidebar>
+    <div className="relative flex flex-col min-h-screen bg-gray-50">
+      <Sidebar>
+        <main className="flex-1 w-full max-w-full">
+          {children}
+        </main>
+      </Sidebar>
+      <MobileBottomBar />
+    </div>
   );
 };
 

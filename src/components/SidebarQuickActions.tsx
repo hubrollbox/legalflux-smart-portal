@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Plus, Users, MessageSquare } from "lucide-react";
 
@@ -35,13 +34,11 @@ function SidebarQuickActions({ onItemClick }: { onItemClick?: () => void }) {
           to={act.to}
           onClick={onItemClick}
           tabIndex={0}
-          className="flex flex-col items-center justify-center min-w-[64px] min-h-[56px] gap-1 rounded-xl bg-accent-100 hover:bg-accent-200 shadow transition 
-          focus:outline-none focus-visible:ring-2 focus-visible:ring-accent border
-          active:scale-95"
+          className="flex flex-col items-center justify-center min-w-[64px] min-h-[56px] gap-1 rounded-xl bg-accent-100 hover:bg-accent-200 shadow transition scale-100 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent border"
           aria-label={act.description}
           style={{ touchAction: "manipulation" }}
         >
-          <act.icon size={24} className="text-accent-700" aria-hidden />
+          <act.icon size={28} className="text-accent-700" aria-hidden />
           <span className="text-xs font-semibold text-accent-800">{act.label}</span>
         </Link>
       ))}
