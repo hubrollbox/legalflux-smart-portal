@@ -1,3 +1,4 @@
+
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/useAuth';
 import {
@@ -67,19 +68,19 @@ const SidebarMenuList = ({ onItemClick }: { onItemClick?: () => void }) => {
 // Hook para auto-colapso da sidebar (>= 1200px desktops)
 function useAutoCollapseSidebar() {
   const { setOpen, isMobile } = useSidebar();
-  const mqlRef = useRef<MediaQueryList | null>(null);
-
+  // Corrigido: Usar useEffect apenas para desktop "real"
   useEffect(() => {
     if (isMobile) return; // nunca auto-collapse em mobile (o drawer trata)
     const handleResize = () => {
+      // Mantém sidebar aberta em md e acima, só recolhe realmente em lg+
       if (window.innerWidth < 1200) {
         setOpen(false); // colapsar
       } else {
         setOpen(true); // expandir
       }
     };
-    handleResize();
     window.addEventListener('resize', handleResize);
+    handleResize();
     return () => window.removeEventListener('resize', handleResize);
   }, [setOpen, isMobile]);
 }
@@ -94,7 +95,9 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
   const { signOut } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-  let showTrigger = !isMobile;
+  // CORRIGIDO: Mostra o trigger em "md" ou maior SEMPRE que não for mobile (md>=768) — nunca ocultar trigger sem drawer.
+  // Isso previne ficar "encalhado" sem sidebar entre 768–1200px.
+  const showTrigger = !isMobile;
 
   const handleSignOut = () => {
     signOut();
@@ -106,9 +109,10 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
       {/* Efeito de auto-colapso apenas em desktop/tablet */}
       {!isMobile && <SidebarAutoCollapseEffect />}
       <div className="min-h-screen w-full flex flex-row">
-        {/* SidebarTrigger como botão fixo (desktop) */}
+        {/* SidebarTrigger como botão fixo (desktop/tablet: SEMPRE mostra se não for mobile!) */}
         {showTrigger && (
-          <div className="hidden md:flex flex-col justify-start z-50">
+          <div className="flex flex-col justify-start z-50">
+            {/* Sem "hidden md:flex", agora é sempre "flex" acima do mobile */}
             <SidebarTrigger className="mt-4 ml-2 mb-2" />
           </div>
         )}
@@ -189,3 +193,4 @@ const Sidebar = ({ children }: { children?: React.ReactNode }) => {
 };
 
 export default Sidebar;
+
